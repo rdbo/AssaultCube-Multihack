@@ -39,6 +39,14 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 	{
 		ImGui::Begin("ImGui Window");
 		ImGui::Text("Test ImGUI Window");
+
+		ImGui::SliderFloat3("Teleport Position", Data::Settings::TeleportPosition, -5000, 5000);
+		ImGui::Checkbox("Force Teleport X", &Data::Settings::TeleportForce[0]);
+		ImGui::Checkbox("Force Teleport Y", &Data::Settings::TeleportForce[1]);
+		ImGui::Checkbox("Force Teleport Z", &Data::Settings::TeleportForce[2]);
+		if (ImGui::Button("Save Pos")) Data::Settings::TeleportSaveQueued = true;
+		if (ImGui::Button("Teleport")) Data::Settings::TeleportQueued = true;
+
 		if (ImGui::Button("Detach"))
 		{
 			ImGui::End();
