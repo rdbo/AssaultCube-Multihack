@@ -34,13 +34,16 @@ HGLRC             Base::Data::oContext = NULL;
 AC_Client         Base::Data::game;
 
 bool    Base::Data::Settings::EnableCrosshair = false;
+int     Base::Data::Settings::CrosshairType = 0;
 float   Base::Data::Settings::CrosshairLength = 10;
 float   Base::Data::Settings::CrosshairThickness = 3;
-float   Base::Data::Settings::CrosshairGap = 2;
+float   Base::Data::Settings::CrosshairGap = 10;
 bool    Base::Data::Settings::CrosshairTop = true;
 bool    Base::Data::Settings::CrosshairLeft = true;
 bool    Base::Data::Settings::CrosshairBottom = true;
 bool    Base::Data::Settings::CrosshairRight = true;
+bool    Base::Data::Settings::CrosshairDot = true;
+bool    Base::Data::Settings::CrosshairDotFilled = true;
 float   Base::Data::Settings::CrosshairColor[4] = { 1.0f, 0.0f, 0.0f, 1.0f };
 
 bool    Base::Data::Settings::TeleportQueued = false;

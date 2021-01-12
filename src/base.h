@@ -54,6 +54,7 @@ namespace Base
 		namespace Settings
 		{
 			extern bool    EnableCrosshair;
+			extern int     CrosshairType;
 			extern float   CrosshairLength;
 			extern float   CrosshairThickness;
 			extern float   CrosshairGap;
@@ -61,6 +62,8 @@ namespace Base
 			extern bool    CrosshairLeft;
 			extern bool    CrosshairBottom;
 			extern bool    CrosshairRight;
+			extern bool    CrosshairDot;
+			extern bool    CrosshairDotFilled;
 			extern float   CrosshairColor[4];
 
 			extern bool    TeleportQueued;
