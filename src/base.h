@@ -32,17 +32,20 @@ namespace Base
 		extern mem::voidptr_t    p_c2sinfo;
 		extern mem::voidptr_t    p_servertoclient;
 		extern mem::voidptr_t    p_movelocalplayer;
+		extern mem::voidptr_t    p_drawcrosshair;
 		extern SwapBuffers_t     oSwapBuffers;
 		extern ShowCursor_t      oShowCursor;
 		extern WndProc_t         oWndProc;
 		extern c2sinfo_t         o_c2sinfo;
 		extern servertoclient_t  o_servertoclient;
 		extern movelocalplayer_t o_movelocalplayer;
+		extern drawcrosshair_t   o_drawcrosshair;
 		extern mem::size_t       szSwapBuffers;
 		extern mem::size_t       szShowCursor;
 		extern mem::size_t       sz_c2sinfo;
 		extern mem::size_t       sz_servertoclient;
 		extern mem::size_t       sz_movelocalplayer;
+		extern mem::size_t       sz_drawcrosshair;
 		extern UINT              WMKeys[0xFE];
 		extern bool              InitSwapBuffers;
 		extern bool              IsUnloaded;
@@ -95,5 +98,6 @@ namespace Base
 		void c2sinfo(playerent* d);
 		void servertoclient(int chan, uchar* buf, int len, bool demo);
 		void movelocalplayer();
+		void drawcrosshair(playerent* p, int n, struct color* c, float size);
 	}
 }

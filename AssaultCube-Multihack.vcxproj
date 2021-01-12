@@ -214,6 +214,7 @@
     <ClCompile Include="src\hacks\Crosshair.cpp" />
     <ClCompile Include="src\hacks\Teleport.cpp" />
     <ClCompile Include="src\hooks\c2sinfo.cpp" />
+    <ClCompile Include="src\hooks\drawcrosshair.cpp" />
     <ClCompile Include="src\hooks\hooks.cpp" />
     <ClCompile Include="src\hooks\movelocalplayer.cpp" />
     <ClCompile Include="src\hooks\servertoclient.cpp" />

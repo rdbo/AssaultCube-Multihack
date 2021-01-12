@@ -1,0 +1,15 @@
+﻿  base.cpp
+  Crosshair.cpp
+  Teleport.cpp
+  c2sinfo.cpp
+  drawcrosshair.cpp
+  hooks.cpp
+  movelocalplayer.cpp
+  servertoclient.cpp
+  ShowCursor.cpp
+  SwapBuffers.cpp
+C:\Users\rdbo\Documents\Repo\AssaultCube-Multihack\AssaultCube-Multihack-main\src\hooks\SwapBuffers.cpp(25): warning C4189: 'io': local variable is initialized but not referenced
+  WndProc.cpp
+  main.cpp
+  Generating Code...
+  AssaultCube-Multihack.vcxproj -> C:\Users\rdbo\Documents\Repo\AssaultCube-Multihack\AssaultCube-Multihack-main\build\Win32\Debug\AssaultCube-Multihack.dll

@@ -1,0 +1,8 @@
+﻿  SwapBuffers.cpp
+C:\Users\rdbo\Documents\Repo\AssaultCube-Multihack\AssaultCube-Multihack-main\src\hooks\SwapBuffers.cpp(25): warning C4189: 'io': local variable is initialized but not referenced
+  Generating code
+  0 of 1454 functions ( 0.0%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+  AssaultCube-Multihack.vcxproj -> C:\Users\rdbo\Documents\Repo\AssaultCube-Multihack\AssaultCube-Multihack-main\build\Win32\Release\AssaultCube-Multihack.dll
