@@ -21,6 +21,9 @@ namespace Base
 	{
 		extern HMODULE           hModule;
 		extern HWND              hWindow;
+		extern RECT              WindowRect;
+		extern int               WindowWidth;
+		extern int               WindowHeight;
 		extern mem::module_t     m_opengl;
 		extern mem::module_t     m_ac_client;
 		extern mem::module_t     m_sdl;
@@ -50,10 +53,20 @@ namespace Base
 
 		namespace Settings
 		{
-			extern bool  TeleportQueued;
-			extern bool  TeleportSaveQueued;
-			extern float TeleportPosition[3];
-			extern bool  TeleportForce[3];
+			extern bool    EnableCrosshair;
+			extern float   CrosshairLength;
+			extern float   CrosshairThickness;
+			extern float   CrosshairGap;
+			extern bool    CrosshairTop;
+			extern bool    CrosshairLeft;
+			extern bool    CrosshairBottom;
+			extern bool    CrosshairRight;
+			extern float   CrosshairColor[4];
+
+			extern bool    TeleportQueued;
+			extern bool    TeleportSaveQueued;
+			extern float   TeleportPosition[3];
+			extern bool    TeleportForce[3];
 		}
 
 		namespace Keys
@@ -66,6 +79,7 @@ namespace Base
 	namespace Hacks
 	{
 		void Teleport();
+		void Crosshair();
 	}
 
 	namespace Hooks

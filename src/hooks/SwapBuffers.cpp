@@ -29,11 +29,17 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 		Data::InitSwapBuffers = true;
 	}
 
+	GetClientRect(Data::hWindow, &Data::WindowRect);
+	Data::WindowWidth = Data::WindowRect.right - Data::WindowRect.left;
+	Data::WindowHeight = Data::WindowRect.bottom - Data::WindowRect.top;
+
 	wglMakeCurrent(hdc, Data::glContext);
 
 	ImGui_ImplOpenGL2_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
+
+	Hacks::Crosshair();
 
 	if (Data::ShowMenu)
 	{
@@ -46,6 +52,19 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 		ImGui::Checkbox("Force Teleport Z", &Data::Settings::TeleportForce[2]);
 		if (ImGui::Button("Save Pos")) Data::Settings::TeleportSaveQueued = true;
 		if (ImGui::Button("Teleport")) Data::Settings::TeleportQueued = true;
+
+		ImGui::Checkbox("Enable Crosshair", &Data::Settings::EnableCrosshair);
+		if (Data::Settings::EnableCrosshair)
+		{
+			ImGui::SliderFloat("Crosshair Length", &Data::Settings::CrosshairLength, 0, 100, "%.0f");
+			ImGui::SliderFloat("Crosshair Thickness", &Data::Settings::CrosshairThickness, 0, 100, "%.0f");
+			ImGui::SliderFloat("Crosshair Gap", &Data::Settings::CrosshairGap, 0, 100, "%.0f");
+			ImGui::Checkbox("Crosshair Top", &Data::Settings::CrosshairTop);
+			ImGui::Checkbox("Crosshair Left", &Data::Settings::CrosshairLeft);
+			ImGui::Checkbox("Crosshair Bottom", &Data::Settings::CrosshairBottom);
+			ImGui::Checkbox("Crosshair Right", &Data::Settings::CrosshairRight);
+			ImGui::ColorEdit4("Crosshair Color", Data::Settings::CrosshairColor);
+		}
 
 		if (ImGui::Button("Detach"))
 		{

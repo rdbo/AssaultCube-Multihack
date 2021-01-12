@@ -3,6 +3,9 @@
 
 HMODULE           Base::Data::hModule = NULL;
 HWND              Base::Data::hWindow = NULL;
+RECT              Base::Data::WindowRect = {};
+int               Base::Data::WindowWidth = 0;
+int               Base::Data::WindowHeight = 0;
 mem::module_t     Base::Data::m_opengl;
 mem::module_t     Base::Data::m_ac_client;
 mem::module_t     Base::Data::m_sdl;
@@ -30,10 +33,20 @@ HGLRC             Base::Data::glContext = NULL;
 HGLRC             Base::Data::oContext = NULL;
 AC_Client         Base::Data::game;
 
-bool  Base::Data::Settings::TeleportQueued = false;
-bool  Base::Data::Settings::TeleportSaveQueued = false;
-float Base::Data::Settings::TeleportPosition[3];
-bool  Base::Data::Settings::TeleportForce[3];
+bool    Base::Data::Settings::EnableCrosshair = false;
+float   Base::Data::Settings::CrosshairLength = 10;
+float   Base::Data::Settings::CrosshairThickness = 3;
+float   Base::Data::Settings::CrosshairGap = 2;
+bool    Base::Data::Settings::CrosshairTop = true;
+bool    Base::Data::Settings::CrosshairLeft = true;
+bool    Base::Data::Settings::CrosshairBottom = true;
+bool    Base::Data::Settings::CrosshairRight = true;
+float   Base::Data::Settings::CrosshairColor[4] = { 1.0f, 0.0f, 0.0f, 1.0f };
+
+bool    Base::Data::Settings::TeleportQueued = false;
+bool    Base::Data::Settings::TeleportSaveQueued = false;
+float   Base::Data::Settings::TeleportPosition[3];
+bool    Base::Data::Settings::TeleportForce[3];
 
 DWORD WINAPI ExitThread(LPVOID lpReserved);
 
