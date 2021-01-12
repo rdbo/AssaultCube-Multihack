@@ -211,6 +211,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\base.cpp" />
+    <ClCompile Include="src\hooks\c2sinfo.cpp" />
     <ClCompile Include="src\hooks\hooks.cpp" />
     <ClCompile Include="src\hooks\ShowCursor.cpp" />
     <ClCompile Include="src\hooks\SwapBuffers.cpp" />
@@ -333,6 +334,7 @@
     <ClInclude Include="include\imgui\imstb_truetype.h" />
     <ClInclude Include="include\libmem++\libmem.hpp" />
     <ClInclude Include="src\base.h" />
+    <ClInclude Include="src\game.h" />
     <ClInclude Include="src\pch.h" />
   </ItemGroup>
   <ItemGroup>
