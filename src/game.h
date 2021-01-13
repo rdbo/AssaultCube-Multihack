@@ -4,6 +4,11 @@
 
 #include <pch.h>
 #define GAME_OFFSET(offset) (&((char*)this->mod->base)[offset])
+#define m_teammode    (*Base::Data::game.gamemode==0 || *Base::Data::game.gamemode==4 || *Base::Data::game.gamemode==5 || *Base::Data::game.gamemode==7 || *Base::Data::game.gamemode==11 || *Base::Data::game.gamemode==13 || *Base::Data::game.gamemode==14 || *Base::Data::game.gamemode==16 || *Base::Data::game.gamemode==17 || *Base::Data::game.gamemode==20 || *Base::Data::game.gamemode==21)
+#define m_botmode     (*Base::Data::game.gamemode==7 || *Base::Data::game.gamemode == 8 || *Base::Data::game.gamemode==12 || (*Base::Data::game.gamemode>=18 && *Base::Data::game.gamemode<=21))
+#define m_demo        (*Base::Data::game.gamemode==-1)
+#define m_coop        (*Base::Data::game.gamemode==1)
+
 typedef playerent*(* getclient_t)(int cn);
 typedef void(* servertoclient_t)(int chan, uchar* buf, int len, bool demo);
 typedef void(* updateworld_t)(int curtime, int lastmillis);
@@ -23,6 +28,7 @@ public:
 	playerent* player1 = nullptr;
 	vector<playerent*>* players = nullptr;
 	glmatrixf* mvpmatrix = nullptr;
+	int* gamemode = nullptr;
 	getclient_t getclient = nullptr;
 	servertoclient_t servertoclient = nullptr;
 	updateworld_t updateworld = nullptr;
@@ -51,6 +57,7 @@ public:
 		this->player1   = *(playerent**)                GAME_OFFSET(0x10F4F4);
 		this->players   = (vector<playerent*>*)         GAME_OFFSET(0x10F4F8);
 		this->mvpmatrix = (glmatrixf*)                  GAME_OFFSET(0x101AE8);
+		this->gamemode = (int*)                         GAME_OFFSET(0x10F49C);
 		this->getclient = (getclient_t)                 GAME_OFFSET(0x27320);
 		this->servertoclient = (servertoclient_t)       GAME_OFFSET(0x2E830);
 		this->updateworld = (updateworld_t)             GAME_OFFSET(0x25EB0);

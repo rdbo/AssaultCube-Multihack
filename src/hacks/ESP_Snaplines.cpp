@@ -28,7 +28,7 @@ void Base::Hacks::ESP_Snaplines(playerinfo_t* p_info)
 		float LineThickness = Data::Settings::EspSnaplinesThickness;
 		ImColor LineColor = ImColor(0.0f, 0.0f, 0.0f, 0.0f);
 
-		if (p_info->ent->team == Data::game.player1->team)
+		if (p_info->ent->team == Data::game.player1->team && (m_teammode || m_coop))
 			LineColor = ImColor(Data::Settings::EspSnaplinesColorTeam[0], Data::Settings::EspSnaplinesColorTeam[1], Data::Settings::EspSnaplinesColorTeam[2], Data::Settings::EspSnaplinesColorTeam[3]);
 		else
 			LineColor = ImColor(Data::Settings::EspSnaplinesColorEnemy[0], Data::Settings::EspSnaplinesColorEnemy[1], Data::Settings::EspSnaplinesColorEnemy[2], Data::Settings::EspSnaplinesColorEnemy[3]);

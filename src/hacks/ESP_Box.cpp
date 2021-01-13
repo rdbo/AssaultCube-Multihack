@@ -15,7 +15,7 @@ void Base::Hacks::ESP_Box(playerinfo_t* p_info)
 		ImColor BoxFillColor = {};
 		float   BoxThickness = Data::Settings::EspBoxThickness;
 
-		if (p_info->ent->team == Data::game.player1->team)
+		if (p_info->ent->team == Data::game.player1->team && (m_teammode || m_coop))
 		{
 			BoxColor  = ImColor(Data::Settings::EspBoxColorTeam[0], Data::Settings::EspBoxColorTeam[1], Data::Settings::EspBoxColorTeam[2], Data::Settings::EspBoxColorTeam[3]);
 			BoxFillColor = ImColor(Data::Settings::EspBoxColorFillTeam[0], Data::Settings::EspBoxColorFillTeam[1], Data::Settings::EspBoxColorFillTeam[2], Data::Settings::EspBoxColorFillTeam[3]);
