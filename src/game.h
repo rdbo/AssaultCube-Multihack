@@ -18,6 +18,7 @@ typedef void(* drawcrosshair_t)(playerent* p, int n, struct color* c, float size
 typedef playerent*(* playerincrosshair_t)();
 typedef void(* midfunction_t)(void);
 typedef midfunction_t attackphysics_t;
+typedef void(* drawscope_t)(bool preload);
 
 bool WorldToScreen(vec pos3D, vec* pos2D);
 
@@ -37,6 +38,7 @@ public:
 	drawcrosshair_t drawcrosshair = nullptr;
 	attackphysics_t attackphysics = nullptr;
 	playerincrosshair_t playerincrosshair = nullptr;
+	drawscope_t drawscope = nullptr;
 public:
 	inline AC_Client()
 	{
@@ -66,6 +68,7 @@ public:
 		this->drawcrosshair = (drawcrosshair_t)         GAME_OFFSET(0x8660);
 		this->attackphysics = (attackphysics_t)         GAME_OFFSET(0x63786);
 		this->playerincrosshair = (playerincrosshair_t) GAME_OFFSET(0x607C0);
+		this->drawscope = (drawscope_t)                 GAME_OFFSET(0x8080);
 		
 		return true;
 	}

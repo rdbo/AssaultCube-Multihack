@@ -10,11 +10,13 @@ void Base::Hooks::Init()
 	//Data::o_movelocalplayer = (movelocalplayer_t)mem::in::detour_trampoline(Data::p_movelocalplayer, (mem::voidptr_t)Hooks::movelocalplayer, Data::sz_movelocalplayer);
 	Data::o_drawcrosshair = (drawcrosshair_t)mem::in::detour_trampoline(Data::p_drawcrosshair, (mem::voidptr_t)Hooks::drawcrosshair, Data::sz_drawcrosshair, mem::MEM_DT_M1);
 	Data::o_attackphysics = (attackphysics_t)mem::in::detour_trampoline(Data::p_attackphysics, (mem::voidptr_t)Hooks::attackphysics, Data::sz_attackphysics, mem::MEM_DT_M1);
+	Data::o_drawscope     = (drawscope_t)mem::in::detour_trampoline(Data::p_drawscope, (mem::voidptr_t)Hooks::drawscope, Data::sz_drawscope, mem::MEM_DT_M1);
 }
 
 void Base::Hooks::Shutdown()
 {
 	SetWindowLongPtr(Data::hWindow, GWL_WNDPROC, (LONG_PTR)Data::oWndProc);
+	mem::in::detour_restore(Data::p_drawscope, (mem::byte_t*)Data::o_drawscope, Data::sz_drawscope);
 	mem::in::detour_restore(Data::p_attackphysics, (mem::byte_t*)Data::o_attackphysics, Data::sz_attackphysics);
 	mem::in::detour_restore(Data::p_drawcrosshair, (mem::byte_t*)Data::o_drawcrosshair, Data::sz_drawcrosshair);
 	//mem::in::detour_restore(Data::p_movelocalplayer, (mem::byte_t*)Data::o_movelocalplayer, Data::sz_movelocalplayer);

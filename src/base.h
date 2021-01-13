@@ -35,6 +35,7 @@ namespace Base
 		extern mem::voidptr_t    p_drawcrosshair;
 		extern mem::voidptr_t    p_attackphysics;
 		extern mem::voidptr_t    p_attackphysics_ret;
+		extern mem::voidptr_t    p_drawscope;
 		extern SwapBuffers_t     oSwapBuffers;
 		extern ShowCursor_t      oShowCursor;
 		extern WndProc_t         oWndProc;
@@ -43,6 +44,7 @@ namespace Base
 		extern movelocalplayer_t o_movelocalplayer;
 		extern drawcrosshair_t   o_drawcrosshair;
 		extern attackphysics_t   o_attackphysics;
+		extern drawscope_t       o_drawscope;
 		extern mem::size_t       szSwapBuffers;
 		extern mem::size_t       szShowCursor;
 		extern mem::size_t       sz_c2sinfo;
@@ -50,6 +52,7 @@ namespace Base
 		extern mem::size_t       sz_movelocalplayer;
 		extern mem::size_t       sz_drawcrosshair;
 		extern mem::size_t       sz_attackphysics;
+		extern mem::size_t       sz_drawscope;
 		extern UINT              WMKeys[0xFE];
 		extern bool              InitSwapBuffers;
 		extern bool              IsUnloaded;
@@ -103,6 +106,8 @@ namespace Base
 			extern bool    EnableTriggerbot;
 
 			extern bool    EnableFlyHack;
+
+			extern bool    EnableNoScope;
 		}
 
 		namespace Keys
@@ -122,6 +127,7 @@ namespace Base
 		void Speedhack();
 		void Triggerbot();
 		void FlyHack();
+		void NoScope();
 	}
 
 	namespace Hooks
@@ -137,5 +143,7 @@ namespace Base
 		//void drawcrosshair(playerent* p, int n, struct color* c, float size);
 		void drawcrosshair(void);
 		void attackphysics(void);
+		//void drawscope(bool preload)
+		void drawscope(void);
 	}
 }

@@ -17,6 +17,7 @@ mem::voidptr_t    Base::Data::p_movelocalplayer = nullptr;
 mem::voidptr_t    Base::Data::p_drawcrosshair = nullptr;
 mem::voidptr_t    Base::Data::p_attackphysics = nullptr;
 mem::voidptr_t    Base::Data::p_attackphysics_ret = nullptr;
+mem::voidptr_t    Base::Data::p_drawscope = nullptr;
 SwapBuffers_t     Base::Data::oSwapBuffers = nullptr;
 WndProc_t         Base::Data::oWndProc = nullptr;
 ShowCursor_t      Base::Data::oShowCursor = nullptr;
@@ -25,6 +26,7 @@ servertoclient_t  Base::Data::o_servertoclient = nullptr;
 movelocalplayer_t Base::Data::o_movelocalplayer = nullptr;
 drawcrosshair_t   Base::Data::o_drawcrosshair = nullptr;
 attackphysics_t   Base::Data::o_attackphysics = nullptr;
+drawscope_t       Base::Data::o_drawscope = nullptr;
 mem::size_t       Base::Data::szSwapBuffers = 5;
 mem::size_t       Base::Data::szShowCursor  = 5;
 mem::size_t       Base::Data::sz_c2sinfo    = 5;
@@ -32,6 +34,7 @@ mem::size_t       Base::Data::sz_servertoclient = 6;
 mem::size_t       Base::Data::sz_movelocalplayer = 8;
 mem::size_t       Base::Data::sz_drawcrosshair = 5;
 mem::size_t       Base::Data::sz_attackphysics = 10;
+mem::size_t       Base::Data::sz_drawscope = 6;
 UINT              Base::Data::WMKeys[0xFE];
 bool              Base::Data::InitSwapBuffers = false;
 bool              Base::Data::IsUnloaded = false;
@@ -84,6 +87,8 @@ bool    Base::Data::Settings::EnableTriggerbot = false;
 
 bool    Base::Data::Settings::EnableFlyHack = false;
 
+bool    Base::Data::Settings::EnableNoScope = false;
+
 DWORD WINAPI ExitThread(LPVOID lpReserved);
 
 void Base::Init(HMODULE hMod)
@@ -102,6 +107,7 @@ void Base::Init(HMODULE hMod)
 	Data::p_drawcrosshair = (mem::voidptr_t)Data::game.drawcrosshair;
 	Data::p_attackphysics = (mem::voidptr_t)Data::game.attackphysics;
 	Data::p_attackphysics_ret = (mem::voidptr_t)(&((char*)Data::p_attackphysics)[Data::sz_attackphysics]);
+	Data::p_drawscope = (mem::voidptr_t)Data::game.drawscope;
 	Hooks::Init();
 }
 
