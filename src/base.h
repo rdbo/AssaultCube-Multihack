@@ -99,6 +99,8 @@ namespace Base
 
 			extern bool    EnableSpeedhack;
 			extern float   SpeedhackValue;
+
+			extern bool    EnableTriggerbot;
 		}
 
 		namespace Keys
@@ -116,6 +118,7 @@ namespace Base
 		void ESP_Box(playerinfo_t* p_info);
 		void NoRecoil();
 		void Speedhack();
+		void Triggerbot();
 	}
 
 	namespace Hooks

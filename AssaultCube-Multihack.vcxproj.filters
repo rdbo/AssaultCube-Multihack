@@ -96,6 +96,9 @@
     <ClCompile Include="src\hacks\Speedhack.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\hacks\Triggerbot.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\pch.h">

@@ -56,13 +56,15 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 		ImGui::Begin("ImGui Window");
 		ImGui::Text("Test ImGUI Window");
 
+		ImGui::Checkbox("Triggerbot", &Data::Settings::EnableTriggerbot);
+
 		ImGui::Checkbox("Speedhack", &Data::Settings::EnableSpeedhack);
 		if (Data::Settings::EnableSpeedhack)
 			ImGui::SliderFloat("Speedhack Value", &Data::Settings::SpeedhackValue, 0.1f, 1.0f, "%.1f");
 
 		ImGui::Checkbox("No Recoil", &Data::Settings::EnableNoRecoil);
 
-		ImGui::Checkbox("Enable ESP Box", &Data::Settings::EnableEspBox);
+		ImGui::Checkbox("ESP Box", &Data::Settings::EnableEspBox);
 		if (Data::Settings::EnableEspBox)
 		{
 			ImGui::Checkbox("ESP Box Team", &Data::Settings::EspBoxTeam);
@@ -86,7 +88,7 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 			}
 		}
 
-		ImGui::Checkbox("Enable ESP Snaplines", &Data::Settings::EnableEspSnaplines);
+		ImGui::Checkbox("ESP Snaplines", &Data::Settings::EnableEspSnaplines);
 		if (Data::Settings::EnableEspSnaplines)
 		{
 			ImGui::Checkbox("ESP Snaplines Team", &Data::Settings::EspSnaplinesTeam);
@@ -110,7 +112,7 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 		if (ImGui::Button("Save Pos")) Data::Settings::TeleportSaveQueued = true;
 		if (ImGui::Button("Teleport")) Data::Settings::TeleportQueued = true;
 
-		ImGui::Checkbox("Enable Crosshair", &Data::Settings::EnableCrosshair);
+		ImGui::Checkbox("Custom Crosshair", &Data::Settings::EnableCrosshair);
 		if (Data::Settings::EnableCrosshair)
 		{
 			const char* CrosshairTypes[] = { "Default", "Triangle", "Square", "Circle" };

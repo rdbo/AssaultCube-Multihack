@@ -218,6 +218,7 @@
     <ClCompile Include="src\hacks\NoRecoil.cpp" />
     <ClCompile Include="src\hacks\Speedhack.cpp" />
     <ClCompile Include="src\hacks\Teleport.cpp" />
+    <ClCompile Include="src\hacks\Triggerbot.cpp" />
     <ClCompile Include="src\hooks\attackphysics.cpp" />
     <ClCompile Include="src\hooks\c2sinfo.cpp" />
     <ClCompile Include="src\hooks\drawcrosshair.cpp" />

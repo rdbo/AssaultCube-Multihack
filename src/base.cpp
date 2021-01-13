@@ -80,6 +80,8 @@ bool    Base::Data::Settings::EnableNoRecoil = false;
 bool    Base::Data::Settings::EnableSpeedhack = false;
 float   Base::Data::Settings::SpeedhackValue = 0.5f;
 
+bool    Base::Data::Settings::EnableTriggerbot = false;
+
 DWORD WINAPI ExitThread(LPVOID lpReserved);
 
 void Base::Init(HMODULE hMod)

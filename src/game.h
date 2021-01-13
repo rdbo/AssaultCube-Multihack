@@ -10,6 +10,7 @@ typedef void(* updateworld_t)(int curtime, int lastmillis);
 typedef void(* c2sinfo_t)(playerent* d);
 typedef void(* movelocalplayer_t)(void);
 typedef void(* drawcrosshair_t)(playerent* p, int n, struct color* c, float size);
+typedef playerent*(* playerincrosshair_t)();
 typedef void(* midfunction_t)(void);
 typedef midfunction_t attackphysics_t;
 
@@ -18,7 +19,6 @@ bool WorldToScreen(vec pos3D, vec* pos2D);
 class AC_Client
 {
 public:
-	bool Updated = false;
 	mem::module_t* mod = nullptr;
 	playerent* player1 = nullptr;
 	vector<playerent*>* players = nullptr;
@@ -30,6 +30,7 @@ public:
 	movelocalplayer_t movelocalplayer = nullptr;
 	drawcrosshair_t drawcrosshair = nullptr;
 	attackphysics_t attackphysics = nullptr;
+	playerincrosshair_t playerincrosshair = nullptr;
 public:
 	inline AC_Client()
 	{
@@ -42,25 +43,24 @@ public:
 		this->Update();
 	}
 
-	inline void Update()
+	inline bool Update()
 	{
 		if (!this->mod || !this->mod->is_valid())
-		{
-			this->Updated = false;
-			return;
-		}
+			return false;
 		
-		this->player1   = *(playerent**)            GAME_OFFSET(0x10F4F4);
-		this->players   = (vector<playerent*>*)     GAME_OFFSET(0x10F4F8);
-		this->mvpmatrix = (glmatrixf*)              GAME_OFFSET(0x101AE8);
-		this->getclient = (getclient_t)             GAME_OFFSET(0x27320);
-		this->servertoclient = (servertoclient_t)   GAME_OFFSET(0x2E830);
-		this->updateworld = (updateworld_t)         GAME_OFFSET(0x25EB0);
-		this->c2sinfo     = (c2sinfo_t)             GAME_OFFSET(0x20720);
-		this->movelocalplayer = (movelocalplayer_t) GAME_OFFSET(0x25770);
-		this->drawcrosshair = (drawcrosshair_t)     GAME_OFFSET(0x8660);
-		this->attackphysics = (attackphysics_t)     GAME_OFFSET(0x63786);
-		this->Updated = true;
+		this->player1   = *(playerent**)                GAME_OFFSET(0x10F4F4);
+		this->players   = (vector<playerent*>*)         GAME_OFFSET(0x10F4F8);
+		this->mvpmatrix = (glmatrixf*)                  GAME_OFFSET(0x101AE8);
+		this->getclient = (getclient_t)                 GAME_OFFSET(0x27320);
+		this->servertoclient = (servertoclient_t)       GAME_OFFSET(0x2E830);
+		this->updateworld = (updateworld_t)             GAME_OFFSET(0x25EB0);
+		this->c2sinfo     = (c2sinfo_t)                 GAME_OFFSET(0x20720);
+		this->movelocalplayer = (movelocalplayer_t)     GAME_OFFSET(0x25770);
+		this->drawcrosshair = (drawcrosshair_t)         GAME_OFFSET(0x8660);
+		this->attackphysics = (attackphysics_t)         GAME_OFFSET(0x63786);
+		this->playerincrosshair = (playerincrosshair_t) GAME_OFFSET(0x607C0);
+		
+		return true;
 	}
 };
 
@@ -88,7 +88,7 @@ public:
 		{
 			check &= this->ent->state == CS_ALIVE;
 			this->headpos3D = this->ent->head;
-			if (this->headpos3D.x == -1.0f || this->headpos3D.y == -1.0f || this->headpos2D.z == -1)
+			if (this->headpos3D.x == -1.0f || this->headpos3D.y == -1.0f || this->headpos2D.z == -1.0f)
 				this->headpos3D = this->ent->o;
 			check &= WorldToScreen(this->ent->newpos, &this->pos2D);
 			check &= WorldToScreen(this->headpos3D, &this->headpos2D);
