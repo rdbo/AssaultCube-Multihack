@@ -82,6 +82,8 @@ float   Base::Data::Settings::SpeedhackValue = 0.5f;
 
 bool    Base::Data::Settings::EnableTriggerbot = false;
 
+bool    Base::Data::Settings::EnableFlyHack = false;
+
 DWORD WINAPI ExitThread(LPVOID lpReserved);
 
 void Base::Init(HMODULE hMod)

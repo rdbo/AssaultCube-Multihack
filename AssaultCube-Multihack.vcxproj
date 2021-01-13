@@ -215,6 +215,7 @@
     <ClCompile Include="src\hacks\Crosshair.cpp" />
     <ClCompile Include="src\hacks\ESP_Box.cpp" />
     <ClCompile Include="src\hacks\ESP_Snaplines.cpp" />
+    <ClCompile Include="src\hacks\FlyHack.cpp" />
     <ClCompile Include="src\hacks\NoRecoil.cpp" />
     <ClCompile Include="src\hacks\Speedhack.cpp" />
     <ClCompile Include="src\hacks\Teleport.cpp" />

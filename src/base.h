@@ -101,6 +101,8 @@ namespace Base
 			extern float   SpeedhackValue;
 
 			extern bool    EnableTriggerbot;
+
+			extern bool    EnableFlyHack;
 		}
 
 		namespace Keys
@@ -119,6 +121,7 @@ namespace Base
 		void NoRecoil();
 		void Speedhack();
 		void Triggerbot();
+		void FlyHack();
 	}
 
 	namespace Hooks

@@ -56,6 +56,8 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 		ImGui::Begin("ImGui Window");
 		ImGui::Text("Test ImGUI Window");
 
+		ImGui::Checkbox("Fly Hack", &Data::Settings::EnableFlyHack);
+
 		ImGui::Checkbox("Triggerbot", &Data::Settings::EnableTriggerbot);
 
 		ImGui::Checkbox("Speedhack", &Data::Settings::EnableSpeedhack);
