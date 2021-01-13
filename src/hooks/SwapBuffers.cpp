@@ -56,6 +56,8 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 		ImGui::Begin("ImGui Window");
 		ImGui::Text("Test ImGUI Window");
 
+		ImGui::Checkbox("No Recoil", &Data::Settings::EnableNoRecoil);
+
 		ImGui::Checkbox("Enable ESP Box", &Data::Settings::EnableEspBox);
 		if (Data::Settings::EnableEspBox)
 		{

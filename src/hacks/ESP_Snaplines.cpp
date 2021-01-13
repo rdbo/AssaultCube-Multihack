@@ -33,7 +33,6 @@ void Base::Hacks::ESP_Snaplines(playerinfo_t* p_info)
 		else
 			LineColor = ImColor(Data::Settings::EspSnaplinesColorEnemy[0], Data::Settings::EspSnaplinesColorEnemy[1], Data::Settings::EspSnaplinesColorEnemy[2], Data::Settings::EspSnaplinesColorEnemy[3]);
 
-		BYTE tm = *(BYTE*)(&((char*)p_info->ent)[0x32C]);
 		Draw->AddLine(LineOrigin, LineEnd, LineColor, LineThickness);
 	}
 }

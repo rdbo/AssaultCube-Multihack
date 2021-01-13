@@ -10,6 +10,8 @@ typedef void(* updateworld_t)(int curtime, int lastmillis);
 typedef void(* c2sinfo_t)(playerent* d);
 typedef void(* movelocalplayer_t)(void);
 typedef void(* drawcrosshair_t)(playerent* p, int n, struct color* c, float size);
+typedef void(* midfunction_t)(void);
+typedef midfunction_t attackphysics_t;
 
 bool WorldToScreen(vec pos3D, vec* pos2D);
 
@@ -27,6 +29,7 @@ public:
 	c2sinfo_t c2sinfo = nullptr;
 	movelocalplayer_t movelocalplayer = nullptr;
 	drawcrosshair_t drawcrosshair = nullptr;
+	attackphysics_t attackphysics = nullptr;
 public:
 	inline AC_Client()
 	{
@@ -56,6 +59,7 @@ public:
 		this->c2sinfo     = (c2sinfo_t)             GAME_OFFSET(0x20720);
 		this->movelocalplayer = (movelocalplayer_t) GAME_OFFSET(0x25770);
 		this->drawcrosshair = (drawcrosshair_t)     GAME_OFFSET(0x8660);
+		this->attackphysics = (attackphysics_t)     GAME_OFFSET(0x63786);
 		this->Updated = true;
 	}
 };
