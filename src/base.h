@@ -70,10 +70,21 @@ namespace Base
 			extern float   CrosshairColor[4];
 
 			extern bool    EnableEspSnaplines;
+			extern bool    EspSnaplinesTeam;
+			extern bool    EspSnaplinesEnemy;
 			extern float   EspSnaplinesThickness;
 			extern float   EspSnaplinesColorTeam[4];
 			extern float   EspSnaplinesColorEnemy[4];
 			extern int     EspSnaplinesPos;
+
+			extern bool    EnableEspBox;
+			extern bool    EspBoxTeam;
+			extern bool    EspBoxEnemy;
+			extern float   EspBoxThickness;
+			extern float   EspBoxColorTeam[4];
+			extern float   EspBoxColorFillTeam[4];
+			extern float   EspBoxColorEnemy[4];
+			extern float   EspBoxColorFillEnemy[4];
 
 			extern bool    TeleportQueued;
 			extern bool    TeleportSaveQueued;
@@ -93,6 +104,7 @@ namespace Base
 		void Teleport();
 		void Crosshair();
 		void ESP_Snaplines(playerinfo_t* p_info);
+		void ESP_Box(playerinfo_t* p_info);
 	}
 
 	namespace Hooks

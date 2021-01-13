@@ -46,6 +46,7 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 
 		playerinfo_t info = playerinfo_t(ent);
 		Hacks::ESP_Snaplines(&info);
+		Hacks::ESP_Box(&info);
 	}
 
 	Hacks::Crosshair();
@@ -55,13 +56,45 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 		ImGui::Begin("ImGui Window");
 		ImGui::Text("Test ImGUI Window");
 
+		ImGui::Checkbox("Enable ESP Box", &Data::Settings::EnableEspBox);
+		if (Data::Settings::EnableEspBox)
+		{
+			ImGui::Checkbox("ESP Box Team", &Data::Settings::EspBoxTeam);
+			ImGui::Checkbox("ESP Box Enemy", &Data::Settings::EspBoxEnemy);
+
+			if (Data::Settings::EspBoxTeam || Data::Settings::EspBoxEnemy)
+			{
+				ImGui::SliderFloat("ESP Box Thickness", &Data::Settings::EspBoxThickness, 0, 100, "%.0f");
+
+				if (Data::Settings::EspBoxTeam)
+				{
+					ImGui::ColorEdit4("ESP Box Color Team", Data::Settings::EspBoxColorTeam);
+					ImGui::ColorEdit4("ESP Box Color Fill Team", Data::Settings::EspBoxColorFillTeam);
+				}
+
+				if (Data::Settings::EspBoxEnemy)
+				{
+					ImGui::ColorEdit4("ESP Box Color Enemy", Data::Settings::EspBoxColorEnemy);
+					ImGui::ColorEdit4("ESP Box Color Fill Enemy", Data::Settings::EspBoxColorFillEnemy);
+				}
+			}
+		}
+
 		ImGui::Checkbox("Enable ESP Snaplines", &Data::Settings::EnableEspSnaplines);
 		if (Data::Settings::EnableEspSnaplines)
 		{
-			const char* SnaplinesPos[] = { "Bottom", "Top" };
-			ImGui::ColorEdit4("ESP Snaplines Color Team", Data::Settings::EspSnaplinesColorTeam);
-			ImGui::ColorEdit4("ESP Snaplines Color Enemy", Data::Settings::EspSnaplinesColorEnemy);
-			ImGui::ListBox("ESP Snaplines Position", &Data::Settings::EspSnaplinesPos, SnaplinesPos, 2);
+			ImGui::Checkbox("ESP Snaplines Team", &Data::Settings::EspSnaplinesTeam);
+			ImGui::Checkbox("ESP Snaplines Enemy", &Data::Settings::EspSnaplinesEnemy);
+			if (Data::Settings::EspSnaplinesTeam || Data::Settings::EspSnaplinesEnemy)
+			{
+				const char* SnaplinesPos[] = { "Bottom", "Top" };
+				ImGui::SliderFloat("ESP Snaplines Thickness", &Data::Settings::EspSnaplinesThickness, 0, 100, "%.0f");
+				if(Data::Settings::EspSnaplinesTeam)
+					ImGui::ColorEdit4("ESP Snaplines Color Team", Data::Settings::EspSnaplinesColorTeam);
+				if(Data::Settings::EspSnaplinesEnemy)
+					ImGui::ColorEdit4("ESP Snaplines Color Enemy", Data::Settings::EspSnaplinesColorEnemy);
+				ImGui::ListBox("ESP Snaplines Position", &Data::Settings::EspSnaplinesPos, SnaplinesPos, 2);
+			}
 		}
 
 		ImGui::SliderFloat3("Teleport Position", Data::Settings::TeleportPosition, -5000, 5000);

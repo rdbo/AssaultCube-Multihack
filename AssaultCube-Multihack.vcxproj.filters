@@ -84,6 +84,9 @@
     <ClCompile Include="src\game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\hacks\ESP_Box.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\pch.h">
@@ -475,7 +478,6 @@
     <Library Include="include\assaultcube\lib\SDL.lib" />
     <Library Include="include\assaultcube\lib\SDL_image.lib" />
     <Library Include="include\assaultcube\lib\vorbis.lib" />
-    <Library Include="include\assaultcube\lib\vorbisfile.lib" />
     <Library Include="include\assaultcube\lib\winmm.lib" />
     <Library Include="include\assaultcube\lib\ws2_32.lib" />
     <Library Include="include\assaultcube\lib\zdll.lib" />

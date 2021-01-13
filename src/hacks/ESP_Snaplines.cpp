@@ -3,7 +3,7 @@
 
 void Base::Hacks::ESP_Snaplines(playerinfo_t* p_info)
 {
-	if (Data::Settings::EnableEspSnaplines && p_info->is_valid)
+	if (Data::Settings::EnableEspSnaplines && p_info && p_info->is_valid && (Data::Settings::EspSnaplinesTeam && p_info->ent->team == Data::game.player1->team || Data::Settings::EspSnaplinesEnemy && p_info->ent->team != Data::game.player1->team))
 	{
 		ImVec2 LineOrigin = {};
 		ImVec2 LineEnd = {};

@@ -213,6 +213,7 @@
     <ClCompile Include="src\base.cpp" />
     <ClCompile Include="src\game.cpp" />
     <ClCompile Include="src\hacks\Crosshair.cpp" />
+    <ClCompile Include="src\hacks\ESP_Box.cpp" />
     <ClCompile Include="src\hacks\ESP_Snaplines.cpp" />
     <ClCompile Include="src\hacks\Teleport.cpp" />
     <ClCompile Include="src\hooks\c2sinfo.cpp" />

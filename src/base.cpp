@@ -38,9 +38,9 @@ AC_Client         Base::Data::game;
 
 bool    Base::Data::Settings::EnableCrosshair = false;
 int     Base::Data::Settings::CrosshairType = 0;
-float   Base::Data::Settings::CrosshairLength = 10;
-float   Base::Data::Settings::CrosshairThickness = 3;
-float   Base::Data::Settings::CrosshairGap = 10;
+float   Base::Data::Settings::CrosshairLength = 10.0f;
+float   Base::Data::Settings::CrosshairThickness = 3.0f;
+float   Base::Data::Settings::CrosshairGap = 10.0f;
 bool    Base::Data::Settings::CrosshairTop = true;
 bool    Base::Data::Settings::CrosshairLeft = true;
 bool    Base::Data::Settings::CrosshairBottom = true;
@@ -50,15 +50,26 @@ bool    Base::Data::Settings::CrosshairDotFilled = true;
 float   Base::Data::Settings::CrosshairColor[4] = { 1.0f, 0.0f, 0.0f, 1.0f };
 
 bool    Base::Data::Settings::EnableEspSnaplines = false;
-float   Base::Data::Settings::EspSnaplinesThickness = 2;
+bool    Base::Data::Settings::EspSnaplinesTeam  = true;
+bool    Base::Data::Settings::EspSnaplinesEnemy = true;
+float   Base::Data::Settings::EspSnaplinesThickness = 2.0f;
 float   Base::Data::Settings::EspSnaplinesColorTeam[4]  = { 0.0f, 0.5f, 1.0f, 1.0f };
 float   Base::Data::Settings::EspSnaplinesColorEnemy[4] = { 1.0f, 0.5f, 0.0f, 1.0f };
 int     Base::Data::Settings::EspSnaplinesPos = 0;
 
+bool    Base::Data::Settings::EnableEspBox = false;
+bool    Base::Data::Settings::EspBoxTeam = true;
+bool    Base::Data::Settings::EspBoxEnemy = true;
+float   Base::Data::Settings::EspBoxThickness = 2.0f;
+float   Base::Data::Settings::EspBoxColorTeam[4]  = { 0.0f, 1.0f, 0.5f, 1.0f };
+float   Base::Data::Settings::EspBoxColorFillTeam[4] = { 0.0f, 1.0f, 0.5f, 0.5f };
+float   Base::Data::Settings::EspBoxColorEnemy[4] = { 1.0f, 1.0f, 0.0f, 1.0f };
+float   Base::Data::Settings::EspBoxColorFillEnemy[4] = { 1.0f, 1.0f, 0.0f, 0.5f };
+
 bool    Base::Data::Settings::TeleportQueued = false;
 bool    Base::Data::Settings::TeleportSaveQueued = false;
-float   Base::Data::Settings::TeleportPosition[3];
-bool    Base::Data::Settings::TeleportForce[3];
+float   Base::Data::Settings::TeleportPosition[3] = { 0.0f, 0.0f, 0.0f };
+bool    Base::Data::Settings::TeleportForce[3] = { false, false, false };
 
 DWORD WINAPI ExitThread(LPVOID lpReserved);
 
