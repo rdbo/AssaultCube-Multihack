@@ -216,6 +216,7 @@
     <ClCompile Include="src\hacks\ESP_Box.cpp" />
     <ClCompile Include="src\hacks\ESP_Snaplines.cpp" />
     <ClCompile Include="src\hacks\NoRecoil.cpp" />
+    <ClCompile Include="src\hacks\Speedhack.cpp" />
     <ClCompile Include="src\hacks\Teleport.cpp" />
     <ClCompile Include="src\hooks\attackphysics.cpp" />
     <ClCompile Include="src\hooks\c2sinfo.cpp" />

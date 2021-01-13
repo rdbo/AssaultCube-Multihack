@@ -96,6 +96,9 @@ namespace Base
 			extern bool    TeleportForce[3];
 
 			extern bool    EnableNoRecoil;
+
+			extern bool    EnableSpeedhack;
+			extern float   SpeedhackValue;
 		}
 
 		namespace Keys
@@ -112,6 +115,7 @@ namespace Base
 		void ESP_Snaplines(playerinfo_t* p_info);
 		void ESP_Box(playerinfo_t* p_info);
 		void NoRecoil();
+		void Speedhack();
 	}
 
 	namespace Hooks

@@ -56,6 +56,10 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 		ImGui::Begin("ImGui Window");
 		ImGui::Text("Test ImGUI Window");
 
+		ImGui::Checkbox("Speedhack", &Data::Settings::EnableSpeedhack);
+		if (Data::Settings::EnableSpeedhack)
+			ImGui::SliderFloat("Speedhack Value", &Data::Settings::SpeedhackValue, 0.1f, 1.0f, "%.1f");
+
 		ImGui::Checkbox("No Recoil", &Data::Settings::EnableNoRecoil);
 
 		ImGui::Checkbox("Enable ESP Box", &Data::Settings::EnableEspBox);
