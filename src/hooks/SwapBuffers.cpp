@@ -39,12 +39,30 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 
+	for (int i = 0; Data::game.players && Data::game.players->inrange(i); i++)
+	{
+		playerent* ent = Data::game.players->operator[](i);
+		if (!ent) continue;
+
+		playerinfo_t info = playerinfo_t(ent);
+		Hacks::ESP_Snaplines(&info);
+	}
+
 	Hacks::Crosshair();
 
 	if (Data::ShowMenu)
 	{
 		ImGui::Begin("ImGui Window");
 		ImGui::Text("Test ImGUI Window");
+
+		ImGui::Checkbox("Enable ESP Snaplines", &Data::Settings::EnableEspSnaplines);
+		if (Data::Settings::EnableEspSnaplines)
+		{
+			const char* SnaplinesPos[] = { "Bottom", "Top" };
+			ImGui::ColorEdit4("ESP Snaplines Color Team", Data::Settings::EspSnaplinesColorTeam);
+			ImGui::ColorEdit4("ESP Snaplines Color Enemy", Data::Settings::EspSnaplinesColorEnemy);
+			ImGui::ListBox("ESP Snaplines Position", &Data::Settings::EspSnaplinesPos, SnaplinesPos, 2);
+		}
 
 		ImGui::SliderFloat3("Teleport Position", Data::Settings::TeleportPosition, -5000, 5000);
 		ImGui::Checkbox("Force Teleport X", &Data::Settings::TeleportForce[0]);

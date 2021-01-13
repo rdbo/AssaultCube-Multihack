@@ -5,23 +5,25 @@
 // Based on work by Cristian Cuturicu
 // http://www.wotsit.org/download.asp?f=jpeg&sc=335837440
 
-typedef uint8_t BYTE;
-typedef int8_t SBYTE;
-typedef int16_t SWORD;
-typedef uint16_t WORD;
-typedef int32_t SDWORD;
+typedef unsigned char BYTE;
+typedef signed char SBYTE;
+typedef signed short int SWORD;
+typedef unsigned short int WORD;
+typedef unsigned long int DWORD;
+typedef signed long int SDWORD;
 
+typedef struct { BYTE B,G,R; } colorRGB;
 typedef struct { BYTE length; WORD value;} bitstring;
 
 #define  Y(R,G,B) ((BYTE)( (YRtab[(R)]+YGtab[(G)]+YBtab[(B)])>>16 ) - 128);
 #define Cb(R,G,B) ((BYTE)( (CbRtab[(R)]+CbGtab[(G)]+CbBtab[(B)])>>16 ));
 #define Cr(R,G,B) ((BYTE)( (CrRtab[(R)]+CrGtab[(G)]+CrBtab[(B)])>>16 ));
 
-#define writebyte(b) fp_jpeg_stream->putchar(b);
+#define writebyte(b) fputc((b),fp_jpeg_stream);
 #define writeword(w) writebyte((w)/256);writebyte((w)%256);
 
 struct APP0infotype
-{
+{   
     WORD marker;
     WORD length;
     BYTE JFIFsignature[5];
@@ -51,22 +53,6 @@ struct APP0infotype
     };
 };
 
-struct APP1infotype
-{
-    WORD marker;
-    WORD length;
-    const char *sig1, *sig2;
-    APP1infotype()
-    {
-        marker = 0xFFE1;
-        length = 46;
-        sig1 = "Exif\0\0MM";
-        sig2 = "\0\x2a\0\0\0\10\0\1\1\x31\0\2\0\0\0\14"
-               "\0\0\0\x1a\0\0\0\0\101\x73\x73\141\165"
-               "\154\164\103\165\142\145";
-    };
-};
-
 struct  SOF0infotype
 {
     WORD marker;
@@ -84,7 +70,7 @@ struct  SOF0infotype
     BYTE IdCr;
     BYTE HVCr;
     BYTE QTCr;
-
+    
     SOF0infotype()
     {
          marker = 0xFFC0;
@@ -112,7 +98,7 @@ struct DQTinfotype
     BYTE QTYinfo;
     BYTE Ytable[64];
     BYTE QTCbinfo;
-    BYTE Cbtable[64];
+    BYTE Cbtable[64];        
     DQTinfotype()
     {
         marker = 0xFFDB;
@@ -139,7 +125,7 @@ struct DHTinfotype
     BYTE CbDC_values[12];
     BYTE HTCbACinfo;
     BYTE CbAC_nrcodes[16];
-    BYTE CbAC_values[162];
+    BYTE CbAC_values[162];            
     DHTinfotype()
     {
         marker = 0xFFC4;
@@ -170,7 +156,7 @@ struct SOSinfotype
     BYTE HTCb;
     BYTE IdCr;
     BYTE HTCr;
-    BYTE Ss,Se,Bf;
+    BYTE Ss,Se,Bf;            
     SOSinfotype()
     {
         marker = 0xFFDA;
@@ -187,7 +173,7 @@ struct SOSinfotype
         Bf = 0;
     }
 };
-
+       
 class jpegenc
 {
     private:
@@ -203,19 +189,17 @@ class jpegenc
         static BYTE std_ac_chrominance_nrcodes[];
         static BYTE std_ac_chrominance_values[];
         static WORD mask[];
-
+        
         APP0infotype APP0info;
-        APP1infotype APP1info;
         SOF0infotype SOF0info;
         DQTinfotype DQTinfo;
         SOSinfotype SOSinfo;
         DHTinfotype DHTinfo;
-
+       
         BYTE bytenew;
         SBYTE bytepos;
 
         void write_APP0info(void);
-        void write_APP1info(void);
         void write_SOF0info(void);
         void write_DQTinfo(void);
         void set_quant_table(BYTE *basic_table, BYTE scale_factor, BYTE *newtable);
@@ -223,21 +207,22 @@ class jpegenc
         void write_DHTinfo(void);
         void set_DHTinfo(void);
         void write_SOSinfo(void);
-        void write_comment(const char *comment);
+        void write_comment(BYTE *comment);
         void writebits(bitstring bs);
         void compute_Huffman_table(BYTE *nrcodes, BYTE *std_table, bitstring *HT);
         void init_Huffman_tables(void);
-        int set_numbers_category_and_bitcode();
+        void exitmessage(const char *error_message);
+        void set_numbers_category_and_bitcode();
         void precalculate_YCbCr_tables();
         void prepare_quant_tables();
         void fdct_and_quantization(SBYTE *data, float *fdtbl, SWORD *outdata);
-
-        void process_DU(SBYTE *ComponentDU, float *fdtbl,SWORD *DC, bitstring *HTDC, bitstring *HTAC);
+        
+        void process_DU(SBYTE *ComponentDU, float *fdtbl,SWORD *DC, bitstring *HTDC, bitstring *HTAC);        
         void load_data_units_from_RGB_buffer(WORD xpos, WORD ypos);
-
+        
         void main_encoder(void);
         void init_all(int qfactor);
-
+        
     public:
         jpegenc()
         {
@@ -267,13 +252,12 @@ class jpegenc
         SWORD DU_DCT[64];
         SWORD DU[64];
 
-        BYTE *RGB_buffer;       //image to be encoded
+        colorRGB *RGB_buffer;   //image to be encoded
         WORD width, height;     //image dimensions divisible by 8
-        int pitch;
 
-        stream *fp_jpeg_stream;
-
-        int encode(const char *filename, SDL_Surface *image, int jpegquality, const char *comment);
+        FILE *fp_jpeg_stream;
+        
+        int encode(const char *filename, colorRGB *pixels, int iw, int ih, int jpegquality);
 };
 
 BYTE jpegenc::zigzag[64] = {
@@ -365,6 +349,11 @@ BYTE jpegenc::std_ac_chrominance_values[162] = {
 
 WORD jpegenc::mask[16] = {1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768};
 
+
+//******************************************************************************
+//******************************************************************************
+// Toca: TODO: the following goes into jpegenc.cpp or some other .cpp file
+
 void jpegenc::write_APP0info() //Nothing to overwrite for APP0info
 {
     writeword(APP0info.marker);
@@ -381,14 +370,6 @@ void jpegenc::write_APP0info() //Nothing to overwrite for APP0info
     writeword(APP0info.ydensity);
     writebyte(APP0info.thumbnwidth);
     writebyte(APP0info.thumbnheight);
-}
-
-void jpegenc::write_APP1info()
-{
-    writeword(APP1info.marker);
-    writeword(APP1info.length);
-    loopi(8) writebyte(APP1info.sig1[i]);
-    loopi(APP1info.length - 10) writebyte(APP1info.sig2[i]);
 }
 
 void jpegenc::write_SOF0info()
@@ -427,11 +408,11 @@ void jpegenc::set_quant_table(BYTE *basic_table, BYTE scale_factor, BYTE *newtab
 {
     BYTE i;
     long temp;
-    for (i=0; i<64; i++)
+    for (i=0; i<64; i++) 
     {
         temp = ((long) basic_table[i] * scale_factor + 50L) / 100L;
         if (temp <= 0L) temp = 1L;
-        if (temp > 255L) temp = 255L;
+        if (temp > 255L) temp = 255L; 
         newtable[zigzag[i]] = (BYTE) temp;
     }
 }
@@ -521,13 +502,13 @@ void jpegenc::write_SOSinfo() //Nothing to overwrite for SOSinfo
     writebyte(SOSinfo.Bf);
 }
 
-void jpegenc::write_comment(const char *comment)
+void jpegenc::write_comment(BYTE *comment)
 {
     WORD i, length;
     writeword(0xFFFE);
-    length = (WORD) strlen((const char *)comment);
+    length = strlen((const char *)comment);
     writeword(length + 2);
-    for (i=0; i<length; i++)
+    for (i=0; i<length; i++) 
         writebyte(comment[i]);
 }
 
@@ -539,13 +520,13 @@ void jpegenc::writebits(bitstring bs) // A portable version; it should be done i
     posval = bs.length - 1;
     while (posval >= 0)
     {
-        if (value & mask[posval])
+        if (value & mask[posval]) 
             bytenew |= mask[bytepos];
         posval--;
         bytepos--;
-        if (bytepos < 0)
-        {
-            if (bytenew == 0xFF)
+        if (bytepos < 0) 
+        { 
+            if (bytenew == 0xFF) 
             {
                 writebyte(0xFF);
                 writebyte(0);
@@ -563,11 +544,11 @@ void jpegenc::compute_Huffman_table(BYTE *nrcodes, BYTE *std_table, bitstring *H
     BYTE k,j;
     BYTE pos_in_table;
     WORD codevalue;
-    codevalue = 0;
+    codevalue = 0; 
     pos_in_table = 0;
     for (k=1; k<=16; k++)
     {
-        for (j=1; j<=nrcodes[k]; j++)
+        for (j=1; j<=nrcodes[k]; j++) 
         {
             HT[std_table[pos_in_table]].value = codevalue;
             HT[std_table[pos_in_table]].length = k;
@@ -586,29 +567,35 @@ void jpegenc::init_Huffman_tables()
     compute_Huffman_table(std_ac_chrominance_nrcodes, std_ac_chrominance_values, CbAC_HT);
 }
 
-int jpegenc::set_numbers_category_and_bitcode()
+void jpegenc::exitmessage(const char *error_message)
+{
+    printf("%s\n",error_message);
+    exit(EXIT_FAILURE);
+}
+
+void jpegenc::set_numbers_category_and_bitcode()
 {
     SDWORD nr;
     SDWORD nrlower, nrupper;
     BYTE cat;
     category_alloc = (BYTE *)malloc(65535*sizeof(BYTE));
-    if (category_alloc == NULL) return -1;
-    category = category_alloc + 32767;
+    if (category_alloc == NULL) exitmessage("Not enough memory.");
+    category = category_alloc + 32767; 
     bitcode_alloc=(bitstring *)malloc(65535*sizeof(bitstring));
-    if (bitcode_alloc==NULL) { free(category_alloc); return -1; }
+    if (bitcode_alloc==NULL) exitmessage("Not enough memory.");
     bitcode = bitcode_alloc + 32767;
     nrlower = 1;
     nrupper = 2;
-    for (cat=1; cat<=15; cat++)
+    for (cat=1; cat<=15; cat++) 
     {
         for (nr=nrlower; nr<nrupper; nr++)
-        {
+        { 
             category[nr] = cat;
             bitcode[nr].length = cat;
             bitcode[nr].value = (WORD)nr;
         }
         for (nr=-(nrupper-1); nr<=-nrlower; nr++)
-        {
+        { 
             category[nr] = cat;
             bitcode[nr].length = cat;
             bitcode[nr].value = (WORD)(nrupper-1+nr);
@@ -616,25 +603,24 @@ int jpegenc::set_numbers_category_and_bitcode()
         nrlower <<= 1;
         nrupper <<= 1;
     }
-    return 0;
 }
 
 void jpegenc::precalculate_YCbCr_tables()
 {
     WORD R,G,B;
-    for (R=0; R<256; R++)
+    for (R=0; R<256; R++) 
     {
         YRtab[R] = (SDWORD)(65536*0.299+0.5)*R;
         CbRtab[R] = (SDWORD)(65536*-0.16874+0.5)*R;
         CrRtab[R] = (SDWORD)(32768)*R;
     }
-    for (G=0; G<256; G++)
+    for (G=0; G<256; G++) 
     {
         YGtab[G] = (SDWORD)(65536*0.587+0.5)*G;
         CbGtab[G] = (SDWORD)(65536*-0.33126+0.5)*G;
         CrGtab[G] = (SDWORD)(65536*-0.41869+0.5)*G;
     }
-    for (B=0; B<256; B++)
+    for (B=0; B<256; B++) 
     {
         YBtab[B] = (SDWORD)(65536*0.114+0.5)*B;
         CbBtab[B] = (SDWORD)(32768)*B;
@@ -674,7 +660,7 @@ void jpegenc::fdct_and_quantization(SBYTE *data, float *fdtbl, SWORD *outdata)
     BYTE i;
     for (i=0; i<64; i++) datafloat[i] = data[i];
     dataptr = datafloat;
-    for (ctr = 7; ctr >= 0; ctr--)
+    for (ctr = 7; ctr >= 0; ctr--) 
     {
         tmp0 = dataptr[0] + dataptr[7];
         tmp7 = dataptr[0] - dataptr[7];
@@ -709,7 +695,7 @@ void jpegenc::fdct_and_quantization(SBYTE *data, float *fdtbl, SWORD *outdata)
         dataptr += 8;
     }
     dataptr = datafloat;
-    for (ctr = 7; ctr >= 0; ctr--)
+    for (ctr = 7; ctr >= 0; ctr--) 
     {
         tmp0 = dataptr[0] + dataptr[56];
         tmp7 = dataptr[0] - dataptr[56];
@@ -743,7 +729,7 @@ void jpegenc::fdct_and_quantization(SBYTE *data, float *fdtbl, SWORD *outdata)
         dataptr[56] = z11 - z4;
         dataptr++;
     }
-    for (i = 0; i < 64; i++)
+    for (i = 0; i < 64; i++) 
     {
         temp = datafloat[i] * fdtbl[i];
         outdata[i] = (SWORD) ((SWORD)(temp + 16384.5) - 16384);
@@ -765,7 +751,7 @@ void jpegenc::process_DU(SBYTE *ComponentDU,float *fdtbl,SWORD *DC, bitstring *H
     Diff = DU[0] - *DC;
     *DC = DU[0];
     if (Diff == 0) writebits(HTDC[0]);
-    else
+    else 
     {
         writebits(HTDC[category[Diff]]);
         writebits(bitcode[Diff]);
@@ -777,7 +763,7 @@ void jpegenc::process_DU(SBYTE *ComponentDU,float *fdtbl,SWORD *DC, bitstring *H
         startpos = i;
         for (; (DU[i]==0) && (i<=end0pos); i++) ;
         nrzeroes = i - startpos;
-        if (nrzeroes >= 16)
+        if (nrzeroes >= 16) 
         {
             for (nrmarker=1; nrmarker<=nrzeroes/16; nrmarker++) writebits(M16zeroes);
             nrzeroes = nrzeroes%16;
@@ -793,26 +779,23 @@ void jpegenc::load_data_units_from_RGB_buffer(WORD xpos, WORD ypos)
 {
     BYTE x, y;
     BYTE pos = 0;
-    BYTE R, G, B, *location0 = RGB_buffer + (ypos * pitch + xpos * 3);
-    WORD width8 = width - xpos, height8 = height - ypos;
+    DWORD location;
+    BYTE R, G, B;
+    location = ypos * width + xpos;
     for (y=0; y<8; y++)
     {
-        BYTE *location = location0;
         for (x=0; x<8; x++)
         {
-            if(x < width8 && y < height8)
-            {
-                R = *location++;
-                G = *location++;
-                B = *location++;
-            }
-            else R = G = B = 0;
+            R = RGB_buffer[location].R;
+            G = RGB_buffer[location].G;
+            B = RGB_buffer[location].B;
             YDU[pos] = Y(R,G,B);
             CbDU[pos] = Cb(R,G,B);
             CrDU[pos] = Cr(R,G,B);
+            location++;
             pos++;
         }
-        location0 += pitch;
+        location += width - 8;
     }
 }
 
@@ -832,16 +815,18 @@ void jpegenc::main_encoder()
     }
 }
 
-int jpegenc::encode(const char *filename, SDL_Surface *image, int jpegquality, const char *comment)
+int jpegenc::encode(const char *filename, colorRGB *pixels, int iw, int ih, int jpegquality)
 {
-    RGB_buffer = (BYTE *)image->pixels;
-    width =  image->w;
-    height = image->h;
-    pitch = image->pitch;
+    RGB_buffer = pixels;
+    width =  iw;
+    height = ih;    
 
-    fp_jpeg_stream = openfile(filename,"wb");
+    fp_jpeg_stream = fopen(filename,"wb");
     if(!fp_jpeg_stream)
     {
+        //free(RGB_buffer);        
+        free(category_alloc);
+        free(bitcode_alloc);
         return -1;
     }
 
@@ -850,21 +835,16 @@ int jpegenc::encode(const char *filename, SDL_Surface *image, int jpegquality, c
     set_DQTinfo(jpegquality);
     set_DHTinfo();
     init_Huffman_tables();
-    if(set_numbers_category_and_bitcode() < 0)
-    {
-        delete fp_jpeg_stream;
-        return -2;
-    }
+    set_numbers_category_and_bitcode();
     precalculate_YCbCr_tables();
     prepare_quant_tables();
-
+    
     SOF0info.width = width;
     SOF0info.height = height;
 
     writeword(0xFFD8);
     write_APP0info();
-    write_APP1info();
-    if(comment) write_comment(comment);
+    // write_comment("Cris made this JPEG with his own encoder");
     write_DQTinfo();
     write_SOF0info();
     write_DHTinfo();
@@ -875,7 +855,7 @@ int jpegenc::encode(const char *filename, SDL_Surface *image, int jpegquality, c
 
     main_encoder();
 
-    if (bytepos >= 0)
+    if (bytepos >= 0) 
     {
         fillbits.length = bytepos + 1;
         fillbits.value = (1<<(bytepos+1)) - 1;
@@ -883,9 +863,10 @@ int jpegenc::encode(const char *filename, SDL_Surface *image, int jpegquality, c
     }
     writeword(0xFFD9);
 
+    //free(RGB_buffer);
     free(category_alloc);
     free(bitcode_alloc);
-    delete fp_jpeg_stream;
+    fclose(fp_jpeg_stream);
     return 0;
 };
 

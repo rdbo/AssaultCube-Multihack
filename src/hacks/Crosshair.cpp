@@ -150,6 +150,10 @@ void Base::Hacks::Crosshair()
 			Draw->AddCircle(WindowCenter, LineLength, LineColor, 0, LineThickness);
 
 			break;
+		default: //Unknown crosshair
+			Data::Settings::CrosshairType = 0;
+			return;
+			//break;
 		}
 	}
 }

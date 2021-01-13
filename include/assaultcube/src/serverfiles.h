@@ -2,514 +2,11 @@
 
 // map management
 
-#define SERVERMAXMAPFACTOR 10       // 10 is huge... if you're running low on RAM, consider 9 as maximum (don't go higher than 10, or players will name their ugly dog after you)
-
-#define SERVERMAP_PATH_BUILTIN  "packages" PATHDIVS "maps" PATHDIVS "official" PATHDIVS
-#define SERVERMAP_PATH          "packages" PATHDIVS "maps" PATHDIVS "servermaps" PATHDIVS
-#define SERVERMAP_PATH_INCOMING "packages" PATHDIVS "maps" PATHDIVS "servermaps" PATHDIVS "incoming" PATHDIVS
-
-const char *servermappath_off = SERVERMAP_PATH_BUILTIN;
-const char *servermappath_serv = SERVERMAP_PATH;
-const char *servermappath_incom = SERVERMAP_PATH_INCOMING;
+#define SERVERMAP_PATH          "packages/maps/servermaps/"
+#define SERVERMAP_PATH_BUILTIN  "packages/maps/official/"
+#define SERVERMAP_PATH_INCOMING "packages/maps/servermaps/incoming/"
 
 #define GZBUFSIZE ((MAXCFGFILESIZE * 11) / 10)
-#define FLOORPLANBUFSIZE  (sizeof(struct servsqr) << ((SERVERMAXMAPFACTOR) * 2))              // that's 4MB for size 10 maps (or 1 MB for size 9 maps)
-
-stream *readmaplog = NULL;   // the readmaps thread always logs directly to file
-
-struct servermap  // in-memory version of a map file on a server
-{
-    const char *fname, *fpath;      // map name and path (fname has to be first member of this struct! hardcoded!)
-    uchar *cgzraw, *cfgrawgz;       // direct copies of the cgz and cfg files (cfg is already gzipped)
-    uchar cgzhash[TIGERHASHSIZE], cfghash[TIGERHASHSIZE];
-    int cgzlen, cfglen, cfggzlen;   // file lengths and cfg-gz length
-
-    int version, headersize, sfactor, numents, maprevision, waterlevel;  // from map header
-
-    uchar *layoutgz;                // gzipped precompiled floorplan
-    int layoutlen, layoutgzlen;
-
-    mapdim_s mapdims;
-    entitystats_s entstats;
-    mapareastats_s areastats;
-
-    int x1, x2, y1, y2, zmin, zmax; // bounding box for player-reachable areas
-
-    uchar *enttypes;                //             table of entity types
-    short *entpos_x, *entpos_y;
-
-    bool isok;                      // definitive flag!
-    #ifdef _DEBUG
-    char maptitle[129];
-    #endif
-
-    servermap(const char *mname, const char *mpath) { memset(&fname, 0, sizeof(struct servermap)); fname = newstring(mname); fpath = mpath; }
-    ~servermap() { delstring(fname); DELETEA(cgzraw); DELETEA(cfgrawgz); DELETEA(enttypes); DELETEA(entpos_x); DELETEA(entpos_y); DELETEA(layoutgz); }
-
-    bool isro() { return fpath == servermappath_off || fpath == servermappath_serv; }
-    bool isofficial() { return fpath == servermappath_off; }
-
-    int getmemusage() { return sizeof(struct servermap) + cgzlen + cfggzlen + layoutgzlen + numents * (sizeof(uchar) + sizeof(short) * 3); }
-
-    void load(void)  // load map into memory and extract everything important about it  (assumes struct to be zeroed: can only be called once)
-    {
-        static uchar *staticbuffer = NULL;
-        if(!staticbuffer) staticbuffer = new uchar[FLOORPLANBUFSIZE];     // this buffer gets reused for every map load several times (also: because of this, load() is not thread safe)
-
-        const char *err = NULL;
-        stream *f = NULL;
-        int restofhead;
-
-        // load map files, prepare sendmap buffer
-        defformatstring(filename)("%s%s.cfg", fpath, fname);
-        path(filename);
-        uchar *cfgraw = (uchar *)loadfile(filename, &cfglen);
-        if(cfgraw)
-        {
-            tigerhash(cfghash, cfgraw, cfglen);
-            loopk(cfglen) if(cfgraw[k] > 0x7f || (cfgraw[k] < 0x20 && !isspace(cfgraw[k]))) err = "illegal chars in cfg file";
-        }
-        formatstring(filename)("%s%s.cgz", fpath, fname);
-        path(filename);
-        cgzraw = (uchar *)loadfile(filename, &cgzlen);
-        if(cgzraw) tigerhash(cgzhash, cgzraw, cgzlen);
-        if(!cgzraw) err = "loading cgz failed";
-        else if(cfglen > MAXCFGFILESIZE) err = "cfg file too big";
-        else if(cgzlen >= MAXMAPSENDSIZE) err = "cgz file too big";
-        else if(cfgraw)
-        {
-            uLongf gzbufsize = GZBUFSIZE;
-            ASSERT(GZBUFSIZE < FLOORPLANBUFSIZE);
-            if(compress2(staticbuffer, &gzbufsize, cfgraw, cfglen, 9) != Z_OK) gzbufsize = 0;
-            cfggzlen = (int) gzbufsize;
-            if(cgzlen + cfggzlen < MAXMAPSENDSIZE)
-            { // map is small enough to be sent
-                cfgrawgz = new uchar[cfggzlen];
-                memcpy(cfgrawgz, staticbuffer, cfggzlen);
-            }
-            else err = "cgz + cfg.gz too big to send";
-        }
-        DELETEA(cfgraw);
-        if(err) goto loadfailed;
-
-        // extract entity data and header info; compile map statistics; create floorplan
-        {
-            const int sizeof_header = sizeof(header), sizeof_baseheader = sizeof(header) - sizeof(int) * 16;
-            f = opengzfile(filename, "rb");
-            header *h = (header *)staticbuffer;
-            if(!f) err = "can't open map file";
-            else if(f->read(h, sizeof_baseheader) != sizeof_baseheader || (strncmp(h->head, "CUBE", 4) && strncmp(h->head, "ACMP",4))) err = "bad map file";
-            if(err) goto loadfailed;
-
-            lilswap(&h->version, 4); // version, headersize, sfactor, numents
-            version = h->version;
-            headersize = fixmapheadersize(h->version, h->headersize);
-            sfactor = h->sfactor;
-            numents = h->numents;
-            #ifdef _DEBUG
-            memcpy(maptitle, h->maptitle, 128);
-            #endif
-            restofhead = min(headersize, sizeof_header) - sizeof_baseheader;
-            ASSERT(SERVERMAXMAPFACTOR <= LARGEST_FACTOR);
-            if(version > MAPVERSION || numents > MAXENTITIES || sfactor < SMALLEST_FACTOR || sfactor > SERVERMAXMAPFACTOR ||
-                f->read(&h->waterlevel, restofhead) != restofhead) err = "incompatible map file";
-            else
-            {
-                lilswap(&h->maprevision, 4);  // maprevision, ambient, flags, timestamp
-                maprevision = h->maprevision;
-                lilswap(&h->waterlevel, 1);
-                waterlevel = version >= 4 ? h->waterlevel : -100000;
-                restofhead = clamp(headersize - sizeof_header, 0, MAXHEADEREXTRA);
-                if(f->read(staticbuffer, restofhead) != restofhead) err = "map file truncated";
-            }
-        }
-        if(err) goto loadfailed;
-
-        // parse header extras
-        {
-            ucharbuf p(staticbuffer, restofhead);
-            while(1)
-            {
-                int len = getuint(p), flags = getuint(p), type = flags & HX_TYPEMASK;
-                if(p.overread() || len > p.remaining()) break;
-                ucharbuf q(p.subbuf(len).buf, len);
-                switch(type)
-                {
-                    case HX_EDITUNDO:
-                        break;
-
-                    case HX_CONFIG:
-                        break;
-
-                    case HX_MAPINFO:
-                    case HX_MODEINFO:       // for new maprot...
-                    case HX_ARTIST:
-                    default:
-                        break;
-                }
-            }
-        }
-        if(err) goto loadfailed;
-
-        // read and convert map entities
-        {
-            bool oldentityformat = version < 10; // version < 10 have only 4 attributes and no scaling
-            ASSERT(MAXENTITIES * sizeof(persistent_entity) < FLOORPLANBUFSIZE);
-            persistent_entity *es = (persistent_entity *) staticbuffer;
-            loopi(numents)
-            {
-                persistent_entity &e = es[i];
-                f->read(&e, oldentityformat ? 12 : sizeof(persistent_entity));
-                lilswap((short *)&e, 4);
-                if(oldentityformat) e.attr5 = e.attr6 = e.attr7 = 0;
-                else lilswap(&e.attr5, 1);
-                #if 0
-                if(e.type == LIGHT && e.attr1 >= 0)
-                {
-                    if(!e.attr2) e.attr2 = 255;
-                    if(e.attr1 > 32) e.attr1 = 32;
-                }
-                #endif
-                transformoldentitytypes(version, e.type);
-                if(oldentityformat && e.type < MAXENTTYPES)
-                {
-                    if(e.type == CTF_FLAG || e.type == MAPMODEL) e.attr1 = e.attr1 + 7 - (e.attr1 + 7) % 15;  // round the angle to the nearest 15-degree-step, like old versions did during rendering
-                    if(e.type == LIGHT && e.attr1 < 0) e.attr1 = 0; // negative lights had no meaning before version 10
-                    int ov, ss;
-                    #define SCALEATTR(x) \
-                    if((ss = abs(entwraparound[e.type][x - 1] / entscale[e.type][x - 1]))) e.attr##x = (int(e.attr##x) % ss + ss) % ss; \
-                    e.attr##x = ov = e.attr##x * entscale[e.type][x - 1]; \
-                    if(ov != e.attr##x) err = "overflow during conversion of entity attribute";
-                    SCALEATTR(1);
-                    SCALEATTR(2);
-                    SCALEATTR(3);
-                    SCALEATTR(4);
-                    #undef SCALEATTR
-                }
-            }
-        }
-        if(err) goto loadfailed;
-
-        // convert and count entities for server use
-        {
-            persistent_entity *es = (persistent_entity *) staticbuffer;
-            calcentitystats(entstats, es, numents);
-            enttypes = new uchar[numents];  // FIXME: cut this down to useful entities
-            entpos_x = new short[numents];
-            entpos_y = new short[numents];
-            loopi(numents)
-            {
-                persistent_entity &e = es[i];
-                enttypes[i] = e.type >= MAXENTTYPES ? NOTUSED : e.type;
-                entpos_x[i] = e.x;
-                entpos_y[i] = e.y;
-            }
-        }
-        if(err) goto loadfailed;
-
-        // read full map geometry (without textures)
-        {
-            layoutlen = 1 << (sfactor * 2);
-            servsqr *ss = (servsqr *)staticbuffer, *tt = NULL, *ee = ss + layoutlen;
-            while(ss < ee && !err)
-            {
-                int type = f->getchar(), n;
-                if(!tt && type > MAXTYPE) err = "map file broken";
-                else switch(type)
-                {
-                    case -1:
-                        err = "while reading map: unexpected eof";
-                        break;
-
-                    case 255:
-                        n = f->getchar();
-                        loopi(n) memcpy(ss++, tt, sizeof(servsqr));
-                        ss--;
-                        break;
-
-                    case 254: // only in MAPVERSION<=2
-                        memcpy(ss, tt, sizeof(servsqr));
-                        f->getchar(); f->getchar();
-                        break;
-
-                    case SOLID:
-                        ss->type = SOLID;
-                        f->getchar();
-                        ss->vdelta = f->getchar();
-                        if(version <= 2) { f->getchar(); f->getchar(); }
-                        break;
-
-                    case 253: // SOLID with all textures during editing (undo)
-                        err = "unoptimised map file not allowed on server";
-                        break;
-
-                    default:
-                        if(type < 0 || type >= MAXTYPE) err = "illegal type";
-                        else
-                        {
-                            ASSERT((int)MAXTYPE < (int)TAGTRIGGERMASK);
-                            ss->type = type;
-                            ss->floor = f->getchar();
-                            ss->ceil = f->getchar();
-                            if(ss->floor >= ss->ceil) ss->floor = ss->ceil - 1;  // for pre 12_13
-                            f->getchar(); f->getchar(); f->getchar();
-                            if(version <= 2) { f->getchar(); f->getchar(); }
-                            ss->vdelta = f->getchar();
-                            if(version >= 2) f->getchar();
-                            if(version >= 5) ss->type |= TAGANYCLIP & f->getchar();
-                        }
-                        break;
-                }
-                tt = ss;
-                ss++;
-            }
-        }
-        if(err) goto loadfailed;
-
-        // collect geometry stats (exactly the same as calculated by the client)
-        {
-            if(calcmapdims(mapdims, (servsqr *)staticbuffer, 1 << sfactor) < 0) err = "world geometry error";
-        }
-        if(err) goto loadfailed;
-
-        // merge vdelta into floor & ceil
-        {
-            servsqr *ss = (servsqr *)staticbuffer;
-            int linelen = 1 << sfactor, linegap = linelen - mapdims.xspan;
-            ss += linelen * mapdims.y1 + mapdims.x1;
-            for(int j = mapdims.yspan; j > 0; j--, ss += linegap) loopirev(mapdims.xspan)
-            {
-                int type = ss->type & TAGTRIGGERMASK;
-                if(type == FHF || type == CHF)
-                {
-                    int diff = (ss->vdelta + ss[1].vdelta + ss[linelen].vdelta + ss[linelen + 1].vdelta + 15) / 16;  // round up to full cubes
-                    if(type == FHF) ss->floor = max(-128, ss->floor - diff);
-                    else ss->ceil = min(127, ss->ceil + diff);
-                }
-                ss++;
-            }
-        }
-        if(err) goto loadfailed;
-
-        // run mipmapper (to get corners right)
-
-
-        // calculate area statistics from type & vdelta values (destroys vdelta!)
-        {
-            if(calcmapareastats(areastats, (servsqr *)staticbuffer, 1 << sfactor, mapdims) < 0) err = "world layout malformed"; // should be a quite fringe error
-        }
-        if(err) goto loadfailed;
-
-        // work "player accessibility" into the floorplan, calculate map bounding box for player-accessible areas only
-        {
-            servsqr *ss = (servsqr *)staticbuffer;
-            int linelen = 1 << sfactor, linegap = linelen - mapdims.xspan;
-            ss += linelen * mapdims.y1 + mapdims.x1;
-            x1 = y1 = linelen; zmin = 127; zmax = -128;
-            for(int j = 0; j < mapdims.yspan; j++, ss += linegap) loopi(mapdims.xspan)
-            {
-                if((ss->type & TAGANYCLIP) > 0 || ss->ceil - ss->floor < 5) ss->type = SOLID;  // treat any cube that is not accessible to a player as SOLID
-                if(!SOLID(ss))
-                {
-                    if(i < x1) x1 = i;
-                    if(i > x2) x2 = i;
-                    if(j < y1) y1 = j;
-                    if(j > y2) y2 = j;
-                    if(ss->floor < zmin) zmin = ss->floor;
-                    if(ss->ceil > zmax) zmax = ss->ceil;
-                }
-                ss++;
-            }
-            x1 += mapdims.x1; x2 += mapdims.x1;
-            y1 += mapdims.y1; y2 += mapdims.y1;
-
-            if(x2 - x1 < 10 || y2 - y1 < 10 || zmax - zmin < 10) err = "world layout unplayable";
-
-            x1 -= 2; x2 += 2; y1 -= 2; y2 += 2; // make sure, the bounding box is big enough
-        }
-        if(err) goto loadfailed;
-
-        // create compact floorplan
-        {
-            char *layout = (char *)staticbuffer;
-            servsqr *ss = (servsqr *)staticbuffer;
-            loopirev(layoutlen)
-            {
-                switch(ss->type & TAGTRIGGERMASK)
-                {
-                    case SOLID:  *layout = 127;       break;
-                    case CORNER: *layout = zmin;      break;    // basically: ignore corner areas (otherwise, we'd need a mipmapper to sort it out properly), maybe, this should be fixed at some point...
-                    default:     *layout = ss->floor; break;
-                }
-                layout++; ss++;
-            }
-            ASSERT(layoutlen * 3 <= (int)FLOORPLANBUFSIZE);
-            uLongf gzbufsize = layoutlen * 2;   // valid for sizeof(struct servsqr) >= 3
-            if(compress2(staticbuffer + layoutlen, &gzbufsize, staticbuffer, layoutlen, 9) != Z_OK) gzbufsize = 0;
-            layoutgzlen = (int) gzbufsize;
-            if(layoutgzlen > 0 && layoutgzlen < layoutlen)
-            { // gzipping went well -> keep it
-                layoutgz = new uchar[layoutgzlen];
-                memcpy(layoutgz, staticbuffer + layoutlen, layoutgzlen);
-            }
-            else err = "gzipping the floorplan failed";
-        }
-
-        loadfailed:
-        DELETEP(f);
-        if(err)
-        {   // fail
-            if(readmaplog) readmaplog->printf("reading map '%s%s' failed: %s.\n", fpath, fname, err);
-        }
-        else
-        {   // success
-            if(readmaplog) readmaplog->printf("read map '%s%s': cgz %d bytes, cfg %d bytes (%d gz), version %d, size %d, rev %d, "
-                                              "ents %d, x %d:%d, y %d:%d, z %d:%d, layout %d bytes, spawns %d:%d:%d, flags %d:%d\n",
-                                               fpath, fname, cgzlen, cfglen, cfggzlen, version, sfactor, maprevision,
-                                               numents, x1, x2, y1, y2, zmin, zmax, layoutgzlen, entstats.spawns[0], entstats.spawns[1], entstats.spawns[2], entstats.flags[0], entstats.flags[1]);
-            isok = true;
-        }
-    }
-};
-
-// data structures to sync data flow between main thread and readmapsthread
-volatile servermap *servermapdropbox = NULL;     // changed servermap entry back to the main thread
-volatile bool startnewservermapsepoch = false;    // signal readmapsthread to start an new full search
-sl_semaphore *readmapsthread_sem = NULL;         // sync readmapsthread with main thread
-
-// readmapsthread
-//
-// * checks all servermaps directories for map files, prioritises and reads them all into memory
-// * compiles floorplans for every map and keeps them in memory (gzipped)
-// * fetches extended attributes from the map header
-// * basically extracts everything from the map file, that the server needs to run a game on it
-// (may take a while, but we're not in a hurry)
-//
-// the thread processes one map at a time and waits for the main thread to store and enlist the findings
-//
-
-struct mapfilename { const char *fname, *fpath; int cgzlen, cfglen, epoch; }; // for tracking map/cfg file (-size) changes
-vector<mapfilename> mapfilenames; // this list only grows
-
-void updateservermap(int index, bool deletethis)
-{
-    mapfilename &m = mapfilenames[index];
-    servermap *sm = new servermap(m.fname, m.fpath);
-    if(!deletethis) sm->load();
-    if(sm->isok)
-    {
-        m.cgzlen = sm->cgzlen;
-        m.cfglen = sm->cfglen;
-    }
-    else m.cgzlen = m.cfglen = 0;
-
-    // pipe sm to main thread....
-    // we're handing a pointer to a new servermap to the main thread (who manages the array for all servermaps)
-    // if the new servermap is not loaded properly, that's the signal for the main thread to delete the entry from the array
-    while(servermapdropbox) readmapsthread_sem->wait(); // wait for the main thread to process the last sent servermap
-    servermapdropbox = sm;
-}
-
-int getmapfilenameindex(const char *fname, const char *fpath)
-{
-    loopv(mapfilenames) if(fpath == mapfilenames[i].fpath && !strcmp(fname, mapfilenames[i].fname)) return i;
-    return -1;
-}
-
-void trymapfiles(const char *fpath, const char *fname, int epoch)  //check, if map files were added or altered (detecting alteration requires filesizes to be changed as well, as usual)
-{
-    bool updatethis = false;
-    int mapfileindex = getmapfilenameindex(fname, fpath);
-    if(mapfileindex < 0)
-    { // new map file
-        mapfileindex = mapfilenames.length();
-        mapfilename &m = mapfilenames.add();
-        m.fname = newstring(fname);
-        m.fpath = fpath;
-        m.cgzlen = m.cfglen = 0;
-        m.epoch = epoch;
-        updatethis = true;
-    }
-    else
-    {
-        defformatstring(fcgz)("%s%s.cgz", fpath, fname);
-        defformatstring(fcfg)("%s%s.cfg", fpath, fname);
-        if(mapfilenames[mapfileindex].cgzlen != getfilesize(path(fcgz)) || mapfilenames[mapfileindex].cfglen != getfilesize(path(fcfg)))
-        {
-            updatethis = true;  // changed filesize detected
-        }
-    }
-    if(updatethis) updateservermap(mapfileindex, false);
-}
-
-void tagmapfile(const char *fpath, const char *fname, int epoch)  // tag list entry, if file (+path) is already in it
-{
-    int mapfileindex = getmapfilenameindex(fname, fpath);
-    if(mapfileindex >= 0) mapfilenames[mapfileindex].epoch = epoch;
-}
-
-int readmapsthread(void *logfileprefix)
-{
-    static int readmaps_epoch = 0;
-
-    while(1)
-    {
-        while(!startnewservermapsepoch) readmapsthread_sem->wait();  // wait without using the cpu
-
-        if(logfileprefix)
-        {
-            defformatstring(logfilename)("%sreadmaps_log.txt", (const char *)logfileprefix);
-            path(logfilename);
-            readmaplog = openfile(logfilename, "a");
-        }
-
-        vector<char *> maps_off, maps_serv, maps_incom;
-
-        // get all map file names
-        listfiles(servermappath_off, "cgz", maps_off, stringsort);
-        listfiles(servermappath_serv, "cgz", maps_serv, stringsort);
-        listfiles(servermappath_incom, "cgz", maps_incom, stringsort);
-        if(readmaplog) readmaplog->printf("\n#### %s #### scanning all map directories... found %d official maps, %d servermaps and %d maps in 'incoming'\n", timestring(false), maps_off.length(), maps_serv.length(), maps_incom.length());
-
-        // enforce priority: official > servermaps > incoming
-        // (every map name is only allowed once among the paths)
-        loopv(maps_off)
-        {
-            loopvjrev(maps_serv) if(!strcmp(maps_off[i], maps_serv[j])) delstring(maps_serv.remove(j));
-            loopvjrev(maps_incom) if(!strcmp(maps_off[i], maps_incom[j])) delstring(maps_incom.remove(j));
-        }
-        loopv(maps_serv)
-        {
-            loopvjrev(maps_incom) if(!strcmp(maps_serv[i], maps_incom[j])) delstring(maps_incom.remove(j));
-        }
-
-        int lastepoch = readmaps_epoch;
-        readmaps_epoch++;
-        // tag all files in the list that we have found again in this round by giving it the new epoch number
-        loopv(maps_off) tagmapfile(servermappath_off, maps_off[i], readmaps_epoch);
-        loopv(maps_serv) tagmapfile(servermappath_serv, maps_serv[i], readmaps_epoch);
-        loopv(maps_incom) tagmapfile(servermappath_incom, maps_incom[i], readmaps_epoch);
-
-        // signal deletion of all files in the list that are no longer found to the main thread
-        loopvrev(mapfilenames) if(mapfilenames[i].epoch == lastepoch) updateservermap(i, true);
-
-        // process all currently available files: load new or changed files and pass them to the main thread
-        loopv(maps_off) trymapfiles(servermappath_off, maps_off[i], readmaps_epoch);
-        loopv(maps_serv) trymapfiles(servermappath_serv, maps_serv[i], readmaps_epoch);
-        loopv(maps_incom) trymapfiles(servermappath_incom, maps_incom[i], readmaps_epoch);
-
-        DELETEP(readmaplog);    // always close the logfile when done, so we can create a new one, if someone removed or renamed the old one
-        startnewservermapsepoch = false;
-    }
-    return 0;
-}
-
-
-
-
-
-
-
 
 struct servermapbuffer  // sending of maps between clients
 {
@@ -741,7 +238,7 @@ float Mheight = 0;
 bool mapisok(mapstats *ms)
 {
     if ( Mheight > MAXMHEIGHT ) { logline(ACLOG_INFO, "MAP CHECK FAIL: The overall ceil height is too high (%.1f cubes)", Mheight); return false; }
-    if ( Mopen > MAXMAREA ) { logline(ACLOG_INFO, "MAP CHECK FAIL: There is a big open area in this (hint: use more solid walls)"); return false; }
+    if ( Mopen > MAXMAREA ) { logline(ACLOG_INFO, "MAP CHECK FAIL: There is a big open area in this (hint: use more solid walls)", Mheight); return false; }
     if ( SHhits > MAXHHITS ) { logline(ACLOG_INFO, "MAP CHECK FAIL: Too high height in some parts of the map (%d hits)", SHhits); return false; }
 
     if ( ms->hasflags ) // Check if flags are ok
@@ -821,19 +318,19 @@ struct servermaprot : serverconfigfile
         const char *sep = ": ";
         configset c;
         int i, line = 0;
-        char *b, *l, *p = buf;
+        char *l, *p = buf;
         logline(ACLOG_VERBOSE,"reading map rotation '%s'", filename);
         while(p < buf + filelen)
         {
             l = p; p += strlen(p) + 1; line++;
-            l = strtok_r(l, sep, &b);
+            l = strtok(l, sep);
             if(l)
             {
                 copystring(c.mapname, behindpath(l));
                 for(i = 3; i < CONFIG_MAXPAR; i++) c.par[i] = 0;  // default values
                 for(i = 0; i < CONFIG_MAXPAR; i++)
                 {
-                    if((l = strtok_r(NULL, sep, &b)) != NULL) c.par[i] = atoi(l);
+                    if((l = strtok(NULL, sep)) != NULL) c.par[i] = atoi(l);
                     else break;
                 }
                 if(i > 2)
@@ -901,6 +398,18 @@ struct servermaprot : serverconfigfile
 
     configset *current() { return configsets.inrange(curcfgset) ? &configsets[curcfgset] : NULL; }
     configset *get(int ccs) { return configsets.inrange(ccs) ? &configsets[ccs] : NULL; }
+    int get_next()
+    {
+        int ccs = curcfgset;
+        while(!strcmp(configsets[curcfgset].mapname,configsets[ccs].mapname))
+        {
+            ccs++;
+            if(!configsets.inrange(ccs)) ccs=0;
+            if (ccs == curcfgset) break;
+        }
+        curcfgset = ccs;
+        return ccs;
+    }
 };
 
 // serverblacklist.cfg
@@ -1001,15 +510,15 @@ struct servernickblacklist : serverconfigfile
         int line = 1, errors = 0;
         iprchain iprc;
         blackline bl;
-        char *b, *l, *s, *r, *p = buf;
+        char *l, *s, *r, *p = buf;
         logline(ACLOG_VERBOSE,"reading nickname blacklist '%s'", filename);
         while(p < buf + filelen)
         {
             l = p; p += strlen(p) + 1;
-            l = strtok_r(l, sep, &b);
+            l = strtok(l, sep);
             if(l)
             {
-                s = strtok_r(NULL, sep, &b);
+                s = strtok(NULL, sep);
                 int ic = 0;
                 if(s && (!strcmp(l, "accept") || !strcmp(l, "a")))
                 { // accept nickname IP-range
@@ -1047,7 +556,7 @@ struct servernickblacklist : serverconfigfile
                             bl.frag[i] = blfraglist.length();
                             blfraglist.add(newstring(s));
                         }
-                        s = strtok_r(NULL, sep, &b);
+                        s = strtok(NULL, sep);
                         if(!s) break;
                     }
                     bl.ignorecase = ic > 0;
@@ -1140,50 +649,6 @@ struct servernickblacklist : serverconfigfile
 };
 
 #define FORBIDDENSIZE 15
-
-bool issimilar (char s, char d)
-{
-    s = tolower(s); d = tolower(d);
-    if ( s == d ) return true;
-    switch (d)
-    {
-        case 'a': if ( s == '@' || s == '4' ) return true; break;
-        case 'c': if ( s == 'k' ) return true; break;
-        case 'e': if ( s == '3' ) return true; break;
-        case 'i': if ( s == '!' || s == '1' ) return true; break;
-        case 'o': if ( s == '0' ) return true; break;
-        case 's': if ( s == '$' || s == '5' ) return true; break;
-        case 't': if ( s == '7' ) return true; break;
-        case 'u': if ( s == '#' ) return true; break;
-    }
-    return false;
-}
-
-bool findpattern (char *s, char *d) // returns true if there is more than 80% of similarity
-{
-    int len, hit = 0;
-    if (!d || (len = strlen(d)) < 1) return false;
-    char *dp = d, *s_end = s + strlen(s);
-    while (s != s_end)
-    {
-        if ( *s == ' ' )                                                         // spaces separate words
-        {
-            if ( !issimilar(*(s+1),*dp) ) { dp = d; hit = 0; }                   // d e t e c t  i t
-        }
-        else if ( issimilar(*s,*dp) ) { dp++; hit++; }                           // hit!
-        else if ( hit > 0 )                                                      // this is not a pair, but there is a previous pattern
-        {
-            if (*s == '.' || *s == *(s-1) || issimilar(*(s+1),*dp) );            // separator or typo (do nothing)
-            else if ( issimilar(*(s+1),*(dp+1)) || *s == '*' ) dp++;             // wild card or typo
-            else hit--;                                                          // maybe this is nothing
-        }
-        else dp = d;                                                             // nothing here
-        s++;                                  // walk on the string
-        if ( hit && 5 * hit > 4 * len ) return true;                             // found it!
-    }
-    return false;
-}
-
 struct serverforbiddenlist : serverconfigfile
 {
     int num;
@@ -1280,19 +745,19 @@ struct serverpasswords : serverconfigfile
         pwddetail c;
         const char *sep = " ";
         int i, line = 1, par[ADMINPWD_MAXPAR];
-        char *b, *l, *p = buf;
+        char *l, *p = buf;
         logline(ACLOG_VERBOSE,"reading admin passwords '%s'", filename);
         while(p < buf + filelen)
         {
             l = p; p += strlen(p) + 1;
-            l = strtok_r(l, sep, &b);
+            l = strtok(l, sep);
             if(l)
             {
                 copystring(c.pwd, l);
                 par[0] = 0;  // default values
                 for(i = 0; i < ADMINPWD_MAXPAR; i++)
                 {
-                    if((l = strtok_r(NULL, sep, &b)) != NULL) par[i] = atoi(l);
+                    if((l = strtok(NULL, sep)) != NULL) par[i] = atoi(l);
                     else break;
                 }
                 //if(i > 0)
@@ -1362,10 +827,10 @@ struct serverinfofile
         defformatstring(fname)("%s_%s.txt", fnbase, lang);
         path(fname);
         int len, n;
-        char *c, *b, *s, *t, *buf = loadfile(fname, &len);
+        char *c, *s, *t, *buf = loadfile(fname, &len);
         if(!buf) return NULL;
         char *nbuf = new char[len + 2];
-        for(t = nbuf, s = strtok_r(buf, "\n\r", &b); s; s = strtok_r(NULL, "\n\r", &b))
+        for(t = nbuf, s = strtok(buf, "\n\r"); s; s = strtok(NULL, "\n\r"))
         {
             c = strstr(s, "//");
             if(c) *c = '\0'; // strip comments
@@ -1424,3 +889,76 @@ struct serverinfofile
     }
 };
 
+struct killmessagesfile : serverconfigfile
+{
+    void init(const char *name) { serverconfigfile::init(name); }
+    void read()
+    {
+        if(getfilesize(filename) == filelen) return;
+        if(!load()) return;
+
+        char *l, *s, *p = buf;
+        const char *sep = " \"";
+        int line = 0;
+        logline(ACLOG_VERBOSE,"reading kill messages file '%s'", filename);
+        while(p < buf + filelen)
+        {
+            l = p; p += strlen(p) + 1;
+            l = strtok(l, sep);
+            
+            char *message;
+            if(l)
+            {
+                s = strtok(NULL, sep);
+                bool fragmsg = !strcmp(l, "fragmessage");
+                bool gibmsg = !strcmp(l, "gibmessage");
+                if(s && (fragmsg || gibmsg))
+                {
+                    int errors = 0;
+                    int gun = atoi(s);
+                    
+                    s += strlen(s) + 1;
+                    while(s[0] == ' ') s++;
+                    int hasquotes = strspn(s, "\"");
+                    s += hasquotes;
+                    message = s;
+                    const char *seps = "\" \n", *end = NULL;
+                    char cursep;
+                    while( (cursep = *seps++) != '\0')
+                    {
+                        if(cursep == '"' && !hasquotes) continue;
+                        end = strchr(message, cursep);
+                        if(end) break;
+                    }
+                    if(end) message[end-message] = '\0';
+                    
+                    if(gun < 0 || gun >= NUMGUNS)
+                    {
+                        logline(ACLOG_INFO, " error in line %i, invalid gun : %i", line, gun);
+                        errors++;
+                    }
+                    if(strlen(message)>MAXKILLMSGLEN)
+                    {
+                        logline(ACLOG_INFO, " error in line %i, too long message : string length is %i, max. allowed is %i", line, strlen(message), MAXKILLMSGLEN);
+                        errors++;
+                    }
+                    if(!errors)
+                    {
+                        if(fragmsg)
+                        {
+                            copystring(killmessages[0][gun], message);
+                            logline(ACLOG_VERBOSE, " added msg '%s' for frags with weapon %i ", message, gun);
+                        }
+                        else
+                        {
+                            copystring(killmessages[1][gun], message);
+                            logline(ACLOG_VERBOSE, " added msg '%s' for gibs with weapon %i ", message, gun);
+                        }
+                    }
+                    s = NULL;
+                    line++;
+                }
+            }
+        }
+    }
+};

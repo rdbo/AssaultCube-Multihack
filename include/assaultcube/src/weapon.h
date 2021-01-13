@@ -45,6 +45,8 @@ struct weapon
     bool modelattacking();
     void renderhudmodel(int lastaction, int index = 0);
 
+    static bool valid(int id);
+
     virtual int flashtime() const;
 };
 
@@ -57,7 +59,6 @@ struct grenades : weapon
     grenadeent *inhandnade;
     const int throwwait;
     int throwmillis;
-    int cookingmillis;
     int state;
 
     grenades(playerent *owner);
@@ -86,7 +87,6 @@ struct gun : weapon
     virtual void attackfx(const vec &from, const vec &to, int millis);
     int modelanim();
     void checkautoreload();
-    void onownerdies();
 };
 
 

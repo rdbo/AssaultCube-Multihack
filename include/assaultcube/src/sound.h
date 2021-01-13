@@ -1,7 +1,9 @@
-// hardcoded sounds, details in server.h
+// hardcoded sounds, defined in sounds.cfg
+
 
 enum
-{    // beware: sound order is part of the game protocol
+{    // To avoid a lot of work, possible bugs and allow backward compatibility for players own custom
+    // cfg files, it's best not to change the listed sound order, instead, just add to it.
     S_JUMP = 0,
     S_SOFTLAND, S_HARDLAND,
     S_BULLETAIR1, S_BULLETAIR2, S_BULLETHIT, S_BULLETWATERHIT,
@@ -15,7 +17,7 @@ enum
     S_ITEMAMMO, S_ITEMHEALTH,
     S_ITEMARMOUR, S_ITEMAKIMBO,
     S_NOAMMO, S_AKIMBOOUT,
-    S_PAIN1, S_PAIN2, S_PAIN3, S_PAIN4, S_PAIN5, S_PAIN6, // S_PAIN2..S_PAIN5 are hardcoded S_PAIN1+1..S_PAIN1+4
+    S_PAIN1, S_PAIN2, S_PAIN3, S_PAIN4, S_PAIN5, S_PAIN6,
     S_DIE1, S_DIE2,
     S_FEXPLODE,
     S_SPLASH1, S_SPLASH2,
@@ -25,7 +27,7 @@ enum
     S_HITSOUND,
     S_GIB, S_HEADSHOT,
     S_CALLVOTE, S_VOTEPASS, S_VOTEFAIL,
-    S_FOOTSTEPS, S_FOOTSTEPSCROUCH, S_WATERFOOTSTEPS, S_WATERFOOTSTEPSCROUCH, // hardcoded S_FOOTSTEPS+0..S_FOOTSTEPS+3
+    S_FOOTSTEPS, S_FOOTSTEPSCROUCH, S_WATERFOOTSTEPS, S_WATERFOOTSTEPSCROUCH,
     S_CROUCH, S_UNCROUCH,
     S_MENUSELECT, S_MENUENTER,
     S_UNDERWATER,
@@ -67,28 +69,11 @@ enum
     S_THANKS2,
     S_AWESOME1,
     S_AWESOME2,
-// end: voicecoms
     S_ITEMHELMET, // begin: Sounds for AssaultCube v1.1.0.4 onwards
     S_HEARTBEAT,
     S_KTFSCORE,
-    S_CAMERA,
     S_NULL
 };
-
-enum { SC_PAIN = 0, SC_OWNPAIN, SC_WEAPON, SC_PICKUP, SC_MOVEMENT, SC_BULLET, SC_OTHER, SC_VOICECOM, SC_TEAM, SC_PUBLIC, SC_FFA, SC_FLAGONLY, SC_NUM };   // sound categories
-
-#define gamesound_isvalid(x) ((x) >= 0 && (x) < S_NULL)                           // bounds check for soundcfg[]
-#define gamesound_hasflag(x, mask) (gamesound_isvalid(x) && (soundcfg[x].flags & mask) != 0)
-#define gamesound_isvoicecom(x)       gamesound_hasflag(x, 1 << SC_VOICECOM)      // all voicecoms
-#define gamesound_ispublicvoicecom(x) gamesound_hasflag(x, 1 << SC_PUBLIC)        // voicecoms always sent to all players
-
-struct soundcfgitem {
-    const char *name, *desc;
-    uchar vol, loop, audibleradius, key;
-    int flags;
-};
-
-extern soundcfgitem soundcfg[S_NULL];
 
 // hardcoded music
 
@@ -182,11 +167,11 @@ public:
 
 // buffer storage
 
-class bufferhashtable : public hashtable<const char *, sbuffer>
+class bufferhashtable : public hashtable<char *, sbuffer>
 {
 public:
     virtual ~bufferhashtable();
-    virtual sbuffer *find(const char *name);
+    virtual sbuffer *find(char *name);
 };
 
 // manages available sources, abstracts audio channels
@@ -405,14 +390,14 @@ public:
 
     // init & setup
     void initsound();
-    bool preloadmapsound(entity &e, bool trydl = false);
-    bool preloadmapsounds(bool trydl = false);
+    void preloadmapsound(entity &e, bool trydl = false);
+    void preloadmapsounds(bool trydl = false);
     void applymapsoundchanges();
 
     // configuration
     void setchannels(int num);
     void setlistenervol(int vol);
-    int addsound(const char *name, int vol, int maxuses, bool loop, vector<soundconfig> &sounds, bool load, int audibleradius);
+    int addsound(char *name, int vol, int maxuses, bool loop, vector<soundconfig> &sounds, bool load, int audibleradius);
     void registermusic(char *name);
     void mutesound(int n, int off);
     void unmuteallsounds();
@@ -440,7 +425,7 @@ public:
     void playsoundname(char *s, const vec *loc, int vol);
     void playsoundc(int n, physent *p = NULL, int priority = SP_NORMAL);
     void sound(int n);
-    int findsound(const char *name, int vol, vector<soundconfig> &sounds);
+    int findsound(char *name, int vol, vector<soundconfig> &sounds);
     void detachsounds(class playerent *owner);
 
     // update
@@ -453,15 +438,14 @@ public:
 };
 
 void alclearerr();
-bool alerr(bool msg = true, int line = 0, const char *s = NULL, ...) PRINTFARGS(3, 4);
+bool alerr(bool msg = true, int line = 0);
 #define ALERR alerr(true, __LINE__)
-#define ALERRF(fmt, ...) alerr(true, __LINE__, fmt, __VA_ARGS__)
 
 extern vector<soundconfig> gamesounds, mapsounds;
 extern ov_callbacks oggcallbacks;
 extern int soundvol;
 extern int audiodebug;
-extern int voicecomsounds;
+
 extern audiomanager audiomgr;
-extern void registerdefaultsounds();
+
 #endif //#ifndef STANDALONE

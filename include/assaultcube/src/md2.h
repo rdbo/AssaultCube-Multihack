@@ -177,7 +177,7 @@ struct md2 : vertmodel
         }
     };
 
-    void render(int anim, int varseed, float speed, int basetime, const vec &o, float roll, float yaw, float pitch, dynent *d, modelattach *a, float scale)
+    void render(int anim, int varseed, float speed, int basetime, const vec &o, float yaw, float pitch, dynent *d, modelattach *a, float scale)
     {
         if(!loaded) return;
 
@@ -194,20 +194,18 @@ struct md2 : vertmodel
             shadowdir = vec(0, 1/SQRT2, -1/SQRT2);
             shadowdir.rotate_around_z((-shadowyaw-yaw-180.0f)*RAD);
             shadowdir.rotate_around_y(-pitch*RAD);
-            shadowdir.rotate_around_x(roll*RAD);
             (shadowpos = shadowdir).mul(shadowdist);
         }
 
         modelpos = o;
-        modelroll = roll;
         modelyaw = yaw;
         modelpitch = pitch;
 
         matrixpos = 0;
-        quat q(- yaw - 180, pitch);
-        matrixstack[0].fromquat(roll == 0.0f ? q : q.roll(roll));
+        matrixstack[0].identity();
         matrixstack[0].translate(o);
-
+        matrixstack[0].rotate_around_z((yaw+180)*RAD);
+        matrixstack[0].rotate_around_y(-pitch*RAD);
         if(anim&ANIM_MIRROR || scale!=1) matrixstack[0].scale(scale, anim&ANIM_MIRROR ? -scale : scale, scale);
         parts[0]->render(anim, varseed, speed, basetime, d);
 
@@ -222,7 +220,7 @@ struct md2 : vertmodel
             if(!m) continue;
             m->parts[0]->index = parts.length()+i;
             m->setskin();
-            m->render(anim, varseed, speed, basetime, o, roll, yaw, pitch, d, NULL, scale);
+            m->render(anim, varseed, speed, basetime, o, yaw, pitch, d, NULL, scale);
         }
 
         if(d) d->lastrendered = lastmillis;
@@ -257,18 +255,21 @@ struct md2 : vertmodel
         Texture *skin;
         loadskin(loadname, pname, skin);
         loopv(mdl.meshes) mdl.meshes[i]->skin  = skin;
-        if(skin==notexture) { conoutf("could not load model skin for %s", name1); flagmapconfigerror(LWW_MODELERR); }
+        if(skin==notexture) conoutf(_("could not load model skin for %s"), name1);
         loadingmd2 = this;
-        ASSERT(execcontext == IEXC_MDLCFG);
         defformatstring(name2)("packages/models/%s/md2.cfg", loadname);
+        per_idents = false;
+        neverpersist = true;
         if(!execfile(name2))
         {
             formatstring(name2)("packages/models/%s/md2.cfg", pname);
             execfile(name2);
         }
-        loadingmd2 = NULL;
+        neverpersist = false;
+        per_idents = true;
+        loadingmd2 = 0;
         loopv(parts) parts[i]->scaleverts(scale/16.0f, vec(translate.x, -translate.y, translate.z));
-        radius = calcradius(zradius);
+        radius = calcradius();
         if(shadowdist) calcneighbors();
         calcbbs();
         return loaded = true;
@@ -277,16 +278,15 @@ struct md2 : vertmodel
 
 void md2anim(char *anim, int *frame, int *range, float *speed)
 {
-    if(!loadingmd2 || loadingmd2->parts.empty()) { conoutf("not loading an md2"); flagmapconfigerror(LWW_MODELERR); scripterr(); return; }
+    if(!loadingmd2 || loadingmd2->parts.empty()) { conoutf("not loading an md2"); return; }
     int num = findanim(anim);
-    if(num<0) { conoutf("could not find animation %s", anim); flagmapconfigerror(LWW_MODELERR); scripterr(); return; }
+    if(num<0) { conoutf("could not find animation %s", anim); return; }
     loadingmd2->parts.last()->setanim(num, *frame, *range, *speed);
 }
-COMMAND(md2anim, "siif");
 
 void md2tag(char *name, char *vert1, char *vert2, char *vert3, char *vert4)
 {
-    if(!loadingmd2 || loadingmd2->parts.empty()) { conoutf("not loading an md2"); flagmapconfigerror(LWW_MODELERR); scripterr(); return; }
+    if(!loadingmd2 || loadingmd2->parts.empty()) { conoutf("not loading an md2"); return; }
     md2::part &mdl = *loadingmd2->parts.last();
     int indexes[4] = { -1, -1, -1, -1 }, numverts = 0;
     loopi(4)
@@ -317,19 +317,19 @@ void md2tag(char *name, char *vert1, char *vert2, char *vert3, char *vert4)
             }
             if(!mdl.meshes.empty()) indexes[i] = mdl.meshes[0]->findvert(axis, dir);
         }
-        if(indexes[i] < 0) { conoutf("could not find vertex %s", vert); flagmapconfigerror(LWW_MODELERR); scripterr(); return; }
+        if(indexes[i] < 0) { conoutf("could not find vertex %s", vert); return; }
         numverts = i + 1;
     }
-    if(!mdl.gentag(name, indexes, numverts)) { conoutf("could not generate tag %s", name); flagmapconfigerror(LWW_MODELERR); scripterr(); return; }
+    if(!mdl.gentag(name, indexes, numverts)) { conoutf("could not generate tag %s", name); return; }
 }
-COMMAND(md2tag, "sssss");
 
-void md2emit(char *tag, char *_type, int *arg1, int *arg2)
+void md2emit(char *tag, int *type, int *arg1, int *arg2)
 {
-    if(!loadingmd2 || loadingmd2->parts.empty()) { conoutf("not loading an md2"); flagmapconfigerror(LWW_MODELERR); scripterr(); return; };
-    int type = getlistindex(_type, particletypenames, true, -1);
-    if(type < 0 || type >= MAXPARTYPES) { conoutf("unknown particle type %s", _type); flagmapconfigerror(LWW_MODELERR); scripterr(); return; };
+    if(!loadingmd2 || loadingmd2->parts.empty()) { conoutf("not loading an md2"); return; };
     md2::part &mdl = *loadingmd2->parts.last();
-    if(!mdl.addemitter(tag, type, *arg1, *arg2)) { conoutf("could not find tag %s", tag); flagmapconfigerror(LWW_MODELERR); scripterr(); return; }
+    if(!mdl.addemitter(tag, *type, *arg1, *arg2)) { conoutf("could not find tag %s", tag); return; }
 }
-COMMAND(md2emit, "ssii");
+
+COMMAND(md2anim, "siif");
+COMMAND(md2tag, "sssss");
+COMMAND(md2emit, "siii");

@@ -11,6 +11,8 @@ typedef void(* c2sinfo_t)(playerent* d);
 typedef void(* movelocalplayer_t)(void);
 typedef void(* drawcrosshair_t)(playerent* p, int n, struct color* c, float size);
 
+bool WorldToScreen(vec pos3D, vec* pos2D);
+
 class AC_Client
 {
 public:
@@ -18,6 +20,7 @@ public:
 	mem::module_t* mod = nullptr;
 	playerent* player1 = nullptr;
 	vector<playerent*>* players = nullptr;
+	glmatrixf* mvpmatrix = nullptr;
 	getclient_t getclient = nullptr;
 	servertoclient_t servertoclient = nullptr;
 	updateworld_t updateworld = nullptr;
@@ -46,6 +49,7 @@ public:
 		
 		this->player1   = *(playerent**)            GAME_OFFSET(0x10F4F4);
 		this->players   = (vector<playerent*>*)     GAME_OFFSET(0x10F4F8);
+		this->mvpmatrix = (glmatrixf*)              GAME_OFFSET(0x101AE8);
 		this->getclient = (getclient_t)             GAME_OFFSET(0x27320);
 		this->servertoclient = (servertoclient_t)   GAME_OFFSET(0x2E830);
 		this->updateworld = (updateworld_t)         GAME_OFFSET(0x25EB0);
@@ -53,6 +57,39 @@ public:
 		this->movelocalplayer = (movelocalplayer_t) GAME_OFFSET(0x25770);
 		this->drawcrosshair = (drawcrosshair_t)     GAME_OFFSET(0x8660);
 		this->Updated = true;
+	}
+};
+
+class playerinfo_t
+{
+public:
+	bool is_valid = false;
+	playerent* ent = nullptr;
+	vec pos2D = {};
+	vec headpos3D = {};
+	vec headpos2D = {};
+
+	playerinfo_t()
+	{
+
+	}
+
+	playerinfo_t(playerent* p_ent)
+	{
+		bool check = true;
+		this->ent = p_ent;
+		check &= this->ent != nullptr;
+
+		if (check)
+		{
+			check &= this->ent->state == CS_ALIVE;
+			this->headpos3D = this->ent->o;
+			check &= WorldToScreen(this->ent->newpos, &this->pos2D);
+			check &= WorldToScreen(this->headpos3D, &this->headpos2D);
+		}
+
+		this->is_valid = check;
+		
 	}
 };
 

@@ -38,12 +38,10 @@ void processevent(client *c, shotevent &e)
     clientstate &gs = c->state;
     int wait = e.millis - gs.lastshot;
     if(!gs.isalive(gamemillis) ||
-       !valid_weapon(e.gun) ||
+       e.gun<GUN_KNIFE || e.gun>=NUMGUNS ||
        wait<gs.gunwait[e.gun] ||
        gs.mag[e.gun]<=0)
         return;
-
-    if(e.gun == GUN_AKIMBO && gs.akimbomillis < gamemillis) return;
     if(e.gun!=GUN_KNIFE) gs.mag[e.gun]--;
     loopi(NUMGUNS) if(gs.gunwait[i]) gs.gunwait[i] = max(gs.gunwait[i] - (e.millis-gs.lastshot), 0);
     gs.lastshot = e.millis;
@@ -72,11 +70,12 @@ void processevent(client *c, shotevent &e)
                 bool gib = false;
                 if(e.gun == GUN_SHOTGUN)
                 {
+                    h.info = isbigendian() ? endianswap(h.info) : h.info;
                     int bonusdist = h.info&0xFF;
                     int numhits_c = (h.info & 0x0000FF00) >> 8, numhits_m = (h.info & 0x00FF0000) >> 16, numhits_o = (h.info & 0xFF000000) >> 24;
                     tothits_c += numhits_c; tothits_m += numhits_m; tothits_o += numhits_o;
                     rays = numhits_c + numhits_m + numhits_o;
-
+                    
                     if(rays < 1 || tothits_c > SGRAYS || tothits_m > SGRAYS || tothits_o > SGRAYS || bonusdist > SGDMGBONUS) continue;
 
                     gib = rays == maxrays;
@@ -123,12 +122,11 @@ void processevent(client *c, reloadevent &e)
 {
     clientstate &gs = c->state;
     if(!gs.isalive(gamemillis) ||
-       !valid_weapon(e.gun) ||
+       e.gun<GUN_KNIFE || e.gun>=NUMGUNS ||
        !reloadable_gun(e.gun) ||
        gs.ammo[e.gun]<=0)
         return;
 
-    if(e.gun == GUN_AKIMBO && gs.akimbomillis < gamemillis) return;
     bool akimbo = e.gun==GUN_PISTOL && gs.akimbomillis>e.millis;
     int mag = (akimbo ? 2 : 1) * magsize(e.gun), numbullets = min(gs.ammo[e.gun], mag - gs.mag[e.gun]);
     if(numbullets<=0) return;

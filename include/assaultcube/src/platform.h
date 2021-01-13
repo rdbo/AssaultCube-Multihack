@@ -2,6 +2,14 @@
     #ifdef _FORTIFY_SOURCE
         #undef _FORTIFY_SOURCE
     #endif
+
+    #define gamma __gamma
+#endif
+
+#include <math.h>
+
+#ifdef __GNUC__
+    #undef gamma
 #endif
 
 #include <string.h>
@@ -11,8 +19,6 @@
 #include <ctype.h>
 #include <time.h>
 #include <limits.h>
-#include <math.h>
-#include <stdint.h>
 #ifdef __GNUC__
     #include <new>
     #include <signal.h>
@@ -34,12 +40,14 @@
         #include <Dbghelp.h>
     #endif
     #define ZLIB_DLL
-    #define NO_POSIX_R
 #endif
 
 #ifndef STANDALONE
     #include <SDL.h>
     #include <SDL_image.h>
+    //#include <SDL_ttf.h>
+
+    #include <utf8.h>
 
     #define GL_GLEXT_LEGACY
     #define __glext_h__
@@ -50,21 +58,23 @@
     #include "GL/glext.h"
 
     #ifdef __APPLE__
+        #include "INTL/libintl.h"
         #include "OpenAL/al.h"
         #include "OpenAL/alc.h"
         #include "Vorbis/vorbisfile.h"
-        #define MOD_KEYS_CTRL (KMOD_LMETA|KMOD_RMETA)
     #else
+        #include <libintl.h>
         #include "AL/al.h"
         #include "AL/alc.h"
         #include "vorbis/vorbisfile.h"
-        #define MOD_KEYS_CTRL (KMOD_LCTRL|KMOD_RCTRL)
     #endif
 
     #include <setjmp.h>
 #endif
 
-#if defined(WIN32) || defined(__APPLE__) || !defined(STANDALONE) || defined(AC_FORCE_SDL_THREADS)
-    #define AC_USE_SDL_THREADS
+#ifndef CURL_STATICLIB
+#define CURL_STATICLIB
 #endif
-
+#ifndef STANDALONE
+#include "curl/curl.h"
+#endif

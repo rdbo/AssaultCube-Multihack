@@ -69,6 +69,12 @@ namespace Base
 			extern bool    CrosshairDotFilled;
 			extern float   CrosshairColor[4];
 
+			extern bool    EnableEspSnaplines;
+			extern float   EspSnaplinesThickness;
+			extern float   EspSnaplinesColorTeam[4];
+			extern float   EspSnaplinesColorEnemy[4];
+			extern int     EspSnaplinesPos;
+
 			extern bool    TeleportQueued;
 			extern bool    TeleportSaveQueued;
 			extern float   TeleportPosition[3];
@@ -86,6 +92,7 @@ namespace Base
 	{
 		void Teleport();
 		void Crosshair();
+		void ESP_Snaplines(playerinfo_t* p_info);
 	}
 
 	namespace Hooks
@@ -98,6 +105,7 @@ namespace Base
 		void c2sinfo(playerent* d);
 		void servertoclient(int chan, uchar* buf, int len, bool demo);
 		void movelocalplayer();
-		void drawcrosshair(playerent* p, int n, struct color* c, float size);
+		//void drawcrosshair(playerent* p, int n, struct color* c, float size);
+		void drawcrosshair();
 	}
 }

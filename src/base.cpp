@@ -49,6 +49,12 @@ bool    Base::Data::Settings::CrosshairDot = true;
 bool    Base::Data::Settings::CrosshairDotFilled = true;
 float   Base::Data::Settings::CrosshairColor[4] = { 1.0f, 0.0f, 0.0f, 1.0f };
 
+bool    Base::Data::Settings::EnableEspSnaplines = false;
+float   Base::Data::Settings::EspSnaplinesThickness = 2;
+float   Base::Data::Settings::EspSnaplinesColorTeam[4]  = { 0.0f, 0.5f, 1.0f, 1.0f };
+float   Base::Data::Settings::EspSnaplinesColorEnemy[4] = { 1.0f, 0.5f, 0.0f, 1.0f };
+int     Base::Data::Settings::EspSnaplinesPos = 0;
+
 bool    Base::Data::Settings::TeleportQueued = false;
 bool    Base::Data::Settings::TeleportSaveQueued = false;
 float   Base::Data::Settings::TeleportPosition[3];

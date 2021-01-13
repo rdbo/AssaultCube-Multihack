@@ -14,25 +14,20 @@ typedef unsigned int uint;
 
 #ifdef _DEBUG
 #ifdef __GNUC__
-#define ASSERT(c) if(!(c)) { fflush(NULL); asm("int $3"); }
+#define ASSERT(c) if(!(c)) { asm("int $3"); }
 #else
-#define ASSERT(c) if(!(c)) { fflush(NULL); { __asm int 3 } }
+#define ASSERT(c) if(!(c)) { __asm int 3 }
 #endif
 
 #include <iostream>
 #define DEBUG(v) if(DEBUGCOND) { std::cout << behindpath(__FILE__) << ":" << __LINE__ << " " << __FUNCTION__ << "(..) " << v << std::endl; }
 #define DEBUGVAR(v) if(DEBUGCOND) { std::cout << behindpath(__FILE__) << ":" << __LINE__ << " " << __FUNCTION__ << "(..) " << #v << " = " << v << std::endl; }
-#define DEBUGCODE(v) v
 #else
 #define DEBUG(v) {}
 #define DEBUGVAR(v) {}
-#define DEBUGCODE(v)
 #define ASSERT(c) if(c) {}
 #endif
 
-#ifdef NO_POSIX_R
-extern char *strtok_r(char *s, const char *delim, char **b); // homebrew
-#endif
 #ifdef swap
 #undef swap
 #endif
@@ -59,10 +54,11 @@ static inline T min(T a, T b)
 {
     return a < b ? a : b;
 }
-template <typename T> inline T pow2(T x) { return x*x; }
-inline int iabs(int n) { return labs(n); }
 
-#define clamp(x,minval,maxval) (max(minval, min(x, maxval)))
+//static inline float round(float x) { return floor(x + 0.5f); }
+#define round(x) floor(x + 0.5f) //avoid duplicate
+
+#define clamp(a,b,c) (max(b, min(a, c)))
 #define rnd(x) ((int)(randomMT()&0xFFFFFF)%(x))
 #define rndscale(x) (float((randomMT()&0xFFFFFF)*double(x)/double(0xFFFFFF)))
 #define detrnd(s, x) ((int)(((((uint)(s))*1103515245+12345)>>16)%(x)))
@@ -72,20 +68,23 @@ inline int iabs(int n) { return labs(n); }
 #define loopj(m) loop(j,m)
 #define loopk(m) loop(k,m)
 #define loopl(m) loop(l,m)
-#define loopirev(m) for(int i = int(m) - 1; i >= 0; i--)
 
 
 #define DELETEP(p) if(p) { delete   p; p = 0; }
 #define DELETEA(p) if(p) { delete[] p; p = 0; }
 
-#define PI    (3.141592654f)
-#define PI2   (6.283185307f)   /* 2 * PI */
-#define SQRT2 (1.414213562f)
-#define SQRT3 (1.732050808f)
-#define RAD   (0.01745329252f) /* PI / 180 */
-#define NEARZERO (0.000245f)   /* epsilon for 1<<LARGEST_FACTOR, use to check if "zero enough" */
+#define PI  (3.1415927f)
+#define PI2 (2*PI)
+#define SQRT2 (1.4142136f)
+#define SQRT3 (1.7320508f)
+#define RAD (PI / 180.0f)
 
 #ifdef WIN32
+#ifdef M_PI
+#undef M_PI
+#endif
+#define M_PI 3.14159265
+
 #ifndef __GNUC__
 #pragma warning (3: 4189)       // local variable is initialized but not referenced
 #pragma warning (disable: 4244) // conversion from 'int' to 'float', possible loss of data
@@ -96,19 +95,10 @@ inline int iabs(int n) { return labs(n); }
 #define strcasecmp(a,b) _stricmp(a,b)
 #define strncasecmp(a,b,n) _strnicmp(a,b,n)
 #define PATHDIV '\\'
-#define PATHDIVS "\\"
 #else
 #define __cdecl
 #define _vsnprintf vsnprintf
 #define PATHDIV '/'
-#define PATHDIVS "/"
-#endif
-
-#ifdef __GNUC__
-#define PRINTFARGS(fmt, args) __attribute__((format(printf, fmt, args)))
-//#pragma GCC diagnostic ignored "-Wformat-zero-length" // apparently doesn't work from precompiled header -> moved to makefile
-#else
-#define PRINTFARGS(fmt, args)
 #endif
 
 // easy safe strings
@@ -119,13 +109,13 @@ typedef char string[MAXSTRLEN];
 inline void vformatstring(char *d, const char *fmt, va_list v, int len = MAXSTRLEN) { _vsnprintf(d, len, fmt, v); d[len-1] = 0; }
 inline char *copystring(char *d, const char *s, size_t len = MAXSTRLEN) { strncpy(d, s, len); d[len-1] = 0; return d; }
 inline char *concatstring(char *d, const char *s, size_t len = MAXSTRLEN) { size_t used = strlen(d); return used < len ? copystring(d+used, s, len-used) : d; }
-extern char *concatformatstring(char *d, const char *s, ...) PRINTFARGS(2, 3);
+extern char *concatformatstring(char *d, const char *s, ...);
 
 struct stringformatter
 {
     char *buf;
     stringformatter(char *buf): buf((char *)buf) {}
-    void operator()(const char *fmt, ...) PRINTFARGS(2, 3)
+    void operator()(const char *fmt, ...)
     {
         va_list v;
         va_start(v, fmt);
@@ -138,28 +128,44 @@ struct stringformatter
 #define defformatstring(d) string d; formatstring(d)
 #define defvformatstring(d,last,fmt) string d; { va_list ap; va_start(ap, last); vformatstring(d, fmt, ap); va_end(ap); }
 
-#define MAXMAPNAMELEN 64
-inline bool validmapname(const char *s)
+//#define s_sprintf(d) s_sprintf_f((char *)d)
+//#define s_sprintfd(d) string d; s_sprintf(d)
+//#define s_sprintfdlv(d,last,fmt) string d; { va_list ap; va_start(ap, last); formatstring(d, fmt, ap); va_end(ap); }
+//#define s_sprintfdv(d,fmt) s_sprintfdlv(d,fmt,fmt)
+
+inline char *strcaps(const char *s, bool on)
 {
-    int len = strlen(s);
-    if(len > MAXMAPNAMELEN) return false;
-    if(len == 3 || len == 4)
+    static string r;
+    char *o = r;
+    if(on) while(*s && o < &r[sizeof(r)-1]) *o++ = toupper(*s++);
+    else while(*s && o < &r[sizeof(r)-1]) *o++ = tolower(*s++);
+    *o = '\0';
+    return r;
+}
+
+inline bool issimilar (char s, char d)
+{
+    s = tolower(s); d = tolower(d);
+    if ( s == d ) return true;
+    switch (d)
     {
-        char uc[4];
-        loopi(3) uc[i] = toupper(s[i]);
-        uc[3] = '\0';
-        const char *resd = "COMLPTCONPRNAUXNUL", *fnd = strstr(resd, uc);
-        if(fnd)
-        {
-            int pos = (int) (fnd - resd);
-            if(pos == 0 || pos == 3)
-            {
-                if(isdigit(s[3])) return false; // COMx, LPTx
-            }
-            else if(pos % 3 == 0) return false; // CON, PRN, AUX, NUL
-        }
+        case 'a': if ( s == '@' || s == '4' ) return true; break;
+        case 'c': if ( s == 'k' ) return true; break;
+        case 'e': if ( s == '3' ) return true; break;
+        case 'i': if ( s == '!' || s == '1' ) return true; break;
+        case 'o': if ( s == '0' ) return true; break;
+        case 's': if ( s == '$' || s == '5' ) return true; break;
+        case 't': if ( s == '7' ) return true; break;
+        case 'u': if ( s == '#' ) return true; break;
     }
-    while(*s != '\0')
+    return false;
+}
+
+#define MAXMAPNAMELEN 64
+inline bool validmapname(char *s)
+{
+    if(strlen(s) > MAXMAPNAMELEN) return false;
+    while(*s != '\0') 
     {
         if(!isalnum(*s) && *s != '_' && *s != '-' && *s != '.') return false;
         ++s;
@@ -167,11 +173,36 @@ inline bool validmapname(const char *s)
     return true;
 }
 
+inline bool findpattern (char *s, char *d) // returns true if there is more than 80% of similarity
+{
+    int len, hit = 0;
+    if (!d || (len = strlen(d)) < 1) return false;
+    char *dp = d, *s_end = s + strlen(s);
+    while (s != s_end)
+    {
+        if ( *s == ' ' )                                                         // spaces separate words
+        {
+            if ( !issimilar(*(s+1),*dp) ) { dp = d; hit = 0; }                   // d e t e c t  i t
+        }
+        else if ( issimilar(*s,*dp) ) { dp++; hit++; }                           // hit!
+        else if ( hit > 0 )                                                      // this is not a pair, but there is a previous pattern
+        {
+            if (*s == '.' || *s == *(s-1) || issimilar(*(s+1),*dp) );            // separator or typo (do nothing)
+            else if ( issimilar(*(s+1),*(dp+1)) || *s == '*' ) dp++;             // wild card or typo
+            else hit--;                                                          // maybe this is nothing
+        }
+        else dp = d;                                                             // nothing here
+        s++;                                  // walk on the string
+        if ( hit && 5 * hit > 4 * len ) return true;                             // found it!
+    }
+    return false;
+}
+
 #define loopv(v)    for(int i = 0; i<(v).length(); i++)
 #define loopvj(v)   for(int j = 0; j<(v).length(); j++)
 #define loopvk(v)   for(int k = 0; k<(v).length(); k++)
 #define loopvrev(v) for(int i = (v).length()-1; i>=0; i--)
-#define loopvjrev(v) for(int j = (v).length()-1; j>=0; j--)
+#define loopvjrev(v) for(int j = (v).length()-1; i>=0; i--)
 
 template <class T>
 struct databuf
@@ -392,9 +423,9 @@ template <class T> struct vector
     bool inrange(size_t i) const { return i<size_t(ulen); }
     bool inrange(int i) const { return i>=0 && i<ulen; }
 
-    T &pop() { ASSERT(ulen > 0); return buf[--ulen]; }
-    T &last() { ASSERT(ulen > 0); return buf[ulen-1]; }
-    void drop() { ASSERT(ulen > 0); buf[--ulen].~T(); }
+    T &pop() { return buf[--ulen]; }
+    T &last() { return buf[ulen-1]; }
+    void drop() { buf[--ulen].~T(); }
     bool empty() const { return ulen==0; }
 
     int capacity() const { return alen; }
@@ -402,8 +433,8 @@ template <class T> struct vector
     T &operator[](int i) { ASSERT(i>=0 && i<ulen); return buf[i]; }
     const T &operator[](int i) const { ASSERT(i >= 0 && i<ulen); return buf[i]; }
 
-    void shrink(int i)         { ASSERT(i>=0 && i<=ulen); while(ulen>i) drop(); }
-    void setsize(int i) { ASSERT(i>=0 && i<=ulen); ulen = i; }
+    void shrink(int i)         { ASSERT(i<=ulen); while(ulen>i) drop(); }
+    void setsize(int i) { ASSERT(i<=ulen); ulen = i; }
 
     void deletecontents() { while(!empty()) delete   pop(); }
     void deletearrays() { while(!empty()) delete[] pop(); }
@@ -534,16 +565,6 @@ static inline uint hthash(const char *key)
 static inline bool htcmp(const char *x, const char *y)
 {
     return !strcmp(x, y);
-}
-
-static inline uint hthash(const uchar *key)
-{
-    return *((uint *)key);
-}
-
-static inline bool htcmp(const uchar *x, const uchar *y)  // assume "uchar *" points to 32byte public keys
-{
-    return !memcmp(x, y, 32);
 }
 
 static inline uint hthash(int key)
@@ -697,99 +718,63 @@ template <class K, class T> struct hashtable
 
 template <class T, int SIZE> struct ringbuf
 {
-    volatile int in, out;
+    int index, len;
     T data[SIZE];
 
     ringbuf() { clear(); }
 
     void clear()
     {
-        in = out = 0;
+        index = len = 0;
     }
 
-    bool empty() const { return in == out; }
-    bool full() const { return length() >= SIZE - 1; }
+    bool empty() const { return !len; }
 
-    int maxsize() const { return SIZE - 1; } // yes, only SIZE-1, sry
-    int length() const { return (SIZE + in - out) % SIZE; }
+    int maxsize() const { return SIZE; }
+    int length() const { return len; }
 
-    T &remove() // get one (crashes, if empty)
+    T &remove()
     {
-        ASSERT(!empty());
-        T &res = data[out];
-        out = (out + 1) % SIZE;
-        return res;
+        int start = index - len;
+        if(start < 0) start += SIZE;
+        len--;
+        return data[start];
     }
 
-    T *remove(int *n) // get n (reduces n, if the data wraps around or isn't available)
+    T &add(const T &e)
     {
-        if(*n > length()) *n = length();
-        T *res = data + out;
-        if(out + *n >= SIZE) *n = SIZE - out;
-        out = (out + *n) % SIZE;
-        return res;
+        T &t = data[index];
+        t = e;
+        index++;
+        if(index>=SIZE) index = 0;
+        if(len<SIZE) len++;
+        return t;
     }
 
-    T *peek(int *n) // look at n without removing (reduces n, if the data wraps around or isn't available)
-    {
-        if(*n > length()) *n = length();
-        if(out + *n >= SIZE) *n = SIZE - out;
-        return data + out;
-    }
+    T &add() { return add(T()); }
 
-    void add(const T &e) // add one (crashes, if full) -- between threads, better use stage & commit
+    T &operator[](int i)
     {
-        ASSERT(!full());
-        volatile int i;
-        data[(i = in)] = e;
-        in = (i + 1) % SIZE;
-    }
-
-    T &stage(const T &e) // add one without acknowledging it
-    {
-        return (data[in] = e);
-    }
-
-    T *stage() // add one without acknowledging it
-    {
-        return data + in;
-    }
-
-    void stage(const T *e, int n) // add n without acknowledging it
-    {
-        int n1 = in + n >= SIZE ? SIZE - in : n, n2 = n - n1;
-        memcpy(data + in, e, n1 * sizeof(T));
-        if(n2) memcpy(data, e + n1, n2 * sizeof(T));
-    }
-
-    void commit() // add staged one (crashes, if full)
-    {
-        ASSERT(!full());
-        in = (in + 1) % SIZE;
-    }
-
-    void commit(int n) // add staged n (crashes, if full)
-    {
-        ASSERT(length() + n < SIZE);
-        in = (in + n) % SIZE;
-    }
-
-    void add(const T *e, int n) // add n
-    {
-        stage(e, n);
-        commit(n);
-    }
-
-    T &operator[](int i) // [0] is the one, that remove() will get next (in other words, [0] is the oldest entry, [length()-1] was the last added one, loopv goes from old to new)
-    {
-        ASSERT(i >= 0 && i < length());
-        return data[(out + i) % SIZE];
+        int start = index - len;
+        if(start < 0) start += SIZE;
+        i += start;
+        if(i >= SIZE) i -= SIZE;
+        return data[i];
     }
 
     const T &operator[](int i) const
     {
-        ASSERT(i >= 0 && i < length());
-        return data[(out + i) % SIZE];
+        int start = index - len;
+        if(start < 0) start += SIZE;
+        i += start;
+        if(i >= SIZE) i -= SIZE;
+        return data[i];
+    }
+
+    int find(const T &o)
+    {
+        loopi(len) if(data[i]==o) return i;
+        return -1;
     }
 };
 
@@ -804,9 +789,9 @@ template <class T, int SIZE> struct ringbuf
 // ease time measurement
 struct stopwatch
 {
-    uint millis;                                // SDL_GetTicks() returns an uint value
+    int millis;
 
-    stopwatch() : millis(0) {}
+    stopwatch() : millis(-1) {}
 
     void start()
     {
@@ -814,9 +799,11 @@ struct stopwatch
     }
 
     // returns elapsed time
-    int elapsed()
+    int stop()
     {
-        uint time = SDL_GetTicks() - millis;    // subtraction also works in case of timer wraparounds
+        ASSERT(millis >= 0);
+        int time = SDL_GetTicks() - millis;
+        millis = -1;
         return time;
     }
 };
@@ -827,50 +814,48 @@ inline char *newstring(const char *s, size_t l) { return copystring(newstring(l)
 inline char *newstring(const char *s)           { return newstring(s, strlen(s)); }
 inline char *newstringbuf()                     { return newstring(MAXSTRLEN-1); }
 inline char *newstringbuf(const char *s)        { return newstring(s, MAXSTRLEN-1); }
-inline void delstring(const char *s)            { delete[] (char *)s; }
-#define DELSTRING(s) if(s) { delstring(s); s = NULL; }
 
-#ifndef INT_LEAST64_MIN
-typedef unsigned long long int uint64_t;
+#ifndef STANDALONE
+inline const char *_gettext(const char *msgid)
+{
+    if(msgid && msgid[0] != '\0')
+        return gettext(msgid);
+    else
+        return "";
+}
 #endif
+
+#define _(s) _gettext(s)
+
 const int islittleendian = 1;
 #ifdef SDL_BYTEORDER
-    #define endianswap16 SDL_Swap16
-    #define endianswap32 SDL_Swap32
-    #define endianswap64 SDL_Swap64
+#define endianswap16 SDL_Swap16
+#define endianswap32 SDL_Swap32
 #else
-    #if defined(__GNUC__) && /*!defined(__clang__) && */!defined(__ICL) && __GNUC__ >= 4 && !defined(WIN32) && !defined(__APPLE__)
-        inline ushort endianswap16(ushort n) { return __builtin_bswap16(n); }
-        inline uint endianswap32(uint n) { return __builtin_bswap32(n); }
-        inline uint64_t endianswap64(uint64_t n) { return __builtin_bswap64(n); }
-    #else
-        inline ushort endianswap16(ushort n) { return (n<<8) | (n>>8); }
-        inline uint endianswap32(uint n) { return (n<<24) | (n>>24) | ((n>>8)&0xFF00) | ((n<<8)&0xFF0000); }
-        inline uint64_t endianswap64(uint64_t n) { return ((uint64_t)endianswap32((uint)n) << 32) | ((uint64_t)endianswap32((uint)(n >> 32))); }
-    #endif
+inline ushort endianswap16(ushort n) { return (n<<8) | (n>>8); }
+inline uint endianswap32(uint n) { return (n<<24) | (n>>24) | ((n>>8)&0xFF00) | ((n<<8)&0xFF0000); }
 #endif
-template<class T> inline T endianswap(T n) { union { T t; uchar u[sizeof(T)]; } s, d; s.t = n; loopi(sizeof(T)) d.u[i] = s.u[sizeof(T) - 1 - i]; return d.t; }
+template<class T> inline T endianswap(T n) { union { T t; uint i; } conv; conv.t = n; conv.i = endianswap32(conv.i); return conv.t; }
 template<> inline ushort endianswap<ushort>(ushort n) { return endianswap16(n); }
 template<> inline short endianswap<short>(short n) { return endianswap16(n); }
 template<> inline uint endianswap<uint>(uint n) { return endianswap32(n); }
 template<> inline int endianswap<int>(int n) { return endianswap32(n); }
-template<> inline uint64_t endianswap<uint64_t>(uint64_t n) { return endianswap64(n); }
 template<class T> inline void endianswap(T *buf, int len) { for(T *end = &buf[len]; buf < end; buf++) *buf = endianswap(*buf); }
 template<class T> inline T endiansame(T n) { return n; }
 template<class T> inline void endiansame(T *buf, int len) {}
 #ifdef SDL_BYTEORDER
-    #if SDL_BYTEORDER == SDL_LIL_ENDIAN
-        #define lilswap endiansame
-        #define bigswap endianswap
-    #else
-        #define lilswap endianswap
-        #define bigswap endiansame
-    #endif
+#if SDL_BYTEORDER == SDL_LIL_ENDIAN
+#define lilswap endiansame
+#define bigswap endianswap
 #else
-    template<class T> inline T lilswap(T n) { return *(const uchar *)&islittleendian ? n : endianswap(n); }
-    template<class T> inline void lilswap(T *buf, int len) { if(!*(const uchar *)&islittleendian) endianswap(buf, len); }
-    template<class T> inline T bigswap(T n) { return *(const uchar *)&islittleendian ? endianswap(n) : n; }
-    template<class T> inline void bigswap(T *buf, int len) { if(*(const uchar *)&islittleendian) endianswap(buf, len); }
+#define lilswap endianswap
+#define bigswap endiansame
+#endif
+#else
+template<class T> inline T lilswap(T n) { return *(const uchar *)&islittleendian ? n : endianswap(n); }
+template<class T> inline void lilswap(T *buf, int len) { if(!*(const uchar *)&islittleendian) endianswap(buf, len); }
+template<class T> inline T bigswap(T n) { return *(const uchar *)&islittleendian ? endianswap(n) : n; }
+template<class T> inline void bigswap(T *buf, int len) { if(*(const uchar *)&islittleendian) endianswap(buf, len); }
 #endif
 
 #define uint2ip(address, ip) uchar ip[4]; \
@@ -897,7 +882,6 @@ struct stream
     virtual long tell() { return -1; }
     virtual bool seek(long offset, int whence = SEEK_SET) { return false; }
     virtual long size();
-    virtual void fflush() {}
     virtual int read(void *buf, int len) { return 0; }
     virtual int write(const void *buf, int len) { return 0; }
     virtual int getchar() { uchar c; return read(&c, 1) == 1 ? c : -1; }
@@ -905,7 +889,7 @@ struct stream
     virtual bool getline(char *str, int len);
     virtual bool putstring(const char *str) { int len = (int)strlen(str); return write(str, len) == len; }
     virtual bool putline(const char *str) { return putstring(str) && putchar('\n'); }
-    virtual int printf(const char *fmt, ...) PRINTFARGS(2, 3) { return -1; }
+    virtual int printf(const char *fmt, ...) { return -1; }
     virtual uint getcrc() { return 0; }
 
     template<class T> bool put(T n) { return write(&n, sizeof(n)) == sizeof(n); }
@@ -921,13 +905,9 @@ struct stream
 #endif
 };
 
-extern string _timestringbuffer;
-extern const char *timestring(time_t t, bool local = false, const char *fmt = NULL, char *buf = _timestringbuffer);
-inline const char *timestring(bool local = false, const char *fmt = NULL, char *buf = _timestringbuffer) { return timestring(time(NULL), local, fmt, buf); }
-extern const char *asctimestr();
+extern const char *timestring(bool local = false, const char *fmt = NULL);
+extern const char *asctime();
 extern const char *numtime();
-extern void transformoldentitytypes(int mapversion, uchar &enttype);
-extern int fixmapheadersize(int version, int headersize);
 extern char *path(char *s);
 extern char *path(const char *s, bool copy);
 extern char *unixpath(char *s);
@@ -937,37 +917,23 @@ extern bool fileexists(const char *path, const char *mode);
 extern bool createdir(const char *path);
 extern size_t fixpackagedir(char *dir);
 extern void sethomedir(const char *dir);
-extern bool havehomedir();
 extern void addpackagedir(const char *dir);
-extern int findfilelocation;
-enum { FFL_WORKDIR = -2, FFL_HOME = -1, FFL_ZIP = 0 };
 extern const char *findfile(const char *filename, const char *mode);
 extern int getfilesize(const char *filename);
-extern stream *openvecfile(vector<uchar> *s = NULL, bool autodelete = true);
-extern stream *openmemfile(const uchar *buf, int size, int *refcnt);
-extern bool findzipfile(const char *name);
+extern stream *openrawfile(const char *filename, const char *mode);
 extern stream *openzipfile(const char *filename, const char *mode);
 extern stream *openfile(const char *filename, const char *mode);
 extern stream *opentempfile(const char *filename, const char *mode);
 extern stream *opengzfile(const char *filename, const char *mode, stream *file = NULL, int level = Z_BEST_COMPRESSION);
 extern char *loadfile(const char *fn, int *size, const char *mode = NULL);
-extern int streamcopy(stream *dest, stream *source, int maxlen = INT_MAX);
-extern void filerotate(const char *basename, const char *ext, int keepold, const char *oldformat = NULL);
-extern const char *stream_capabilities();
-extern void listsubdirs(const char *dir, vector<char *> &subdirs, int (__cdecl *sf)(const char **, const char **));
 extern bool listdir(const char *dir, const char *ext, vector<char *> &files);
-extern void listfiles(const char *dir, const char *ext, vector<char *> &files, int (__cdecl *sf)(const char **, const char **) = NULL);
-extern void listfilesrecursive(const char *dir, vector<char *> &files, int level = 0);
-extern void listdirsrecursive(const char *dir, vector<char *> &subdirs, int level = 0);
-extern void listzipfiles(const char *dir, const char *ext, vector<char *> &files);
-extern void listzipdirs(const char *dir, vector<char *> &subdirs);
+extern int listfiles(const char *dir, const char *ext, vector<char *> &files);
+extern int listzipfiles(const char *dir, const char *ext, vector<char *> &files);
 extern bool delfile(const char *path);
-extern void backup(char *name, char *backupname);
-extern bool validzipmodname(char *name);
-extern void *zipmanualopen(stream *f, vector<const char *> &files);
-extern stream *zipmanualstream(void *a, int n);
-extern int zipmanualread(void *a, int n, stream *f, int maxlen = INT_MAX);
-extern void zipmanualclose(void *a);
+extern bool copyfile(const char *source, const char *destination);
+extern bool preparedir(const char *destination);
+extern bool addzip(const char *name, const char *mount = NULL, const char *strip = NULL, bool extract = false, int type = -1);
+extern bool removezip(const char *name);
 extern struct mapstats *loadmapstats(const char *filename, bool getlayout);
 extern bool cmpb(void *b, int n, enet_uint32 c);
 extern bool cmpf(char *fn, enet_uint32 c);
@@ -977,12 +943,6 @@ extern bool isbigendian();
 extern void strtoupper(char *t, const char *s = NULL);
 extern void seedMT(uint seed);
 extern uint randomMT(void);
-extern void popMT(void);
-extern void entropy_init(uint seed);
-extern void entropy_save();
-extern void entropy_add_byte(uchar b);
-extern void entropy_add_block(const uchar *s, int len);
-extern void entropy_get(uchar *buf, int len);
 
 struct iprange { enet_uint32 lr, ur; };
 extern const char *atoip(const char *s, enet_uint32 *ip);
@@ -991,44 +951,11 @@ extern const char *iptoa(const enet_uint32 ip);
 extern const char *iprtoa(const struct iprange &ipr);
 extern int cmpiprange(const struct iprange *a, const struct iprange *b);
 extern int cmpipmatch(const struct iprange *a, const struct iprange *b);
-extern int cvecprintf(vector<char> &v, const char *s, ...) PRINTFARGS(2, 3);
 extern const char *hiddenpwd(const char *pwd, int showchars = 0);
-extern int getlistindex(const char *key, const char *list[], bool acceptnumeric = true, int deflt = -1);
-extern void parseupdatelist(hashtable<const char *, int> &ht, char *buf, const char *prefix = NULL, const char *suffix = NULL);
-
-struct twoint { int key, val; };
-struct threeint { int key, val1, val2; };
-extern int cmpintasc(const int *a, const int *b);  // leads to ascending sort order
-extern int cmpintdesc(const int *a, const int *b); // leads to descending sort order
-extern int stringsort(const char **a, const char **b);
-extern int stringsortrev(const char **a, const char **b);
-extern int stringsortignorecase(const char **a, const char **b);
-extern int stringsortignorecaserev(const char **a, const char **b);
 
 #if defined(WIN32) && !defined(_DEBUG) && !defined(__GNUC__)
 extern void stackdumper(unsigned int type, EXCEPTION_POINTERS *ep);
 #endif
-
-struct sl_semaphore
-{
-    void *data;
-    int *errorcount;
-
-    sl_semaphore(int init, int *errorcount);  // init: initial semaphore value; errorcount: pointer to error counter for semaphore-related errors or NULL
-    ~sl_semaphore();
-    void wait();     // blocks, until semaphore gets available
-    int trywait();   // returns 0, if semaphore was locked (like wait(), but returns !=0 instead of blocking)
-    int timedwait(int howlongmillis); // like trywait(), but waits for a litte before returning failure
-    int getvalue();  // returns current semaphore value
-    void post();     // increments (unlocks) semaphore
-};
-
-extern void *sl_createthread(int (*fn)(void *), void *data);
-extern int sl_waitthread(void *ti);
-extern bool sl_pollthread(void *ti);
-extern void sl_detachthread(void *ti);
-extern void sl_sleep(int duration);
-extern bool ismainthread();
 
 #endif
 

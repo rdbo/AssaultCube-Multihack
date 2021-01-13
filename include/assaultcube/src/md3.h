@@ -63,7 +63,6 @@ struct md3 : vertmodel
             {
                 delete f;
                 conoutf("md3: corrupted header");
-                flagmapconfigerror(LWW_MODELERR);
                 return false;
             }
 
@@ -154,7 +153,7 @@ struct md3 : vertmodel
         }
     };
 
-    void render(int anim, int varseed, float speed, int basetime, const vec &o, float roll, float yaw, float pitch, dynent *d, modelattach *a, float scale)
+    void render(int anim, int varseed, float speed, int basetime, const vec &o, float yaw, float pitch, dynent *d, modelattach *a, float scale)
     {
         if(!loaded) return;
 
@@ -178,20 +177,18 @@ struct md3 : vertmodel
             shadowdir = vec(0, 1/SQRT2, -1/SQRT2);
             shadowdir.rotate_around_z((-shadowyaw-yaw-180.0f)*RAD);
             shadowdir.rotate_around_y(-pitch*RAD);
-            shadowdir.rotate_around_x(roll*RAD);
             (shadowpos = shadowdir).mul(shadowdist);
         }
 
         modelpos = o;
-        modelroll = roll;
         modelyaw = yaw;
         modelpitch = pitch;
 
         matrixpos = 0;
-        quat q(- yaw - 180, pitch);
-        matrixstack[0].fromquat(roll == 0.0f ? q : q.roll(roll));
+        matrixstack[0].identity();
         matrixstack[0].translate(o);
-
+        matrixstack[0].rotate_around_z((yaw+180)*RAD);
+        matrixstack[0].rotate_around_y(-pitch*RAD);
         if(anim&ANIM_MIRROR || scale!=1) matrixstack[0].scale(scale, anim&ANIM_MIRROR ? -scale : scale, scale);
         parts[0]->render(anim, varseed, speed, basetime, d);
 
@@ -218,15 +215,19 @@ struct md3 : vertmodel
         defformatstring(cfgname)("packages/models/%s/md3.cfg", loadname);
 
         loadingmd3 = this;
-        ASSERT(execcontext == IEXC_MDLCFG);
+        per_idents = false;
+        neverpersist = true;
         if(execfile(cfgname) && parts.length()) // configured md3, will call the md3* commands below
         {
+            neverpersist = false;
+            per_idents = true;
             loadingmd3 = NULL;
             if(parts.empty()) return false;
             loopv(parts) if(!parts[i]->filename) return false;
         }
         else // md3 without configuration, try default tris and skin
         {
+            per_idents = false;
             loadingmd3 = NULL;
             md3part &mdl = *new md3part;
             parts.add(&mdl);
@@ -241,10 +242,10 @@ struct md3 : vertmodel
             Texture *skin;
             loadskin(loadname, pname, skin);
             loopv(mdl.meshes) mdl.meshes[i]->skin  = skin;
-            if(skin==notexture) { conoutf("could not load model skin for %s", name1); flagmapconfigerror(LWW_MODELERR); }
+            if(skin==notexture) conoutf("could not load model skin for %s", name1);
         }
         loopv(parts) parts[i]->scaleverts(scale/16.0f, vec(translate.x, -translate.y, translate.z));
-        radius = calcradius(zradius);
+        radius = calcradius();
         if(shadowdist) calcneighbors();
         calcbbs();
         return loaded = true;
@@ -253,23 +254,20 @@ struct md3 : vertmodel
 
 void md3load(char *model)
 {
-    if(!loadingmd3) { conoutf("not loading an md3"); flagmapconfigerror(LWW_MODELERR); scripterr(); return; };
-    filtertext(model, model, FTXT__MEDIAFILEPATH);
+    if(!loadingmd3) { conoutf("not loading an md3"); return; };
     defformatstring(filename)("%s/%s", md3dir, model);
     md3::md3part &mdl = *new md3::md3part;
     loadingmd3->parts.add(&mdl);
     mdl.model = loadingmd3;
     mdl.index = loadingmd3->parts.length()-1;
-    if(!mdl.load(path(filename))) { conoutf("could not load %s", filename); flagmapconfigerror(LWW_MODELERR); scripterr(); } // ignore failure
+    if(!mdl.load(path(filename))) conoutf("could not load %s", filename); // ignore failure
 }
-COMMAND(md3load, "s");
 
 void md3skin(char *objname, char *skin)
 {
-    filtertext(skin, skin, FTXT__MEDIAFILEPATH);
-    if(!loadingmd3 || loadingmd3->parts.empty()) { conoutf("not loading an md3"); flagmapconfigerror(LWW_MODELERR); scripterr(); return; };
+    if(!objname || !skin) return;
+    if(!loadingmd3 || loadingmd3->parts.empty()) { conoutf("not loading an md3"); return; };
     md3::part &mdl = *loadingmd3->parts.last();
-    bool used = false;
     loopv(mdl.meshes)
     {
         md3::mesh &m = *mdl.meshes[i];
@@ -277,43 +275,34 @@ void md3skin(char *objname, char *skin)
         {
             defformatstring(spath)("%s/%s", md3dir, skin);
             m.skin = textureload(spath);
-            used = true;
         }
     }
-    if(!used)
-    {
-        defformatstring(s)(", possibilities are: *");
-        loopv(mdl.meshes) concatformatstring(s, "|%s", mdl.meshes[i]->name);
-        conoutf("mesh \"%s\" not found in model %s, skin %s not loaded%s", objname, loadingmd3->loadname, skin, mdl.meshes.length() ? s : "");
-        flagmapconfigerror(LWW_MODELERR);
-        scripterr();
-    }
 }
-COMMAND(md3skin, "ss");
 
 void md3anim(char *anim, int *startframe, int *range, float *speed)
 {
-    if(!loadingmd3 || loadingmd3->parts.empty()) { conoutf("not loading an md3"); flagmapconfigerror(LWW_MODELERR); scripterr(); return; };
+    if(!loadingmd3 || loadingmd3->parts.empty()) { conoutf("not loading an md3"); return; };
     int num = findanim(anim);
-    if(num<0) { conoutf("could not find animation %s", anim); flagmapconfigerror(LWW_MODELERR); scripterr(); return; };
+    if(num<0) { conoutf("could not find animation %s", anim); return; };
     loadingmd3->parts.last()->setanim(num, *startframe, *range, *speed);
 }
-COMMAND(md3anim, "siif");
 
 void md3link(int *parent, int *child, char *tagname)
 {
     if(!loadingmd3) { conoutf("not loading an md3"); return; };
-    if(!loadingmd3->parts.inrange(*parent) || !loadingmd3->parts.inrange(*child)) { conoutf("no models loaded to link"); flagmapconfigerror(LWW_MODELERR); scripterr(); return; }
-    if(!loadingmd3->parts[*parent]->link(loadingmd3->parts[*child], tagname)) { conoutf("could not link model %s", loadingmd3->loadname); flagmapconfigerror(LWW_MODELERR); scripterr(); }
+    if(!loadingmd3->parts.inrange(*parent) || !loadingmd3->parts.inrange(*child)) { conoutf("no models loaded to link"); return; }
+    if(!loadingmd3->parts[*parent]->link(loadingmd3->parts[*child], tagname)) conoutf("could not link model %s", loadingmd3->loadname);
 }
-COMMAND(md3link, "iis");
 
-void md3emit(char *tag, char *_type, int *arg1, int *arg2)
+void md3emit(char *tag, int *type, int *arg1, int *arg2)
 {
-    if(!loadingmd3 || loadingmd3->parts.empty()) { conoutf("not loading an md3"); flagmapconfigerror(LWW_MODELERR); scripterr(); return; };
-    int type = getlistindex(_type, particletypenames, true, -1);
-    if(type < 0 || type >= MAXPARTYPES) { conoutf("unknown particle type %s", _type); flagmapconfigerror(LWW_MODELERR); scripterr(); return; };
+    if(!loadingmd3 || loadingmd3->parts.empty()) { conoutf("not loading an md3"); return; };
     md3::part &mdl = *loadingmd3->parts.last();
-    if(!mdl.addemitter(tag, type, *arg1, *arg2)) { conoutf("could not find tag %s", tag); flagmapconfigerror(LWW_MODELERR); scripterr(); return; }
+    if(!mdl.addemitter(tag, *type, *arg1, *arg2)) { conoutf("could not find tag %s", tag); return; }
 }
-COMMAND(md3emit, "ssii");
+
+COMMAND(md3load, "s");
+COMMAND(md3skin, "ss");
+COMMAND(md3anim, "siif");
+COMMAND(md3link, "iis");
+COMMAND(md3emit, "siii");

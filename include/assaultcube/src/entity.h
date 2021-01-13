@@ -1,29 +1,24 @@
 enum                            // static entity types
 {
-    NOTUSED = 0,                // entity slot not in use in map (usually seen at deleted entities)
-    LIGHT,                      // lightsource, attr1 = radius, attr2 = intensity (or attr2..4 = r-g-b)
+    NOTUSED = 0,                // entity slot not in use in map
+    LIGHT,                      // lightsource, attr1 = radius, attr2 = intensity
     PLAYERSTART,                // attr1 = angle, attr2 = team
-    I_CLIPS, I_AMMO, I_GRENADE, // attr1 = elevation
+    I_CLIPS, I_AMMO, I_GRENADE,
     I_HEALTH, I_HELMET, I_ARMOUR, I_AKIMBO,
-    MAPMODEL,                   // attr1 = angle, attr2 = idx, attr3 = elevation, attr4 = texture, attr5 = pitch, attr6 = roll
+                                // helmet : 2010may16 -> mapversion:8
+    MAPMODEL,                   // attr1 = angle, attr2 = idx
     CARROT,                     // attr1 = tag, attr2 = type
-    LADDER,                     // attr1 = height
+    LADDER,
     CTF_FLAG,                   // attr1 = angle, attr2 = red/blue
-    SOUND,                      // attr1 = idx, attr2 = radius, attr3 = size, attr4 = volume
-    CLIP,                       // attr1 = elevation, attr2 = xradius, attr3 = yradius, attr4 = height, attr6 = slope, attr7 = shape
-    PLCLIP,                     // attr1 = elevation, attr2 = xradius, attr3 = yradius, attr4 = height, attr6 = slope, attr7 = shape
-    DUMMYENT,                   // temporary entity without any function - will not be saved to map files, used to mark positions and for scripting
+    SOUND,
+    CLIP,
+    PLCLIP,
     MAXENTTYPES
 };
 
-extern short entwraparound[MAXENTTYPES][7];
-extern uchar entscale[MAXENTTYPES][7];
-#define ENTSCALE10 10
-#define ENTSCALE5 5
-
 enum {MAP_IS_BAD, MAP_IS_EDITABLE, MAP_IS_GOOD};
 
-extern const char *entnames[];
+extern const char *entnames[MAXENTTYPES];
 #define isitem(i) ((i) >= I_CLIPS && (i) <= I_AKIMBO)
 
 struct persistent_entity        // map entity
@@ -32,10 +27,7 @@ struct persistent_entity        // map entity
     short attr1;
     uchar type;                 // type is one of the above
     uchar attr2, attr3, attr4;
-    short attr5;
-    char attr6;
-    unsigned char attr7;
-    persistent_entity(short x, short y, short z, uchar type, short attr1, uchar attr2, uchar attr3, uchar attr4) : x(x), y(y), z(z), attr1(attr1), type(type), attr2(attr2), attr3(attr3), attr4(attr4), attr5(0), attr6(0), attr7(0) {}
+    persistent_entity(short x, short y, short z, uchar type, short attr1, uchar attr2, uchar attr3, uchar attr4) : x(x), y(y), z(z), attr1(attr1), type(type), attr2(attr2), attr3(attr3), attr4(attr4) {}
     persistent_entity() {}
 };
 
@@ -54,8 +46,7 @@ struct entity : persistent_entity
 };
 
 enum { GUN_KNIFE = 0, GUN_PISTOL, GUN_CARBINE, GUN_SHOTGUN, GUN_SUBGUN, GUN_SNIPER, GUN_ASSAULT, GUN_CPISTOL, GUN_GRENADE, GUN_AKIMBO, NUMGUNS };
-#define valid_weapon(g) ((g) >= GUN_KNIFE && (g) < NUMGUNS)
-#define reloadable_gun(g) ((g) != GUN_KNIFE && (g) != GUN_GRENADE)
+#define reloadable_gun(g) (g != GUN_KNIFE && g != GUN_GRENADE)
 
 #define SGRAYS 21
 #define SGDMGTOTAL 90
@@ -77,15 +68,19 @@ enum { GUN_KNIFE = 0, GUN_PISTOL, GUN_CARBINE, GUN_SHOTGUN, GUN_SUBGUN, GUN_SNIP
 
 #define SGMAXDMGABS 105
 #define SGMAXDMGLOC 84
+#define SGBONUSDIST 80
+#define SGSEGDMG_O 3
+#define SGSEGDMG_M 6
+#define SGSEGDMG_C 4
+#define SGSPREAD 2.25
 #define EXPDAMRAD 10
 
 struct itemstat { int add, start, max, sound; };
 extern itemstat ammostats[NUMGUNS];
 extern itemstat powerupstats[I_ARMOUR-I_HEALTH+1];
 
-struct guninfo { char modelname[23], title[42]; short sound, reload, reloadtime, attackdelay, damage, piercing, projspeed, part, spread, recoil, magsize, mdl_kick_rot, mdl_kick_back, recoilincrease, recoilbase, maxrecoil, recoilbackfade, pushfactor; bool isauto; };
+struct guninfo { string modelname; short sound, reload, reloadtime, attackdelay, damage, piercing, projspeed, part, spread, recoil, magsize, mdl_kick_rot, mdl_kick_back, recoilincrease, recoilbase, maxrecoil, recoilbackfade, pushfactor; bool isauto; };
 extern guninfo guns[NUMGUNS];
-extern const char *gunnames[];
 
 static inline int reloadtime(int gun) { return guns[gun].reloadtime; }
 static inline int attackdelay(int gun) { return guns[gun].attackdelay; }
@@ -94,9 +89,8 @@ static inline int magsize(int gun) { return guns[gun].magsize; }
 /** roseta stone:
        0000,         0001,      0010,           0011,            0100,       0101,     0110 */
 enum { TEAM_CLA = 0, TEAM_RVSF, TEAM_CLA_SPECT, TEAM_RVSF_SPECT, TEAM_SPECT, TEAM_NUM, TEAM_ANYACTIVE };
-extern const char *teamnames[];
-extern const char *teamnames_s[];
-extern const char *killmessages[2][NUMGUNS];
+extern const char *teamnames[TEAM_NUM+1];
+extern const char *teamnames_s[TEAM_NUM+1];
 
 #define TEAM_VOID TEAM_NUM
 #define isteam(a,b)   (m_teammode && (a) == (b))
@@ -109,12 +103,13 @@ extern const char *killmessages[2][NUMGUNS];
 #define team_group(t) ((t) == TEAM_SPECT ? TEAM_SPECT : team_base(t))
 #define team_tospec(t) ((t) == TEAM_SPECT ? TEAM_SPECT : team_base(t) + TEAM_CLA_SPECT - TEAM_CLA)
 // note: team_isactive and team_base can/should be used to check the limits for arrays of size '2'
-static inline const char *team_string(int t, bool abbr = false) { const char **n = abbr ? teamnames_s : teamnames; return team_isvalid(t) ? n[t] : n[TEAM_NUM + 1]; }
+static inline const char *team_string(int t, bool abbr = false) { const char **n = abbr ? teamnames_s : teamnames; return team_isvalid(t) ? n[t] : n[TEAM_NUM]; }
 
 enum { ENT_PLAYER = 0, ENT_BOT, ENT_CAMERA, ENT_BOUNCE };
 enum { CS_ALIVE = 0, CS_DEAD, CS_SPAWNING, CS_LAGGED, CS_EDITING, CS_SPECTATE };
 enum { CR_DEFAULT = 0, CR_ADMIN };
 enum { SM_NONE = 0, SM_DEATHCAM, SM_FOLLOW1ST, SM_FOLLOW3RD, SM_FOLLOW3RD_TRANSPARENT, SM_FLY, SM_OVERVIEW, SM_NUM };
+enum { FPCN_VOID = -4, FPCN_DEATHCAM = -2, FPCN_FLY = -2, FPCN_OVERVIEW = -1 };
 
 class worldobject
 {
@@ -143,7 +138,7 @@ public:
     int last_pos;
 
     physent() : o(0, 0, 0), deltapos(0, 0, 0), newpos(0, 0, 0), yaw(270), pitch(0), roll(0), pitchvel(0),
-            crouching(false), crouchedinair(false), trycrouch(false), cancollide(true), stuck(false), scoping(false), shoot(false), lastjump(0), lastjumpheight(200), lastsplash(0), state(CS_ALIVE), last_pos(0)
+            crouching(false), crouchedinair(false), trycrouch(false), cancollide(true), stuck(false), scoping(false), shoot(false), lastjump(0), lastjumpheight(0), lastsplash(0), state(CS_ALIVE), last_pos(0)
     {
         reset();
     }
@@ -266,20 +261,20 @@ public:
 
     void resetstats() { loopi(NUMGUNS) pstatshots[i] = pstatdamage[i] = 0; }
 
-    itemstat *itemstats(int type)
+    itemstat &itemstats(int type)
     {
         switch(type)
         {
-            case I_CLIPS:   return &ammostats[GUN_PISTOL];
-            case I_AMMO:    return &ammostats[primary];
-            case I_GRENADE: return &ammostats[GUN_GRENADE];
-            case I_AKIMBO:  return &ammostats[GUN_AKIMBO];
+            case I_CLIPS: return ammostats[GUN_PISTOL];
+            case I_AMMO: return ammostats[primary];
+            case I_GRENADE: return ammostats[GUN_GRENADE];
+            case I_AKIMBO: return ammostats[GUN_AKIMBO];
             case I_HEALTH:
             case I_HELMET:
             case I_ARMOUR:
-                return &powerupstats[type - I_HEALTH];
+                return powerupstats[type-I_HEALTH];
             default:
-                return NULL;
+                return *(itemstat *)0;
         }
     }
 
@@ -392,15 +387,15 @@ public:
             case 3: ad = (int) (4.0f/25.0f * armour) + 25; break;         // 41
             default: break;
         }
-
+        
         //ra - reduced armor
         //rd - reduced damage
         int ra = (int) (ad * damage/100.0f);
         int rd = ra-(ra*(gi.piercing/100.0f)); //Who cares about rounding errors anyways?
-
+        
         armour -= ra;
         damage -= rd;
-
+            
         health -= damage;
         return damage;
     }
@@ -408,11 +403,6 @@ public:
 
 #ifndef STANDALONE
 #define HEADSIZE 0.4f
-
-#define ROLLMOVMAX 20
-#define ROLLMOVDEF 0
-#define ROLLEFFMAX 30
-#define ROLLEFFDEF 10
 
 class playerent : public dynent, public playerstate
 {
@@ -423,7 +413,7 @@ public:
     enet_uint32 address;
     int lifesequence;                   // sequence id for each respawn, used in damage test
     int frags, flagscore, deaths, points, tks;
-    int lastaction, lastmove, lastpain, lastvoicecom, lastdeath;
+    int lastaction, lastmove, lastpain, lastvoicecom;
     int clientrole;
     bool attacking;
     string name;
@@ -432,7 +422,7 @@ public:
     int nextweapon; // weapon we switch to
     int spectatemode, followplayercn;
     int eardamagemillis;
-    float maxroll, maxrolleffect, movroll, effroll;  // roll added by movement and damage
+    int respawnoffset;
     bool allowmove() { return state!=CS_DEAD || spectatemode==SM_FLY; }
 
     weapon *weapons[NUMGUNS];
@@ -448,13 +438,12 @@ public:
     vec head;
 
     bool ignored, muted;
-    bool nocorpse;
 
-    playerent() : curskin(0), clientnum(-1), lastupdate(0), plag(0), ping(0), address(0), lifesequence(0), frags(0), flagscore(0), deaths(0), points(0), tks(0), lastpain(0), lastvoicecom(0), lastdeath(0), clientrole(CR_DEFAULT),
-                  team(TEAM_SPECT), spectatemode(SM_NONE), eardamagemillis(0), maxroll(ROLLMOVDEF), maxrolleffect(ROLLEFFDEF), movroll(0), effroll(0),
+    playerent() : curskin(0), clientnum(-1), lastupdate(0), plag(0), ping(0), address(0), lifesequence(0), frags(0), flagscore(0), deaths(0), points(0), tks(0), lastpain(0), lastvoicecom(0), clientrole(CR_DEFAULT),
+                  team(TEAM_SPECT), spectatemode(SM_NONE), followplayercn(FPCN_VOID), eardamagemillis(0), respawnoffset(0),
                   prevweaponsel(NULL), weaponsel(NULL), nextweaponsel(NULL), primweap(NULL), nextprimweap(NULL), lastattackweapon(NULL),
                   smoothmillis(-1),
-                  head(-1, -1, -1), ignored(false), muted(false), nocorpse(false)
+                  head(-1, -1, -1), ignored(false), muted(false)
     {
         type = ENT_PLAYER;
         name[0] = 0;
@@ -474,24 +463,26 @@ public:
         extern void zapplayerflags(playerent *owner);
         extern void cleanplayervotes(playerent *owner);
         extern physent *camera1;
-        extern void spectatemode(int mode);
+        extern void togglespect();
         removebounceents(this);
         audiomgr.detachsounds(this);
         removedynlights(this);
         zapplayerflags(this);
         cleanplayervotes(this);
-        if(this==camera1) spectatemode(SM_FOLLOW1ST);
+        if(this==camera1) togglespect();
     }
 
     void damageroll(float damage)
     {
-        damage *= effroll > 0.001f || (effroll > -0.001f && rnd(2)) ? 2.0f : -2.0f; // give player a kick
-        effroll = clamp(effroll + damage, -maxrolleffect, maxrolleffect);
+        extern void clamproll(physent *pl);
+        float damroll = 2.0f*damage;
+        roll += roll>0 ? damroll : (roll<0 ? -damroll : (rnd(2) ? damroll : -damroll)); // give player a kick
+        clamproll(this);
     }
 
     void hitpush(int damage, const vec &dir, playerent *actor, int gun)
     {
-        if(!valid_weapon(gun)) return;
+        if(gun<0 || gun>NUMGUNS) return;
         vec push(dir);
         push.mul(damage/100.0f*guns[gun].pushfactor);
         vel.add(push);
@@ -502,6 +493,7 @@ public:
     void resetspec()
     {
         spectatemode = SM_NONE;
+        followplayercn = FPCN_VOID;
     }
 
     void respawn()
@@ -519,7 +511,6 @@ public:
         eardamagemillis = 0;
         eyeheight = maxeyeheight;
         curskin = nextskin[team_base(team)];
-        nocorpse = false;
     }
 
     void spawnstate(int gamemode)
@@ -549,7 +540,7 @@ public:
     {
         const int maxskin[2] = { 4, 6 };
         t = team_base(t < 0 ? team : t);
-        nextskin[t] = iabs(s) % maxskin[t];
+        nextskin[t] = abs(s) % maxskin[t];
     }
 };
 
@@ -650,3 +641,35 @@ public:
 enum {MD_FRAGS = 0, MD_DEATHS, END_MDS};
 struct medalsst {bool assigned; int cn; int item;};
 
+#define MAXKILLMSGLEN 16
+extern char killmessages[2][NUMGUNS][MAXKILLMSGLEN];
+inline const char *killmessage(int gun, bool gib = false)
+{
+    if(gun<0 || gun>=NUMGUNS) return "";
+
+    return killmessages[gib?1:0][gun];
+}
+
+#ifndef STANDALONE
+struct pckserver
+{
+    char *addr;
+    bool pending, responsive;
+    int ping;
+
+    pckserver() : addr(NULL), pending(false), responsive(true), ping(-1) {}
+};
+
+enum { PCK_TEXTURE, PCK_SKYBOX, PCK_MAPMODEL, PCK_AUDIO, PCK_MAP, PCK_NUM };
+
+struct package
+{
+    char *name;
+    int type, number;
+    bool pending;
+    pckserver *source;
+    CURL *curl;
+
+    package() : name(NULL), type(-1), number(0), pending(false), source(NULL), curl(NULL) {}
+};
+#endif
