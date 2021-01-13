@@ -87,7 +87,9 @@ public:
 		if (check)
 		{
 			check &= this->ent->state == CS_ALIVE;
-			this->headpos3D = this->ent->o;
+			this->headpos3D = this->ent->head;
+			if (this->headpos3D.x == -1.0f || this->headpos3D.y == -1.0f || this->headpos2D.z == -1)
+				this->headpos3D = this->ent->o;
 			check &= WorldToScreen(this->ent->newpos, &this->pos2D);
 			check &= WorldToScreen(this->headpos3D, &this->headpos2D);
 		}
