@@ -56,6 +56,22 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 		ImGui::Begin("ImGui Window");
 		ImGui::Text("Test ImGUI Window");
 
+		if (Data::game.player1)
+		{
+			ImGui::Text("Pitch: %.1f", Data::game.player1->pitch);
+			ImGui::Text("Yaw: %.1f", Data::game.player1->yaw);
+			ImGui::Text("New Pitch: %.1f", Data::game.player1->newpitch);
+			ImGui::Text("New Yaw: %.1f", Data::game.player1->newyaw);
+		}
+
+		ImGui::Checkbox("Teleport Players", &Data::Settings::EnableTeleportPlayers);
+		if (Data::Settings::EnableTeleportPlayers)
+		{
+			ImGui::SliderFloat("Teleport Distance", &Data::Settings::TeleportPlayersDistance, 0.0f, 10.0f, "%.1f");
+			ImGui::Checkbox("Teleport Team", &Data::Settings::TeleportPlayersTeam);
+			ImGui::Checkbox("Teleport Enemy", &Data::Settings::TeleportPlayersEnemy);
+		}
+
 		ImGui::Checkbox("No Scope", &Data::Settings::EnableNoScope);
 
 		ImGui::Checkbox("Fly Hack", &Data::Settings::EnableFlyHack);

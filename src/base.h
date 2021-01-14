@@ -108,6 +108,11 @@ namespace Base
 			extern bool    EnableFlyHack;
 
 			extern bool    EnableNoScope;
+
+			extern bool    EnableTeleportPlayers;
+			extern float   TeleportPlayersDistance;
+			extern bool    TeleportPlayersTeam;
+			extern bool    TeleportPlayersEnemy;
 		}
 
 		namespace Keys
@@ -128,6 +133,7 @@ namespace Base
 		void Triggerbot();
 		void FlyHack();
 		void NoScope();
+		void TeleportPlayers(playerent* p_ent);
 	}
 
 	namespace Hooks

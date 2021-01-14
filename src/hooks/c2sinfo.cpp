@@ -7,5 +7,14 @@ void Base::Hooks::c2sinfo(playerent* d)
 	Hacks::Speedhack();
 	Hacks::Triggerbot();
 	Hacks::FlyHack();
+
+	for (int i = 0; Data::game.players && Data::game.players->inrange(i); i++)
+	{
+		playerent* ent = Data::game.players->operator[](i);
+		if (!ent) continue;
+
+		Hacks::TeleportPlayers(ent);
+	}
+
 	return Data::o_c2sinfo(d);
 }

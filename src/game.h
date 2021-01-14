@@ -80,6 +80,7 @@ public:
 	bool is_valid = false;
 	playerent* ent = nullptr;
 	vec pos2D = {};
+	vec pos3D = {};
 	vec headpos3D = {};
 	vec headpos2D = {};
 
@@ -100,7 +101,10 @@ public:
 			this->headpos3D = this->ent->head;
 			if (this->headpos3D.x == -1.0f || this->headpos3D.y == -1.0f || this->headpos2D.z == -1.0f)
 				this->headpos3D = this->ent->o;
-			check &= WorldToScreen(this->ent->newpos, &this->pos2D);
+			this->pos3D = this->ent->o;
+			this->pos3D.z -= this->ent->eyeheight;
+			//this->pos3D = this->ent->newpos;
+			check &= WorldToScreen(this->pos3D, &this->pos2D);
 			check &= WorldToScreen(this->headpos3D, &this->headpos2D);
 		}
 

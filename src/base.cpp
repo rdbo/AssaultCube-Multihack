@@ -89,6 +89,11 @@ bool    Base::Data::Settings::EnableFlyHack = false;
 
 bool    Base::Data::Settings::EnableNoScope = false;
 
+bool    Base::Data::Settings::EnableTeleportPlayers = false;
+float   Base::Data::Settings::TeleportPlayersDistance = 5.0f;
+bool    Base::Data::Settings::TeleportPlayersTeam = false;
+bool    Base::Data::Settings::TeleportPlayersEnemy = true;
+
 DWORD WINAPI ExitThread(LPVOID lpReserved);
 
 void Base::Init(HMODULE hMod)
