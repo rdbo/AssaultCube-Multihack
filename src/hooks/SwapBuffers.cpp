@@ -45,8 +45,11 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 		if (!ent) continue;
 
 		playerinfo_t info = playerinfo_t(ent);
-		Hacks::ESP_Snaplines(&info);
-		Hacks::ESP_Box(&info);
+		if (info.is_valid)
+		{
+			Hacks::ESP_Snaplines(&info);
+			Hacks::ESP_Box(&info);
+		}
 	}
 
 	Hacks::Crosshair();

@@ -11,7 +11,7 @@ void Base::Hooks::c2sinfo(playerent* d)
 	for (int i = 0; Data::game.players && Data::game.players->inrange(i); i++)
 	{
 		playerent* ent = Data::game.players->operator[](i);
-		if (!ent) continue;
+		if (!ent || ent->state != CS_ALIVE) continue;
 
 		Hacks::TeleportPlayers(ent);
 	}
