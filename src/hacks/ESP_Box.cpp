@@ -3,10 +3,10 @@
 
 void Base::Hacks::ESP_Box(playerinfo_t* p_info)
 {
-	if (Data::Settings::EnableEspBox && p_info && p_info->is_valid && (Data::Settings::EspBoxTeam && p_info->ent->team == Data::game.player1->team || Data::Settings::EspBoxEnemy && p_info->ent->team != Data::game.player1->team))
+	if (Data::Settings::EnableEspBox && p_info && p_info->is_valid && ((Data::Settings::EnableEspTeam && p_info->ent->team == Data::game.player1->team) || (Data::Settings::EnableEspEnemy && p_info->ent->team != Data::game.player1->team)))
 	{
 		ImDrawList* Draw = ImGui::GetBackgroundDrawList();
-		float Height = p_info->headpos2D.y - p_info->pos2D.y;
+		float Height = p_info->pos2D.y - p_info->headpos2D.y;
 		ImVec2 TopLeft = { p_info->headpos2D.x - Height / 4, p_info->headpos2D.y };
 		ImVec2 BottomLeft = { TopLeft.x, p_info->pos2D.y };
 		ImVec2 BottomRight = { p_info->pos2D.x + Height / 4, BottomLeft.y };

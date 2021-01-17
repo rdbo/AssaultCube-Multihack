@@ -76,17 +76,16 @@ namespace Base
 			extern bool    CrosshairDotFilled;
 			extern float   CrosshairColor[4];
 
+			extern bool    EnableEspTeam;
+			extern bool    EnableEspEnemy;
+
 			extern bool    EnableEspSnaplines;
-			extern bool    EspSnaplinesTeam;
-			extern bool    EspSnaplinesEnemy;
 			extern float   EspSnaplinesThickness;
 			extern float   EspSnaplinesColorTeam[4];
 			extern float   EspSnaplinesColorEnemy[4];
 			extern int     EspSnaplinesPos;
 
 			extern bool    EnableEspBox;
-			extern bool    EspBoxTeam;
-			extern bool    EspBoxEnemy;
 			extern float   EspBoxThickness;
 			extern float   EspBoxColorTeam[4];
 			extern float   EspBoxColorFillTeam[4];
@@ -113,6 +112,14 @@ namespace Base
 			extern float   TeleportPlayersDistance;
 			extern bool    TeleportPlayersTeam;
 			extern bool    TeleportPlayersEnemy;
+
+			extern bool    EnableEspHealth;
+			extern float   EspHealthColor[4];
+			extern float   EspHealthDmgColor[4];
+
+			extern bool    EnableEspArmor;
+			extern float   EspArmorColor[4];
+			extern float   EspArmorDmgColor[4];
 		}
 
 		namespace Keys
@@ -134,6 +141,7 @@ namespace Base
 		void FlyHack();
 		void NoScope();
 		void TeleportPlayers(playerent* p_ent);
+		void ESP_Info(playerinfo_t* p_info);
 	}
 
 	namespace Hooks

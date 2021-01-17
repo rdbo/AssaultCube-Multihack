@@ -42,13 +42,14 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 	for (int i = 0; Data::game.players && Data::game.players->inrange(i); i++)
 	{
 		playerent* ent = Data::game.players->operator[](i);
-		if (!ent) continue;
+		if (!ent || ent == Data::game.player1) continue;
 
 		playerinfo_t info = playerinfo_t(ent);
 		if (info.is_valid)
 		{
 			Hacks::ESP_Snaplines(&info);
 			Hacks::ESP_Box(&info);
+			Hacks::ESP_Info(&info);
 		}
 	}
 
@@ -59,18 +60,16 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 		ImGui::Begin("ImGui Window");
 		ImGui::Text("Test ImGUI Window");
 
-		if (Data::game.player1)
-		{
-			ImGui::Text("Pitch: %.1f", Data::game.player1->pitch);
-			ImGui::Text("Yaw: %.1f", Data::game.player1->yaw);
-			ImGui::Text("New Pitch: %.1f", Data::game.player1->newpitch);
-			ImGui::Text("New Yaw: %.1f", Data::game.player1->newyaw);
-		}
+		ImGui::Checkbox("ESP Armor", &Data::Settings::EnableEspArmor);
+
+		ImGui::Checkbox("Enable ESP Team", &Data::Settings::EnableEspTeam);
+		ImGui::Checkbox("Enable ESP Enemy", &Data::Settings::EnableEspEnemy);
+		ImGui::Checkbox("ESP Health", &Data::Settings::EnableEspHealth);
 
 		ImGui::Checkbox("Teleport Players", &Data::Settings::EnableTeleportPlayers);
 		if (Data::Settings::EnableTeleportPlayers)
 		{
-			ImGui::SliderFloat("Teleport Distance", &Data::Settings::TeleportPlayersDistance, 0.0f, 10.0f, "%.1f");
+			ImGui::SliderFloat("Teleport Distance", &Data::Settings::TeleportPlayersDistance, 0.0f, 50.0f, "%.1f");
 			ImGui::Checkbox("Teleport Team", &Data::Settings::TeleportPlayersTeam);
 			ImGui::Checkbox("Teleport Enemy", &Data::Settings::TeleportPlayersEnemy);
 		}
@@ -90,20 +89,17 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 		ImGui::Checkbox("ESP Box", &Data::Settings::EnableEspBox);
 		if (Data::Settings::EnableEspBox)
 		{
-			ImGui::Checkbox("ESP Box Team", &Data::Settings::EspBoxTeam);
-			ImGui::Checkbox("ESP Box Enemy", &Data::Settings::EspBoxEnemy);
-
-			if (Data::Settings::EspBoxTeam || Data::Settings::EspBoxEnemy)
+			if (Data::Settings::EnableEspTeam || Data::Settings::EnableEspEnemy)
 			{
 				ImGui::SliderFloat("ESP Box Thickness", &Data::Settings::EspBoxThickness, 0, 100, "%.0f");
 
-				if (Data::Settings::EspBoxTeam)
+				if (Data::Settings::EnableEspTeam)
 				{
 					ImGui::ColorEdit4("ESP Box Color Team", Data::Settings::EspBoxColorTeam);
 					ImGui::ColorEdit4("ESP Box Color Fill Team", Data::Settings::EspBoxColorFillTeam);
 				}
 
-				if (Data::Settings::EspBoxEnemy)
+				if (Data::Settings::EnableEspEnemy)
 				{
 					ImGui::ColorEdit4("ESP Box Color Enemy", Data::Settings::EspBoxColorEnemy);
 					ImGui::ColorEdit4("ESP Box Color Fill Enemy", Data::Settings::EspBoxColorFillEnemy);
@@ -114,15 +110,13 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 		ImGui::Checkbox("ESP Snaplines", &Data::Settings::EnableEspSnaplines);
 		if (Data::Settings::EnableEspSnaplines)
 		{
-			ImGui::Checkbox("ESP Snaplines Team", &Data::Settings::EspSnaplinesTeam);
-			ImGui::Checkbox("ESP Snaplines Enemy", &Data::Settings::EspSnaplinesEnemy);
-			if (Data::Settings::EspSnaplinesTeam || Data::Settings::EspSnaplinesEnemy)
+			if (Data::Settings::EnableEspTeam || Data::Settings::EnableEspEnemy)
 			{
 				const char* SnaplinesPos[] = { "Bottom", "Top" };
 				ImGui::SliderFloat("ESP Snaplines Thickness", &Data::Settings::EspSnaplinesThickness, 0, 100, "%.0f");
-				if(Data::Settings::EspSnaplinesTeam)
+				if(Data::Settings::EnableEspTeam)
 					ImGui::ColorEdit4("ESP Snaplines Color Team", Data::Settings::EspSnaplinesColorTeam);
-				if(Data::Settings::EspSnaplinesEnemy)
+				if(Data::Settings::EnableEspEnemy)
 					ImGui::ColorEdit4("ESP Snaplines Color Enemy", Data::Settings::EspSnaplinesColorEnemy);
 				ImGui::ListBox("ESP Snaplines Position", &Data::Settings::EspSnaplinesPos, SnaplinesPos, 2);
 			}

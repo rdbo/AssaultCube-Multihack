@@ -56,17 +56,16 @@ bool    Base::Data::Settings::CrosshairDot = true;
 bool    Base::Data::Settings::CrosshairDotFilled = true;
 float   Base::Data::Settings::CrosshairColor[4] = { 1.0f, 0.0f, 0.0f, 1.0f };
 
+bool    Base::Data::Settings::EnableEspTeam = true;
+bool    Base::Data::Settings::EnableEspEnemy = true;
+
 bool    Base::Data::Settings::EnableEspSnaplines = false;
-bool    Base::Data::Settings::EspSnaplinesTeam  = true;
-bool    Base::Data::Settings::EspSnaplinesEnemy = true;
 float   Base::Data::Settings::EspSnaplinesThickness = 2.0f;
 float   Base::Data::Settings::EspSnaplinesColorTeam[4]  = { 0.0f, 0.5f, 1.0f, 1.0f };
 float   Base::Data::Settings::EspSnaplinesColorEnemy[4] = { 1.0f, 0.5f, 0.0f, 1.0f };
 int     Base::Data::Settings::EspSnaplinesPos = 0;
 
 bool    Base::Data::Settings::EnableEspBox = false;
-bool    Base::Data::Settings::EspBoxTeam = true;
-bool    Base::Data::Settings::EspBoxEnemy = true;
 float   Base::Data::Settings::EspBoxThickness = 2.0f;
 float   Base::Data::Settings::EspBoxColorTeam[4]  = { 0.0f, 1.0f, 0.5f, 1.0f };
 float   Base::Data::Settings::EspBoxColorFillTeam[4] = { 0.0f, 1.0f, 0.5f, 0.5f };
@@ -93,6 +92,14 @@ bool    Base::Data::Settings::EnableTeleportPlayers = false;
 float   Base::Data::Settings::TeleportPlayersDistance = 5.0f;
 bool    Base::Data::Settings::TeleportPlayersTeam = false;
 bool    Base::Data::Settings::TeleportPlayersEnemy = true;
+
+bool    Base::Data::Settings::EnableEspHealth = false;
+float   Base::Data::Settings::EspHealthColor[4] = { 0.0f, 0.8f, 0.0f, 1.0f };
+float   Base::Data::Settings::EspHealthDmgColor[4] = { 0.8f, 0.0f, 0.0f, 1.0f };
+
+bool    Base::Data::Settings::EnableEspArmor;
+float   Base::Data::Settings::EspArmorColor[4] = { 0.0f, 0.0f, 0.8f, 1.0f };
+float   Base::Data::Settings::EspArmorDmgColor[4] = { 0.05, 0.0f, 0.0f, 1.0f };
 
 DWORD WINAPI ExitThread(LPVOID lpReserved);
 
