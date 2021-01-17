@@ -42,6 +42,9 @@ bool              Base::Data::ShowMenu = true;
 HGLRC             Base::Data::glContext = NULL;
 HGLRC             Base::Data::oContext = NULL;
 AC_Client         Base::Data::game;
+ImFont*           Base::Data::FontTitle = nullptr;
+ImFont*           Base::Data::FontMenu = nullptr;
+ImFont*           Base::Data::FontHack = nullptr;
 
 bool    Base::Data::Settings::EnableCrosshair = false;
 int     Base::Data::Settings::CrosshairType = 0;

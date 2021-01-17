@@ -60,6 +60,9 @@ namespace Base
 		extern HGLRC             glContext;
 		extern HGLRC             oContext;
 		extern AC_Client         game;
+		extern ImFont*           FontTitle;
+		extern ImFont*           FontMenu;
+		extern ImFont*           FontHack;
 
 		namespace Settings
 		{

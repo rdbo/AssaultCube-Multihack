@@ -491,10 +491,17 @@
     <ClInclude Include="include\assaultcube\src\i18n.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="assets\font\Ubuntu_Regular.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="assets\font\UbuntuMono_Regular.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="build\readme.txt" />
     <Text Include="assets\readme.txt" />
+    <Text Include="assets\font\UFL.txt" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="include\assaultcube\lib\EFX-Util.lib" />
@@ -513,5 +520,12 @@
     <Library Include="include\assaultcube\lib\libvorbisfile.lib" />
     <Library Include="include\assaultcube\lib\SDL_ttf.lib" />
     <Library Include="include\assaultcube\lib\wldap32.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="assets\font\UbuntuMono-Regular.ttf" />
+    <Font Include="assets\font\Ubuntu-Regular.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\font\create_font_headers.py" />
   </ItemGroup>
 </Project>
