@@ -7,9 +7,11 @@ void Base::Hacks::ESP_Box(playerinfo_t* p_info)
 	{
 		ImDrawList* Draw = ImGui::GetBackgroundDrawList();
 		float Height = p_info->pos2D.y - p_info->headpos2D.y;
-		ImVec2 TopLeft = { p_info->headpos2D.x - Height / 4, p_info->headpos2D.y };
-		ImVec2 BottomLeft = { TopLeft.x, p_info->pos2D.y };
-		ImVec2 BottomRight = { p_info->pos2D.x + Height / 4, BottomLeft.y };
+		float BoxWidth = Height / 2;
+		float BoxHeight = Height;
+		ImVec2 TopLeft = { p_info->pos2D.x - BoxWidth / 2, p_info->pos2D.y - BoxHeight };
+		ImVec2 BottomLeft = { TopLeft.x, TopLeft.y + BoxHeight };
+		ImVec2 BottomRight = { BottomLeft.x + BoxWidth, BottomLeft.y };
 		ImVec2 TopRight = { BottomRight.x, TopLeft.y };
 		ImColor BoxColor = {};
 		ImColor BoxFillColor = {};

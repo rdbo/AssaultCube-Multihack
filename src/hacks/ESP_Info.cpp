@@ -70,7 +70,7 @@ void Base::Hacks::ESP_Info(playerinfo_t* p_info)
 		float   TextWidth = (float)TextLength * FontWidth;
 		float   TextHeight = FontHeight;
 		ImColor TextColor = ImColor(Data::Settings::EspNameColor[0], Data::Settings::EspNameColor[1], Data::Settings::EspNameColor[2], Data::Settings::EspNameColor[3]);
-		ImVec2  TextPos = ImVec2(p_info->headpos2D.x - (TextWidth / 2), p_info->headpos2D.y - SpaceUp - TextHeight);
+		ImVec2  TextPos = ImVec2(p_info->pos2D.x - (TextWidth / 2), p_info->pos2D.y - Height - SpaceUp - TextHeight);
 
 		Draw->AddText(TextPos, TextColor, (const char*)p_info->ent->name);
 
