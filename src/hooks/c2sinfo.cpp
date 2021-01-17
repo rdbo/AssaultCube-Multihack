@@ -7,6 +7,7 @@ void Base::Hooks::c2sinfo(playerent* d)
 	Hacks::Speedhack();
 	Hacks::Triggerbot();
 	Hacks::FlyHack();
+	Hacks::Bunnyhop();
 
 	for (int i = 0; Data::game.players && Data::game.players->inrange(i); i++)
 	{

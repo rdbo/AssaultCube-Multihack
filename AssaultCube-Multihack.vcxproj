@@ -212,6 +212,7 @@
     </ClCompile>
     <ClCompile Include="src\base.cpp" />
     <ClCompile Include="src\game.cpp" />
+    <ClCompile Include="src\hacks\Bunnyhop.cpp" />
     <ClCompile Include="src\hacks\Crosshair.cpp" />
     <ClCompile Include="src\hacks\ESP_Box.cpp" />
     <ClCompile Include="src\hacks\ESP_Info.cpp" />

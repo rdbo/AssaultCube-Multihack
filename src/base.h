@@ -63,6 +63,8 @@ namespace Base
 		extern ImFont*           FontTitle;
 		extern ImFont*           FontMenu;
 		extern ImFont*           FontHack;
+		extern bool              ShowWatermark;
+		extern ImColor           WatermarkColor;
 
 		namespace Settings
 		{
@@ -127,12 +129,15 @@ namespace Base
 			extern bool    EnableEspName;
 			extern float   EspNameColor[4];
 			extern float   EspNameOutlineColor[4];
+
+			extern bool    EnableBunnyhop;
 		}
 
 		namespace Keys
 		{
-			const UINT Menu   = VK_INSERT;
-			const UINT Unload = VK_END;
+			const  UINT Menu   = VK_INSERT;
+			const  UINT Unload = VK_END;
+			extern UINT Bhop;
 		}
 	}
 
@@ -149,6 +154,7 @@ namespace Base
 		void NoScope();
 		void TeleportPlayers(playerent* p_ent);
 		void ESP_Info(playerinfo_t* p_info);
+		void Bunnyhop();
 	}
 
 	namespace Hooks

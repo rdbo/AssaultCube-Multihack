@@ -1,6 +1,8 @@
 #include <pch.h>
 #include <base.h>
 
+static clock_t WatermarkClock = 0.0f;
+
 BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 {
 	Data::oContext = wglGetCurrentContext();
@@ -105,6 +107,8 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 
+	ImDrawList* Draw = ImGui::GetBackgroundDrawList();
+
 	ImGui::PushFont(Data::FontHack);
 	for (int i = 0; Data::game.players && Data::game.players->inrange(i); i++)
 	{
@@ -123,6 +127,50 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 	Hacks::Crosshair();
 
 	ImGui::PopFont();
+
+	if (Data::ShowWatermark)
+	{
+		if (!WatermarkClock) WatermarkClock = clock();
+
+		clock_t now = clock();
+
+		ImGui::PushFont(Data::FontHack);
+		Draw->AddText(ImVec2(10.0f, 10.0f), Data::WatermarkColor, "AssaultCube Multihack by rdbo");
+
+		if ((now - WatermarkClock) >= 500)
+		{
+			WatermarkClock = 0.0f;
+			if (Data::WatermarkColor.Value.x >= 1.0f)
+			{
+				Data::WatermarkColor.Value.x = 0.2f;
+				Data::WatermarkColor.Value.y = 1.0f;
+				Data::WatermarkColor.Value.z = 0.2f;
+			}
+
+			else if (Data::WatermarkColor.Value.y >= 1.0f)
+			{
+				Data::WatermarkColor.Value.x = 0.4f;
+				Data::WatermarkColor.Value.y = 0.4f;
+				Data::WatermarkColor.Value.z = 1.0f;
+			}
+
+			else if (Data::WatermarkColor.Value.z >= 1.0f)
+			{
+				Data::WatermarkColor.Value.x = 1.0f;
+				Data::WatermarkColor.Value.y = 0.2f;
+				Data::WatermarkColor.Value.z = 0.2f;
+			}
+			
+			else
+			{
+				Data::WatermarkColor.Value.x = 1.0f;
+				Data::WatermarkColor.Value.y = 0.2f;
+				Data::WatermarkColor.Value.z = 0.2f;
+			}
+		}
+
+		ImGui::PopFont();
+	}
 
 	if (Data::ShowMenu)
 	{
@@ -244,8 +292,10 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 
 			break;
 		case 3: //Misc
+			ImGui::Checkbox("Show Watermark", &Data::ShowWatermark);
 			ImGui::Checkbox("Fly Hack", &Data::Settings::EnableFlyHack);
 			ImGui::Checkbox("Speedhack", &Data::Settings::EnableSpeedhack);
+			ImGui::Checkbox("Bunnyhop", &Data::Settings::EnableBunnyhop);
 			if (Data::Settings::EnableSpeedhack)
 				ImGui::SliderFloat("Speedhack Value", &Data::Settings::SpeedhackValue, 0.1f, 1.0f, "%.1f");
 			ImGui::Checkbox("Teleport Players", &Data::Settings::EnableTeleportPlayers);

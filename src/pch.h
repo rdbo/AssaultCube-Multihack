@@ -8,6 +8,7 @@
 
 #include <iostream>
 #include <cmath>
+#include <ctime>
 #include <Windows.h>
 #include <WinSock2.h>
 #include <assaultcube/sdk.h>
