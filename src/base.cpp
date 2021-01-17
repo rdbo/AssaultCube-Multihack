@@ -101,6 +101,10 @@ bool    Base::Data::Settings::EnableEspArmor;
 float   Base::Data::Settings::EspArmorColor[4] = { 0.0f, 0.0f, 0.8f, 1.0f };
 float   Base::Data::Settings::EspArmorDmgColor[4] = { 0.05, 0.0f, 0.0f, 1.0f };
 
+bool    Base::Data::Settings::EnableEspName = false;
+float   Base::Data::Settings::EspNameColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+float   Base::Data::Settings::EspNameOutlineColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+
 DWORD WINAPI ExitThread(LPVOID lpReserved);
 
 void Base::Init(HMODULE hMod)

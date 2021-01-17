@@ -10,12 +10,15 @@ void Base::Hacks::ESP_Info(playerinfo_t* p_info)
 	float BarWidth = Height / 2;
 	float BarHeight = Height / 20;
 	float Padding = Height / 14;
-	float Space = 0.0f;
+	float SpaceDown = 0.0f;
+	float SpaceUp = 0.0f;
+	float FontHeight = 18.0f;
+	float FontWidth = FontHeight * 0.325f;
 
 	if (Data::Settings::EnableEspHealth)
 	{
-		Space += Padding;
-		ImVec2 HealthBarPos = ImVec2(p_info->pos2D.x - BarWidth / 2, p_info->pos2D.y + Space);
+		SpaceDown += Padding;
+		ImVec2 HealthBarPos = ImVec2(p_info->pos2D.x - BarWidth / 2, p_info->pos2D.y + SpaceDown);
 		ImVec2 HealthBarEnd = ImVec2(p_info->pos2D.x + BarWidth / 2, HealthBarPos.y + BarHeight);
 		ImColor DamageColor = ImColor(Data::Settings::EspHealthDmgColor[0], Data::Settings::EspHealthDmgColor[1], Data::Settings::EspHealthDmgColor[2], Data::Settings::EspHealthDmgColor[3]);
 		ImColor HealthColor = ImColor(Data::Settings::EspHealthColor[0], Data::Settings::EspHealthColor[1], Data::Settings::EspHealthColor[2], Data::Settings::EspHealthColor[3]);
@@ -33,13 +36,13 @@ void Base::Hacks::ESP_Info(playerinfo_t* p_info)
 
 		Draw->AddQuadFilled(p1, p2, p3, p4, HealthColor);
 
-		Space += BarHeight;
+		SpaceDown += BarHeight;
 	}
 
 	if (Data::Settings::EnableEspArmor)
 	{
-		Space += Padding;
-		ImVec2 ArmorBarPos = ImVec2(p_info->pos2D.x - BarWidth / 2, p_info->pos2D.y + Space);
+		SpaceDown += Padding;
+		ImVec2 ArmorBarPos = ImVec2(p_info->pos2D.x - BarWidth / 2, p_info->pos2D.y + SpaceDown);
 		ImVec2 ArmorBarEnd = ImVec2(p_info->pos2D.x + BarWidth / 2, ArmorBarPos.y + BarHeight);
 		ImColor DamageColor = ImColor(Data::Settings::EspArmorDmgColor[0], Data::Settings::EspArmorDmgColor[1], Data::Settings::EspArmorDmgColor[2], Data::Settings::EspArmorDmgColor[3]);
 		ImColor ArmorColor = ImColor(Data::Settings::EspArmorColor[0], Data::Settings::EspArmorColor[1], Data::Settings::EspArmorColor[2], Data::Settings::EspArmorColor[3]);
@@ -57,6 +60,20 @@ void Base::Hacks::ESP_Info(playerinfo_t* p_info)
 
 		Draw->AddQuadFilled(p1, p2, p3, p4, ArmorColor);
 
-		Space += BarHeight;
+		SpaceDown += BarHeight;
+	}
+
+	if (Data::Settings::EnableEspName)
+	{
+		SpaceUp += Padding;
+		size_t  TextLength = strlen(p_info->ent->name);
+		float   TextWidth = (float)TextLength * FontWidth;
+		float   TextHeight = FontHeight;
+		ImColor TextColor = ImColor(Data::Settings::EspNameColor[0], Data::Settings::EspNameColor[1], Data::Settings::EspNameColor[2], Data::Settings::EspNameColor[3]);
+		ImVec2  TextPos = ImVec2(p_info->headpos2D.x - (TextWidth / 2), p_info->headpos2D.y - SpaceUp - TextHeight);
+
+		Draw->AddText(TextPos, TextColor, (const char*)p_info->ent->name);
+
+		SpaceUp += TextHeight;
 	}
 }

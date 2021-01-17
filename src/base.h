@@ -120,6 +120,10 @@ namespace Base
 			extern bool    EnableEspArmor;
 			extern float   EspArmorColor[4];
 			extern float   EspArmorDmgColor[4];
+
+			extern bool    EnableEspName;
+			extern float   EspNameColor[4];
+			extern float   EspNameOutlineColor[4];
 		}
 
 		namespace Keys

@@ -60,6 +60,8 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 		ImGui::Begin("ImGui Window");
 		ImGui::Text("Test ImGUI Window");
 
+		ImGui::Checkbox("ESP Name", &Data::Settings::EnableEspName);
+
 		ImGui::Checkbox("ESP Armor", &Data::Settings::EnableEspArmor);
 
 		ImGui::Checkbox("Enable ESP Team", &Data::Settings::EnableEspTeam);
