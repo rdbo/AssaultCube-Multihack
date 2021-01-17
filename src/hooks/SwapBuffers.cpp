@@ -296,6 +296,22 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 			ImGui::Checkbox("Fly Hack", &Data::Settings::EnableFlyHack);
 			ImGui::Checkbox("Speedhack", &Data::Settings::EnableSpeedhack);
 			ImGui::Checkbox("Bunnyhop", &Data::Settings::EnableBunnyhop);
+			if (Data::Settings::EnableBunnyhop)
+			{
+				ImGui::Checkbox("Toggle Key", &Data::Settings::BunnyhopToggle);
+
+				if (Data::Keys::ToChange)
+					ImGui::Text("Bunnyhop Key: [...]");
+				else
+					ImGui::Text("Bunnyhop Key: %i", Data::Keys::Bhop);
+
+				ImGui::SameLine();
+				if (ImGui::Button("Change Key..."))
+				{
+					Data::Keys::ToChange = &Data::Keys::Bhop;
+				}
+			}
+
 			if (Data::Settings::EnableSpeedhack)
 				ImGui::SliderFloat("Speedhack Value", &Data::Settings::SpeedhackValue, 0.1f, 1.0f, "%.1f");
 			ImGui::Checkbox("Teleport Players", &Data::Settings::EnableTeleportPlayers);

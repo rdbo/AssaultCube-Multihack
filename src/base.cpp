@@ -49,6 +49,7 @@ bool              Base::Data::ShowWatermark = true;
 ImColor           Base::Data::WatermarkColor = ImColor(1.0f, 0.4f, 0.4f, 1.0f);
 
 UINT    Base::Data::Keys::Bhop = VK_SPACE;
+UINT*   Base::Data::Keys::ToChange = nullptr;
 
 bool    Base::Data::Settings::EnableCrosshair = false;
 int     Base::Data::Settings::CrosshairType = 0;
@@ -113,6 +114,8 @@ float   Base::Data::Settings::EspNameColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
 float   Base::Data::Settings::EspNameOutlineColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 
 bool    Base::Data::Settings::EnableBunnyhop = false;
+bool    Base::Data::Settings::BunnyhopToggle = false;
+bool    Base::Data::Settings::BunnyhopToggleState = false;
 
 DWORD WINAPI ExitThread(LPVOID lpReserved);
 

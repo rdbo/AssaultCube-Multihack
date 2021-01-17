@@ -18,6 +18,17 @@ LRESULT CALLBACK Base::Hooks::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARA
 		case Data::Keys::Unload:
 			Base::Unload();
 			break;
+		default:
+			if (Data::Keys::ToChange != nullptr)
+			{
+				*Data::Keys::ToChange = (UINT)wParam;
+				Data::Keys::ToChange = nullptr;
+			}
+
+			if (wParam == Data::Keys::Bhop && Data::Settings::BunnyhopToggle)
+				Data::Settings::BunnyhopToggleState = !Data::Settings::BunnyhopToggleState;
+
+			break;
 		}
 	}
 

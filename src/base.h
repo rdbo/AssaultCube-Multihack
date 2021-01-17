@@ -131,13 +131,16 @@ namespace Base
 			extern float   EspNameOutlineColor[4];
 
 			extern bool    EnableBunnyhop;
+			extern bool    BunnyhopToggle;
+			extern bool    BunnyhopToggleState;
 		}
 
 		namespace Keys
 		{
-			const  UINT Menu   = VK_INSERT;
-			const  UINT Unload = VK_END;
-			extern UINT Bhop;
+			const  UINT  Menu   = VK_INSERT;
+			const  UINT  Unload = VK_END;
+			extern UINT  Bhop;
+			extern UINT* ToChange;
 		}
 	}
 
