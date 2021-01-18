@@ -145,6 +145,8 @@ namespace Base
 			const  UINT    Cancel = VK_ESCAPE;
 			extern UINT    Bhop;
 			extern UINT    Triggerbot;
+			extern UINT    TeleportSavePos;
+			extern UINT    Teleport;
 			extern UINT*   ToChange;
 		}
 	}

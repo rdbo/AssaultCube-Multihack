@@ -50,6 +50,8 @@ ImColor           Base::Data::WatermarkColor = ImColor(1.0f, 0.4f, 0.4f, 1.0f);
 
 UINT    Base::Data::Keys::Bhop = VK_SPACE;
 UINT    Base::Data::Keys::Triggerbot = VK_CONTROL;
+UINT    Base::Data::Keys::TeleportSavePos = VK_F8;
+UINT    Base::Data::Keys::Teleport = VK_F9;
 UINT*   Base::Data::Keys::ToChange = nullptr;
 
 bool    Base::Data::Settings::EnableCrosshair = false;

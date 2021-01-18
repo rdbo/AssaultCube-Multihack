@@ -26,6 +26,7 @@ LRESULT CALLBACK Base::Hooks::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARA
 			{
 				*Data::Keys::ToChange = (UINT)wParam;
 				Data::Keys::ToChange = nullptr;
+				break;
 			}
 
 			if (wParam == Data::Keys::Bhop && Data::Settings::BunnyhopToggle)
@@ -33,6 +34,12 @@ LRESULT CALLBACK Base::Hooks::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARA
 
 			if (wParam == Data::Keys::Triggerbot && Data::Settings::TriggerbotToggle)
 				Data::Settings::TriggerbotToggleState = !Data::Settings::TriggerbotToggleState;
+
+			if (wParam == Data::Keys::TeleportSavePos)
+				Data::Settings::TeleportSaveQueued = true;
+
+			if (wParam == Data::Keys::Teleport)
+				Data::Settings::TeleportQueued = true;
 
 			break;
 		}

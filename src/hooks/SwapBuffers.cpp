@@ -368,8 +368,27 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 				ImGui::Checkbox("Force X", &Data::Settings::TeleportForce[0]);
 				ImGui::Checkbox("Force Y", &Data::Settings::TeleportForce[1]);
 				ImGui::Checkbox("Force Z", &Data::Settings::TeleportForce[2]);
+				
+				if (Data::Keys::ToChange == &Data::Keys::TeleportSavePos)
+					ImGui::Text("Save Position Key: [...]");
+				else
+					ImGui::Text("Save Position Key: %i", Data::Keys::TeleportSavePos);
+
+				if(Data::Keys::ToChange == &Data::Keys::Teleport)
+					ImGui::Text("Teleport Key: [...]");
+				else
+					ImGui::Text("Teleport Key: %i", Data::Keys::Teleport);
+
+				if (ImGui::Button("Change Save Position Key..."))
+					Data::Keys::ToChange = &Data::Keys::TeleportSavePos;
+
+				if (ImGui::Button("Change Teleport Key..."))
+					Data::Keys::ToChange = &Data::Keys::Teleport;
+
+				/*
 				if (ImGui::Button("Save Position")) Data::Settings::TeleportSaveQueued = true;
 				if (ImGui::Button("Teleport")) Data::Settings::TeleportQueued = true;
+				*/
 				ImGui::EndChild();
 			}
 
