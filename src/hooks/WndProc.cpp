@@ -18,6 +18,9 @@ LRESULT CALLBACK Base::Hooks::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARA
 		case Data::Keys::Unload:
 			Base::Unload();
 			break;
+		case Data::Keys::Cancel:
+			if (Data::Keys::ToChange != nullptr)
+				Data::Keys::ToChange = nullptr;
 		default:
 			if (Data::Keys::ToChange != nullptr)
 			{
@@ -27,6 +30,9 @@ LRESULT CALLBACK Base::Hooks::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARA
 
 			if (wParam == Data::Keys::Bhop && Data::Settings::BunnyhopToggle)
 				Data::Settings::BunnyhopToggleState = !Data::Settings::BunnyhopToggleState;
+
+			if (wParam == Data::Keys::Triggerbot && Data::Settings::TriggerbotToggle)
+				Data::Settings::TriggerbotToggleState = !Data::Settings::TriggerbotToggleState;
 
 			break;
 		}
@@ -59,7 +65,8 @@ LRESULT CALLBACK Base::Hooks::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARA
 		case WM_DEVICECHANGE:
 			ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam);
 			return true;
-		default: std::cout << "msg: " << uMsg << std::endl;  break;
+		default:
+			break;
 		}
 	}
 

@@ -227,6 +227,25 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 		case 0: //Aim
 			ImGui::Checkbox("No Recoil", &Data::Settings::EnableNoRecoil);
 			ImGui::Checkbox("Triggerbot", &Data::Settings::EnableTriggerbot);
+			if (Data::Settings::EnableTriggerbot)
+			{
+				ImGui::Checkbox("Toggle Key", &Data::Settings::TriggerbotToggle);
+				if (Data::Settings::TriggerbotToggle)
+				{
+					ImGui::Text("Toggle State: %i", Data::Settings::TriggerbotToggleState);
+
+					if (Data::Keys::ToChange == &Data::Keys::Triggerbot)
+						ImGui::Text("Triggerbot Key: [...]");
+					else
+						ImGui::Text("Triggerbot Key: %i", Data::Keys::Triggerbot);
+
+					ImGui::SameLine();
+					if (ImGui::Button("Change Key..."))
+					{
+						Data::Keys::ToChange = &Data::Keys::Triggerbot;
+					}
+				}
+			}
 			break;
 		case 1: //Visuals
 			ImGui::Checkbox("No Scope", &Data::Settings::EnableNoScope);
@@ -295,25 +314,29 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 			ImGui::Checkbox("Show Watermark", &Data::ShowWatermark);
 			ImGui::Checkbox("Fly Hack", &Data::Settings::EnableFlyHack);
 			ImGui::Checkbox("Speedhack", &Data::Settings::EnableSpeedhack);
+			if (Data::Settings::EnableSpeedhack)
+				ImGui::SliderFloat("Speedhack Value", &Data::Settings::SpeedhackValue, 0.1f, 1.0f, "%.1f");
 			ImGui::Checkbox("Bunnyhop", &Data::Settings::EnableBunnyhop);
 			if (Data::Settings::EnableBunnyhop)
 			{
-				ImGui::Checkbox("Toggle Key", &Data::Settings::BunnyhopToggle);
-
-				if (Data::Keys::ToChange)
-					ImGui::Text("Bunnyhop Key: [...]");
-				else
-					ImGui::Text("Bunnyhop Key: %i", Data::Keys::Bhop);
-
-				ImGui::SameLine();
-				if (ImGui::Button("Change Key..."))
+				ImGui::Checkbox("Bunnyhop Toggle Key", &Data::Settings::BunnyhopToggle);
+				if (Data::Settings::BunnyhopToggle)
 				{
-					Data::Keys::ToChange = &Data::Keys::Bhop;
+					ImGui::Text("Toggle State: %i", Data::Settings::BunnyhopToggleState);
+
+					if (Data::Keys::ToChange == &Data::Keys::Bhop)
+						ImGui::Text("Bunnyhop Key: [...]");
+					else
+						ImGui::Text("Bunnyhop Key: %i", Data::Keys::Bhop);
+
+					ImGui::SameLine();
+					if (ImGui::Button("Change Key..."))
+					{
+						Data::Keys::ToChange = &Data::Keys::Bhop;
+					}
 				}
 			}
 
-			if (Data::Settings::EnableSpeedhack)
-				ImGui::SliderFloat("Speedhack Value", &Data::Settings::SpeedhackValue, 0.1f, 1.0f, "%.1f");
 			ImGui::Checkbox("Teleport Players", &Data::Settings::EnableTeleportPlayers);
 			if (Data::Settings::EnableTeleportPlayers)
 			{
@@ -322,7 +345,7 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 				ImGui::Checkbox("Teleport Enemy", &Data::Settings::TeleportPlayersEnemy);
 			}
 
-			ImGui::SliderFloat3("Teleport Position", Data::Settings::TeleportPosition, -5000, 5000);
+			ImGui::SliderFloat3("Teleport Position", Data::Settings::TeleportPosition, -5000.0f, 5000.0f);
 			ImGui::Checkbox("Force Teleport X", &Data::Settings::TeleportForce[0]);
 			ImGui::Checkbox("Force Teleport Y", &Data::Settings::TeleportForce[1]);
 			ImGui::Checkbox("Force Teleport Z", &Data::Settings::TeleportForce[2]);

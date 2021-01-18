@@ -108,6 +108,8 @@ namespace Base
 			extern float   SpeedhackValue;
 
 			extern bool    EnableTriggerbot;
+			extern bool    TriggerbotToggle;
+			extern bool    TriggerbotToggleState;
 
 			extern bool    EnableFlyHack;
 
@@ -137,10 +139,12 @@ namespace Base
 
 		namespace Keys
 		{
-			const  UINT  Menu   = VK_INSERT;
-			const  UINT  Unload = VK_END;
-			extern UINT  Bhop;
-			extern UINT* ToChange;
+			const  UINT    Menu   = VK_INSERT;
+			const  UINT    Unload = VK_END;
+			const  UINT    Cancel = VK_ESCAPE;
+			extern UINT    Bhop;
+			extern UINT    Triggerbot;
+			extern UINT*   ToChange;
 		}
 	}
 
