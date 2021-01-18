@@ -421,18 +421,6 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 				}
 			}
 
-			ImGui::Checkbox("Server Sided Hacks", &Data::Settings::EnableServerSide);
-			if (Data::Settings::EnableServerSide)
-			{
-				if (ImGui::TreeNode("Server Sided Hacks..."))
-				{
-					ImGui::Text("The hacks on this section do not work online.");
-					ImGui::Checkbox("Godmode", &Data::Settings::EnableGodmode);
-					ImGui::Checkbox("Instant Kill", &Data::Settings::EnableInstantKill);
-					ImGui::TreePop();
-				}
-			}
-
 			ImGui::Checkbox("Teleport Players", &Data::Settings::EnableTeleportPlayers);
 			if (Data::Settings::EnableTeleportPlayers)
 			{
@@ -478,6 +466,20 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 					if (ImGui::Button("Save Position")) Data::Settings::TeleportSaveQueued = true;
 					if (ImGui::Button("Teleport")) Data::Settings::TeleportQueued = true;
 					ImGui::EndChild();
+					ImGui::TreePop();
+				}
+			}
+
+			ImGui::Checkbox("Server Sided Hacks", &Data::Settings::EnableServerSide);
+			if (Data::Settings::EnableServerSide)
+			{
+				if (ImGui::TreeNode("Server Sided Hacks..."))
+				{
+					ImGui::Text("The hacks on this section do not work online.");
+					ImGui::Checkbox("Godmode", &Data::Settings::EnableGodmode);
+					ImGui::Checkbox("Instant Kill", &Data::Settings::EnableInstantKill);
+					ImGui::Checkbox("Infinite Ammo", &Data::Settings::EnableInfiniteAmmo);
+					ImGui::Checkbox("No Gun Wait", &Data::Settings::EnableNoGunWait);
 					ImGui::TreePop();
 				}
 			}

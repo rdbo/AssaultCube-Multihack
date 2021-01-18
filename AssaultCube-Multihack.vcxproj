@@ -220,7 +220,9 @@
     <ClCompile Include="src\hacks\ESP_Snaplines.cpp" />
     <ClCompile Include="src\hacks\FlyHack.cpp" />
     <ClCompile Include="src\hacks\Godmode.cpp" />
+    <ClCompile Include="src\hacks\InfiniteAmmo.cpp" />
     <ClCompile Include="src\hacks\InstantKill.cpp" />
+    <ClCompile Include="src\hacks\NoGunWait.cpp" />
     <ClCompile Include="src\hacks\NoRecoil.cpp" />
     <ClCompile Include="src\hacks\NoScope.cpp" />
     <ClCompile Include="src\hacks\Speedhack.cpp" />

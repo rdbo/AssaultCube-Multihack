@@ -151,6 +151,8 @@ int     Base::Data::Settings::AimbotTargetPreference = 0;
 bool    Base::Data::Settings::EnableServerSide = false;
 bool    Base::Data::Settings::EnableGodmode = false;
 bool    Base::Data::Settings::EnableInstantKill = false;
+bool    Base::Data::Settings::EnableInfiniteAmmo = false;
+bool    Base::Data::Settings::EnableNoGunWait = false;
 
 DWORD WINAPI ExitThread(LPVOID lpReserved);
 

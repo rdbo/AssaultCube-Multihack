@@ -164,6 +164,8 @@ namespace Base
 			extern bool    EnableServerSide;
 			extern bool    EnableGodmode;
 			extern bool    EnableInstantKill;
+			extern bool    EnableInfiniteAmmo;
+			extern bool    EnableNoGunWait;
 		}
 
 		namespace Keys
@@ -198,6 +200,8 @@ namespace Base
 		void Aimbot();
 		void Godmode();
 		void InstantKill();
+		void InfiniteAmmo();
+		void NoGunWait();
 	}
 
 	namespace Hooks
