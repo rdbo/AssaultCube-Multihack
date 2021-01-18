@@ -41,7 +41,6 @@ public:
 	playerincrosshair_t playerincrosshair = nullptr;
 	drawscope_t drawscope = nullptr;
 	glDrawRangeElements_t* p_glDrawRangeElements = nullptr;
-	mem::voidptr_t p_glDrawRangeElements_ret = nullptr;
 public:
 	inline AC_Client()
 	{
@@ -73,7 +72,6 @@ public:
 		this->playerincrosshair = (playerincrosshair_t)        GAME_OFFSET(0x607C0);
 		this->drawscope = (drawscope_t)                        GAME_OFFSET(0x8080);
 		this->p_glDrawRangeElements = (glDrawRangeElements_t*) GAME_OFFSET(0x109B44);
-		this->p_glDrawRangeElements_ret = (mem::voidptr_t)     GAME_OFFSET(0xF0FD);
 		
 		return true;
 	}
