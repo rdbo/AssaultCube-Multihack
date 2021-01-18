@@ -327,9 +327,17 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 					ImGui::Checkbox("Visibility Check", &Data::Settings::EspSnaplinesVisibilityCheck);
 					ImGui::SliderFloat("ESP Snaplines Thickness", &Data::Settings::EspSnaplinesThickness, 0, 100, "%.0f");
 					if (Data::Settings::EnableEspTeam)
+					{
 						ImGui::ColorEdit4("ESP Snaplines Color Team", Data::Settings::EspSnaplinesColorTeam);
+						if(Data::Settings::EspSnaplinesVisibilityCheck)
+							ImGui::ColorEdit4("ESP Snaplines Color Team Visible", Data::Settings::EspSnaplinesColorTeamVisible);
+					}
 					if (Data::Settings::EnableEspEnemy)
+					{
 						ImGui::ColorEdit4("ESP Snaplines Color Enemy", Data::Settings::EspSnaplinesColorEnemy);
+						if (Data::Settings::EspSnaplinesVisibilityCheck)
+							ImGui::ColorEdit4("ESP Snaplines Color Enemy Visible", Data::Settings::EspSnaplinesColorEnemyVisible);
+					}
 					ImGui::Combo("ESP Snaplines Position", &Data::Settings::EspSnaplinesPos, SnaplinesPos, sizeof(SnaplinesPos)/sizeof(SnaplinesPos[0]));
 					ImGui::EndChild();
 				}
