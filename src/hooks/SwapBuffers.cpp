@@ -486,7 +486,11 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 
 			if (ImGui::Button("Detach"))
 			{
+				ImGui::PopStyleColor(1);
+				ImGui::EndChild();
+				ImGui::PopFont();
 				ImGui::End();
+				ImGui::EndFrame();
 				ImGui::Render();
 				ImGui_ImplOpenGL2_RenderDrawData(ImGui::GetDrawData());
 				wglMakeCurrent(hdc, Data::oContext);
