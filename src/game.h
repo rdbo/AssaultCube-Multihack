@@ -19,6 +19,7 @@ typedef playerent*(* playerincrosshair_t)();
 typedef void(* midfunction_t)(void);
 typedef midfunction_t attackphysics_t;
 typedef void(* drawscope_t)(bool preload);
+typedef void(__stdcall* glDrawRangeElements_t)(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const void* indices);
 
 bool WorldToScreen(vec pos3D, vec* pos2D);
 
@@ -39,6 +40,8 @@ public:
 	attackphysics_t attackphysics = nullptr;
 	playerincrosshair_t playerincrosshair = nullptr;
 	drawscope_t drawscope = nullptr;
+	glDrawRangeElements_t* p_glDrawRangeElements = nullptr;
+	mem::voidptr_t p_glDrawRangeElements_ret = nullptr;
 public:
 	inline AC_Client()
 	{
@@ -56,19 +59,21 @@ public:
 		if (!this->mod || !this->mod->is_valid())
 			return false;
 		
-		this->player1   = *(playerent**)                GAME_OFFSET(0x10F4F4);
-		this->players   = (vector<playerent*>*)         GAME_OFFSET(0x10F4F8);
-		this->mvpmatrix = (glmatrixf*)                  GAME_OFFSET(0x101AE8);
-		this->gamemode = (int*)                         GAME_OFFSET(0x10F49C);
-		this->getclient = (getclient_t)                 GAME_OFFSET(0x27320);
-		this->servertoclient = (servertoclient_t)       GAME_OFFSET(0x2E830);
-		this->updateworld = (updateworld_t)             GAME_OFFSET(0x25EB0);
-		this->c2sinfo     = (c2sinfo_t)                 GAME_OFFSET(0x20720);
-		this->movelocalplayer = (movelocalplayer_t)     GAME_OFFSET(0x25770);
-		this->drawcrosshair = (drawcrosshair_t)         GAME_OFFSET(0x8660);
-		this->attackphysics = (attackphysics_t)         GAME_OFFSET(0x63786);
-		this->playerincrosshair = (playerincrosshair_t) GAME_OFFSET(0x607C0);
-		this->drawscope = (drawscope_t)                 GAME_OFFSET(0x8080);
+		this->player1   = *(playerent**)                       GAME_OFFSET(0x10F4F4);
+		this->players   = (vector<playerent*>*)                GAME_OFFSET(0x10F4F8);
+		this->mvpmatrix = (glmatrixf*)                         GAME_OFFSET(0x101AE8);
+		this->gamemode = (int*)                                GAME_OFFSET(0x10F49C);
+		this->getclient = (getclient_t)                        GAME_OFFSET(0x27320);
+		this->servertoclient = (servertoclient_t)              GAME_OFFSET(0x2E830);
+		this->updateworld = (updateworld_t)                    GAME_OFFSET(0x25EB0);
+		this->c2sinfo     = (c2sinfo_t)                        GAME_OFFSET(0x20720);
+		this->movelocalplayer = (movelocalplayer_t)            GAME_OFFSET(0x25770);
+		this->drawcrosshair = (drawcrosshair_t)                GAME_OFFSET(0x8660);
+		this->attackphysics = (attackphysics_t)                GAME_OFFSET(0x63786);
+		this->playerincrosshair = (playerincrosshair_t)        GAME_OFFSET(0x607C0);
+		this->drawscope = (drawscope_t)                        GAME_OFFSET(0x8080);
+		this->p_glDrawRangeElements = (glDrawRangeElements_t*) GAME_OFFSET(0x109B44);
+		this->p_glDrawRangeElements_ret = (mem::voidptr_t)     GAME_OFFSET(0xF0FD);
 		
 		return true;
 	}

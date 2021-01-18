@@ -274,6 +274,7 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 			}
 			break;
 		case 2: //ESP
+			ImGui::Checkbox("Wallhack", &Data::Settings::EnableWallhack);
 			ImGui::Checkbox("Enable ESP Team", &Data::Settings::EnableEspTeam);
 			ImGui::Checkbox("Enable ESP Enemy", &Data::Settings::EnableEspEnemy);
 			ImGui::Checkbox("ESP Name", &Data::Settings::EnableEspName);

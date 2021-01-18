@@ -224,10 +224,12 @@
     <ClCompile Include="src\hacks\Teleport.cpp" />
     <ClCompile Include="src\hacks\TeleportPlayers.cpp" />
     <ClCompile Include="src\hacks\Triggerbot.cpp" />
+    <ClCompile Include="src\hacks\Wallhack.cpp" />
     <ClCompile Include="src\hooks\attackphysics.cpp" />
     <ClCompile Include="src\hooks\c2sinfo.cpp" />
     <ClCompile Include="src\hooks\drawcrosshair.cpp" />
     <ClCompile Include="src\hooks\drawscope.cpp" />
+    <ClCompile Include="src\hooks\glDrawRangeElements.cpp" />
     <ClCompile Include="src\hooks\hooks.cpp" />
     <ClCompile Include="src\hooks\movelocalplayer.cpp" />
     <ClCompile Include="src\hooks\servertoclient.cpp" />

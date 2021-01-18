@@ -19,52 +19,53 @@ namespace Base
 
 	namespace Data
 	{
-		extern HMODULE           hModule;
-		extern HWND              hWindow;
-		extern RECT              WindowRect;
-		extern int               WindowWidth;
-		extern int               WindowHeight;
-		extern mem::module_t     m_opengl;
-		extern mem::module_t     m_ac_client;
-		extern mem::module_t     m_sdl;
-		extern mem::voidptr_t    pSwapBuffers;
-		extern mem::voidptr_t    pShowCursor;
-		extern mem::voidptr_t    p_c2sinfo;
-		extern mem::voidptr_t    p_servertoclient;
-		extern mem::voidptr_t    p_movelocalplayer;
-		extern mem::voidptr_t    p_drawcrosshair;
-		extern mem::voidptr_t    p_attackphysics;
-		extern mem::voidptr_t    p_attackphysics_ret;
-		extern mem::voidptr_t    p_drawscope;
-		extern SwapBuffers_t     oSwapBuffers;
-		extern ShowCursor_t      oShowCursor;
-		extern WndProc_t         oWndProc;
-		extern c2sinfo_t         o_c2sinfo;
-		extern servertoclient_t  o_servertoclient;
-		extern movelocalplayer_t o_movelocalplayer;
-		extern drawcrosshair_t   o_drawcrosshair;
-		extern attackphysics_t   o_attackphysics;
-		extern drawscope_t       o_drawscope;
-		extern mem::size_t       szSwapBuffers;
-		extern mem::size_t       szShowCursor;
-		extern mem::size_t       sz_c2sinfo;
-		extern mem::size_t       sz_servertoclient;
-		extern mem::size_t       sz_movelocalplayer;
-		extern mem::size_t       sz_drawcrosshair;
-		extern mem::size_t       sz_attackphysics;
-		extern mem::size_t       sz_drawscope;
-		extern UINT              WMKeys[0xFE];
-		extern bool              InitSwapBuffers;
-		extern bool              IsUnloaded;
-		extern bool              ShowMenu;
-		extern HGLRC             glContext;
-		extern HGLRC             oContext;
-		extern AC_Client         game;
-		extern ImFont*           FontTitle;
-		extern ImFont*           FontMenu;
-		extern ImFont*           FontHack;
-		extern bool              ShowWatermark;
-		extern ImColor           WatermarkColor;
+		extern HMODULE               hModule;
+		extern HWND                  hWindow;
+		extern RECT                  WindowRect;
+		extern int                   WindowWidth;
+		extern int                   WindowHeight;
+		extern mem::module_t         m_opengl;
+		extern mem::module_t         m_ac_client;
+		extern mem::module_t         m_sdl;
+		extern mem::voidptr_t        pSwapBuffers;
+		extern mem::voidptr_t        pShowCursor;
+		extern mem::voidptr_t        p_c2sinfo;
+		extern mem::voidptr_t        p_servertoclient;
+		extern mem::voidptr_t        p_movelocalplayer;
+		extern mem::voidptr_t        p_drawcrosshair;
+		extern mem::voidptr_t        p_attackphysics;
+		extern mem::voidptr_t        p_attackphysics_ret;
+		extern mem::voidptr_t        p_drawscope;
+		extern SwapBuffers_t         oSwapBuffers;
+		extern ShowCursor_t          oShowCursor;
+		extern WndProc_t             oWndProc;
+		extern c2sinfo_t             o_c2sinfo;
+		extern servertoclient_t      o_servertoclient;
+		extern movelocalplayer_t     o_movelocalplayer;
+		extern drawcrosshair_t       o_drawcrosshair;
+		extern attackphysics_t       o_attackphysics;
+		extern drawscope_t           o_drawscope;
+		extern glDrawRangeElements_t o_glDrawRangeElements;
+		extern mem::size_t           szSwapBuffers;
+		extern mem::size_t           szShowCursor;
+		extern mem::size_t           sz_c2sinfo;
+		extern mem::size_t           sz_servertoclient;
+		extern mem::size_t           sz_movelocalplayer;
+		extern mem::size_t           sz_drawcrosshair;
+		extern mem::size_t           sz_attackphysics;
+		extern mem::size_t           sz_drawscope;
+		extern UINT                  WMKeys[0xFE];
+		extern bool                  InitSwapBuffers;
+		extern bool                  IsUnloaded;
+		extern bool                  ShowMenu;
+		extern HGLRC                 glContext;
+		extern HGLRC                 oContext;
+		extern AC_Client             game;
+		extern ImFont*               FontTitle;
+		extern ImFont*               FontMenu;
+		extern ImFont*               FontHack;
+		extern bool                  ShowWatermark;
+		extern ImColor               WatermarkColor;
 
 		namespace Settings
 		{
@@ -136,6 +137,8 @@ namespace Base
 			extern bool    EnableBunnyhop;
 			extern bool    BunnyhopToggle;
 			extern bool    BunnyhopToggleState;
+
+			extern bool    EnableWallhack;
 		}
 
 		namespace Keys
@@ -165,6 +168,7 @@ namespace Base
 		void TeleportPlayers(playerent* p_ent);
 		void ESP_Info(playerinfo_t* p_info);
 		void Bunnyhop();
+		void Wallhack(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const void* indices);
 	}
 
 	namespace Hooks
@@ -182,5 +186,6 @@ namespace Base
 		void attackphysics(void);
 		//void drawscope(bool preload)
 		void drawscope(void);
+		void __stdcall glDrawRangeElements(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const void* indices);
 	}
 }
