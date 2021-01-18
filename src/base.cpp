@@ -81,6 +81,7 @@ float   Base::Data::Settings::EspBoxColorFillTeam[4] = { 0.0f, 1.0f, 0.5f, 0.5f 
 float   Base::Data::Settings::EspBoxColorEnemy[4] = { 1.0f, 1.0f, 0.0f, 1.0f };
 float   Base::Data::Settings::EspBoxColorFillEnemy[4] = { 1.0f, 1.0f, 0.0f, 0.5f };
 
+bool    Base::Data::Settings::EnableTeleport = false;
 bool    Base::Data::Settings::TeleportQueued = false;
 bool    Base::Data::Settings::TeleportSaveQueued = false;
 float   Base::Data::Settings::TeleportPosition[3] = { 0.0f, 0.0f, 0.0f };

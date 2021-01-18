@@ -97,6 +97,7 @@ namespace Base
 			extern float   EspBoxColorEnemy[4];
 			extern float   EspBoxColorFillEnemy[4];
 
+			extern bool    EnableTeleport;
 			extern bool    TeleportQueued;
 			extern bool    TeleportSaveQueued;
 			extern float   TeleportPosition[3];

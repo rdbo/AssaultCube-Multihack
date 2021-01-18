@@ -182,6 +182,9 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 		static const float  g_MenuContentSize = 300.0f;
 		static const float  g_MenuSafeSize = 25.0f;
 		static const ImVec2 g_MenuWindowSize = ImVec2(g_MenuTabSize.x * g_MenuCount, g_MenuTabSize.y + g_MenuContentSize);
+		static const ImVec2 g_MenuSettingsMinSize = ImVec2(0.0f, 50.0f);
+		static const ImVec2 g_MenuSettingsSize = ImVec2(0.0f, 150.0f);
+		static const ImVec2 g_MenuKeySettingsSize = ImVec2(0.0f, 100.0f);
 
 		ImGui::SetNextWindowSize(g_MenuWindowSize);
 
@@ -222,6 +225,8 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 
 		ImGui::BeginChild("menu-content", ImVec2(g_MenuWindowSize.x, g_MenuContentSize - g_MenuSafeSize), false, ImGuiWindowFlags_AlwaysUseWindowPadding);
 
+		ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.0f, 0.0f, 0.0f, 1.0f));
+
 		switch (g_MenuActiveTab)
 		{
 		case 0: //Aim
@@ -229,22 +234,21 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 			ImGui::Checkbox("Triggerbot", &Data::Settings::EnableTriggerbot);
 			if (Data::Settings::EnableTriggerbot)
 			{
+				ImGui::BeginChild("triggerbot-settings", g_MenuKeySettingsSize, true);
 				ImGui::Checkbox("Toggle Key", &Data::Settings::TriggerbotToggle);
 				if (Data::Settings::TriggerbotToggle)
 				{
 					ImGui::Text("Toggle State: %i", Data::Settings::TriggerbotToggleState);
 
 					if (Data::Keys::ToChange == &Data::Keys::Triggerbot)
-						ImGui::Text("Triggerbot Key: [...]");
+						ImGui::Text("Key: [...]");
 					else
-						ImGui::Text("Triggerbot Key: %i", Data::Keys::Triggerbot);
+						ImGui::Text("Key: %i", Data::Keys::Triggerbot);
 
-					ImGui::SameLine();
 					if (ImGui::Button("Change Key..."))
-					{
 						Data::Keys::ToChange = &Data::Keys::Triggerbot;
-					}
 				}
+				ImGui::EndChild();
 			}
 			break;
 		case 1: //Visuals
@@ -252,8 +256,9 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 			ImGui::Checkbox("Custom Crosshair", &Data::Settings::EnableCrosshair);
 			if (Data::Settings::EnableCrosshair)
 			{
+				ImGui::BeginChild("crosshair-settings", g_MenuSettingsSize, true);
 				const char* CrosshairTypes[] = { "Default", "Triangle", "Square", "Circle" };
-				ImGui::ListBox("Crosshair Type", &Data::Settings::CrosshairType, CrosshairTypes, 4);
+				ImGui::Combo("Crosshair Type", &Data::Settings::CrosshairType, CrosshairTypes, sizeof(CrosshairTypes)/sizeof(CrosshairTypes[0]));
 				ImGui::SliderFloat("Crosshair Length", &Data::Settings::CrosshairLength, 0, 100, "%.0f");
 				ImGui::SliderFloat("Crosshair Thickness", &Data::Settings::CrosshairThickness, 0, 100, "%.0f");
 				ImGui::SliderFloat("Crosshair Gap", &Data::Settings::CrosshairGap, 0, 100, "%.0f");
@@ -265,6 +270,7 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 				if (Data::Settings::CrosshairDot)
 					ImGui::Checkbox("Crosshair Dot Filled", &Data::Settings::CrosshairDotFilled);
 				ImGui::ColorEdit4("Crosshair Color", Data::Settings::CrosshairColor);
+				ImGui::EndChild();
 			}
 			break;
 		case 2: //ESP
@@ -278,6 +284,7 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 			{
 				if (Data::Settings::EnableEspTeam || Data::Settings::EnableEspEnemy)
 				{
+					ImGui::BeginChild("esp-box-settings", g_MenuSettingsSize, true);
 					ImGui::SliderFloat("ESP Box Thickness", &Data::Settings::EspBoxThickness, 0, 100, "%.0f");
 
 					if (Data::Settings::EnableEspTeam)
@@ -291,6 +298,8 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 						ImGui::ColorEdit4("ESP Box Color Enemy", Data::Settings::EspBoxColorEnemy);
 						ImGui::ColorEdit4("ESP Box Color Fill Enemy", Data::Settings::EspBoxColorFillEnemy);
 					}
+
+					ImGui::EndChild();
 				}
 			}
 
@@ -299,13 +308,15 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 			{
 				if (Data::Settings::EnableEspTeam || Data::Settings::EnableEspEnemy)
 				{
+					ImGui::BeginChild("esp-snaplines-settings", g_MenuSettingsSize, true);
 					const char* SnaplinesPos[] = { "Bottom", "Top" };
 					ImGui::SliderFloat("ESP Snaplines Thickness", &Data::Settings::EspSnaplinesThickness, 0, 100, "%.0f");
 					if (Data::Settings::EnableEspTeam)
 						ImGui::ColorEdit4("ESP Snaplines Color Team", Data::Settings::EspSnaplinesColorTeam);
 					if (Data::Settings::EnableEspEnemy)
 						ImGui::ColorEdit4("ESP Snaplines Color Enemy", Data::Settings::EspSnaplinesColorEnemy);
-					ImGui::ListBox("ESP Snaplines Position", &Data::Settings::EspSnaplinesPos, SnaplinesPos, 2);
+					ImGui::Combo("ESP Snaplines Position", &Data::Settings::EspSnaplinesPos, SnaplinesPos, sizeof(SnaplinesPos)/sizeof(SnaplinesPos[0]));
+					ImGui::EndChild();
 				}
 			}
 
@@ -315,42 +326,53 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 			ImGui::Checkbox("Fly Hack", &Data::Settings::EnableFlyHack);
 			ImGui::Checkbox("Speedhack", &Data::Settings::EnableSpeedhack);
 			if (Data::Settings::EnableSpeedhack)
+			{
+				ImGui::BeginChild("speedhack-settings", g_MenuSettingsMinSize, true);
 				ImGui::SliderFloat("Speedhack Value", &Data::Settings::SpeedhackValue, 0.1f, 1.0f, "%.1f");
+				ImGui::EndChild();
+			}
 			ImGui::Checkbox("Bunnyhop", &Data::Settings::EnableBunnyhop);
 			if (Data::Settings::EnableBunnyhop)
 			{
-				ImGui::Checkbox("Bunnyhop Toggle Key", &Data::Settings::BunnyhopToggle);
-				if (Data::Settings::BunnyhopToggle)
-				{
-					ImGui::Text("Toggle State: %i", Data::Settings::BunnyhopToggleState);
+				ImGui::BeginChild("bunnyhop-settings", g_MenuKeySettingsSize, true);
+				ImGui::Checkbox("Toggle Key", &Data::Settings::BunnyhopToggle);
+				ImGui::Text("Toggle State: %i", Data::Settings::BunnyhopToggleState);
 
-					if (Data::Keys::ToChange == &Data::Keys::Bhop)
-						ImGui::Text("Bunnyhop Key: [...]");
-					else
-						ImGui::Text("Bunnyhop Key: %i", Data::Keys::Bhop);
+				if (Data::Keys::ToChange == &Data::Keys::Bhop)
+					ImGui::Text("Key: [...]");
+				else
+					ImGui::Text("Key: %i", Data::Keys::Bhop);
 
-					ImGui::SameLine();
-					if (ImGui::Button("Change Key..."))
-					{
-						Data::Keys::ToChange = &Data::Keys::Bhop;
-					}
-				}
+				if (ImGui::Button("Change Key..."))
+					Data::Keys::ToChange = &Data::Keys::Bhop;
+				ImGui::EndChild();
 			}
 
 			ImGui::Checkbox("Teleport Players", &Data::Settings::EnableTeleportPlayers);
 			if (Data::Settings::EnableTeleportPlayers)
 			{
+				ImGui::BeginChild("teleport-players-settings", g_MenuSettingsSize, true);
 				ImGui::SliderFloat("Teleport Distance", &Data::Settings::TeleportPlayersDistance, 0.0f, 50.0f, "%.1f");
 				ImGui::Checkbox("Teleport Team", &Data::Settings::TeleportPlayersTeam);
 				ImGui::Checkbox("Teleport Enemy", &Data::Settings::TeleportPlayersEnemy);
+				ImGui::EndChild();
 			}
 
-			ImGui::SliderFloat3("Teleport Position", Data::Settings::TeleportPosition, -5000.0f, 5000.0f);
-			ImGui::Checkbox("Force Teleport X", &Data::Settings::TeleportForce[0]);
-			ImGui::Checkbox("Force Teleport Y", &Data::Settings::TeleportForce[1]);
-			ImGui::Checkbox("Force Teleport Z", &Data::Settings::TeleportForce[2]);
-			if (ImGui::Button("Save Pos")) Data::Settings::TeleportSaveQueued = true;
-			if (ImGui::Button("Teleport")) Data::Settings::TeleportQueued = true;
+			ImGui::Checkbox("Teleport", &Data::Settings::EnableTeleport);
+			if (Data::Settings::EnableTeleport)
+			{
+				ImGui::BeginChild("teleport-settings", g_MenuSettingsSize, true);
+				ImGui::SliderFloat("X", &Data::Settings::TeleportPosition[0], -5000.0f, 5000.0f, "%.f");
+				ImGui::SliderFloat("Y", &Data::Settings::TeleportPosition[0], -5000.0f, 5000.0f, "%.f");
+				ImGui::SliderFloat("Z", &Data::Settings::TeleportPosition[0], -5000.0f, 5000.0f, "%.f");
+				ImGui::Checkbox("Force X", &Data::Settings::TeleportForce[0]);
+				ImGui::Checkbox("Force Y", &Data::Settings::TeleportForce[1]);
+				ImGui::Checkbox("Force Z", &Data::Settings::TeleportForce[2]);
+				if (ImGui::Button("Save Position")) Data::Settings::TeleportSaveQueued = true;
+				if (ImGui::Button("Teleport")) Data::Settings::TeleportQueued = true;
+				ImGui::EndChild();
+			}
+
 			if (ImGui::Button("Detach"))
 			{
 				ImGui::End();
@@ -367,6 +389,7 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 			g_MenuActiveTab = 0;
 			break;
 		}
+		ImGui::PopStyleColor(1);
 		ImGui::EndChild();
 		ImGui::PopFont();
 		ImGui::End();
