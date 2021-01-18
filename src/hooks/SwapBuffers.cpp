@@ -230,6 +230,31 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 		switch (g_MenuActiveTab)
 		{
 		case 0: //Aim
+			ImGui::Checkbox("Aimbot", &Data::Settings::EnableAimbot);
+			if (Data::Settings::EnableAimbot)
+			{
+				ImGui::BeginChild("aimbot-settings", g_MenuSettingsSize, true);
+				const char* AimbotTargetPreferences[] = { "Closest to Player", "Closest to Aim" };
+				ImGui::Combo("Aimbot Target Preference", &Data::Settings::AimbotTargetPreference, AimbotTargetPreferences, sizeof(AimbotTargetPreferences) / sizeof(AimbotTargetPreferences[0]));
+				ImGui::Checkbox("Smooth", &Data::Settings::AimbotSmooth);
+				if (Data::Settings::AimbotSmooth)
+					ImGui::SliderFloat("Smooth Value", &Data::Settings::AimbotSmoothValue, 0.0f, 10.0f, "%.0f");
+				ImGui::Checkbox("Toggle Key", &Data::Settings::AimbotToggle);
+				if (Data::Settings::TriggerbotToggle)
+				{
+					ImGui::Checkbox("Toggle State", &Data::Settings::AimbotToggleState);
+
+					if (Data::Keys::ToChange == &Data::Keys::Aimbot)
+						ImGui::Text("Key: [...]");
+					else
+						ImGui::Text("Key: %i", Data::Keys::Aimbot);
+
+					if (ImGui::Button("Change Key..."))
+						Data::Keys::ToChange = &Data::Keys::Aimbot;
+				}
+				ImGui::EndChild();
+			}
+
 			ImGui::Checkbox("No Recoil", &Data::Settings::EnableNoRecoil);
 			ImGui::Checkbox("Triggerbot", &Data::Settings::EnableTriggerbot);
 			if (Data::Settings::EnableTriggerbot)

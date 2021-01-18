@@ -8,6 +8,7 @@ void Base::Hooks::c2sinfo(playerent* d)
 	Hacks::Triggerbot();
 	Hacks::FlyHack();
 	Hacks::Bunnyhop();
+	Hacks::Aimbot();
 
 	for (int i = 0; Data::game.players && Data::game.players->inrange(i); i++)
 	{

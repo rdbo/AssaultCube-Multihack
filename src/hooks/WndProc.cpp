@@ -5,7 +5,7 @@ extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam
 LRESULT CALLBACK Base::Hooks::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	if (uMsg == WM_KEYDOWN || uMsg == WM_KEYUP)
-		Data::WMKeys[wParam] = uMsg;
+		Data::WMKeys[wParam] = (uMsg == WM_KEYDOWN) ? true : false;
 
 	switch (uMsg)
 	{
@@ -40,6 +40,9 @@ LRESULT CALLBACK Base::Hooks::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARA
 
 			if (wParam == Data::Keys::Teleport)
 				Data::Settings::TeleportQueued = true;
+
+			if(wParam == Data::Keys::Aimbot && Data::Settings::AimbotToggle)
+				Data::Settings::AimbotToggleState = !Data::Settings::AimbotToggleState;
 
 			break;
 		}

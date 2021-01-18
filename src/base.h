@@ -54,7 +54,7 @@ namespace Base
 		extern mem::size_t           sz_drawcrosshair;
 		extern mem::size_t           sz_attackphysics;
 		extern mem::size_t           sz_drawscope;
-		extern UINT                  WMKeys[0xFE];
+		extern bool                  WMKeys[0xFE];
 		extern bool                  InitSwapBuffers;
 		extern bool                  IsUnloaded;
 		extern bool                  ShowMenu;
@@ -147,6 +147,13 @@ namespace Base
 			extern bool    BunnyhopToggleState;
 
 			extern bool    EnableWallhack;
+
+			extern bool    EnableAimbot;
+			extern bool    AimbotToggle;
+			extern bool    AimbotToggleState;
+			extern bool    AimbotSmooth;
+			extern float   AimbotSmoothValue;
+			extern int     AimbotTargetPreference;
 		}
 
 		namespace Keys
@@ -158,6 +165,7 @@ namespace Base
 			extern UINT    Triggerbot;
 			extern UINT    TeleportSavePos;
 			extern UINT    Teleport;
+			extern UINT    Aimbot;
 			extern UINT*   ToChange;
 		}
 	}
@@ -177,6 +185,7 @@ namespace Base
 		void ESP_Info(playerinfo_t* p_info);
 		void Bunnyhop();
 		void Wallhack(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const void* indices);
+		void Aimbot();
 	}
 
 	namespace Hooks

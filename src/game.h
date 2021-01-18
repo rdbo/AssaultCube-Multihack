@@ -25,6 +25,10 @@ typedef bool(* IsVisible_t)(vec v1, vec v2, dynent* tracer, bool SkipTags);
 
 bool WorldToScreen(vec pos3D, vec* pos2D);
 bool IsVisible(playerent* p_ent);
+float GetDistance(vec src, vec dst);
+playerent* GetClosestTarget();
+playerent* GetCrosshairClosestTarget();
+vec CalcAngles(vec src, vec dst);
 
 class AC_Client
 {

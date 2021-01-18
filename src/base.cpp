@@ -36,7 +36,7 @@ mem::size_t           Base::Data::sz_movelocalplayer = 8;
 mem::size_t           Base::Data::sz_drawcrosshair = 5;
 mem::size_t           Base::Data::sz_attackphysics = 10;
 mem::size_t           Base::Data::sz_drawscope = 6;
-UINT                  Base::Data::WMKeys[0xFE];
+bool                  Base::Data::WMKeys[0xFE];
 bool                  Base::Data::InitSwapBuffers = false;
 bool                  Base::Data::IsUnloaded = false;
 bool                  Base::Data::ShowMenu = true;
@@ -53,6 +53,7 @@ UINT    Base::Data::Keys::Bhop = VK_SPACE;
 UINT    Base::Data::Keys::Triggerbot = VK_CONTROL;
 UINT    Base::Data::Keys::TeleportSavePos = VK_F8;
 UINT    Base::Data::Keys::Teleport = VK_F9;
+UINT    Base::Data::Keys::Aimbot = VK_F1;
 UINT*   Base::Data::Keys::ToChange = nullptr;
 
 bool    Base::Data::Settings::EnableCrosshair = false;
@@ -133,6 +134,13 @@ bool    Base::Data::Settings::BunnyhopToggle = false;
 bool    Base::Data::Settings::BunnyhopToggleState = false;
 
 bool    Base::Data::Settings::EnableWallhack = false;
+
+bool    Base::Data::Settings::EnableAimbot = false;
+bool    Base::Data::Settings::AimbotToggle = false;
+bool    Base::Data::Settings::AimbotToggleState = false;
+bool    Base::Data::Settings::AimbotSmooth = true;
+float   Base::Data::Settings::AimbotSmoothValue = 2;
+int     Base::Data::Settings::AimbotTargetPreference = 0;
 
 DWORD WINAPI ExitThread(LPVOID lpReserved);
 
