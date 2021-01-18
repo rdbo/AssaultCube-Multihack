@@ -484,6 +484,7 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 				}
 			}
 
+			/*
 			if (ImGui::Button("Detach"))
 			{
 				ImGui::PopStyleColor(1);
@@ -498,6 +499,7 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 				Base::Unload();
 				return Data::oSwapBuffers(hdc);
 			}
+			*/
 
 			break;
 		default:
