@@ -286,18 +286,31 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 				if (Data::Settings::EnableEspTeam || Data::Settings::EnableEspEnemy)
 				{
 					ImGui::BeginChild("esp-box-settings", g_MenuSettingsSize, true);
+					ImGui::Checkbox("Visibility Check", &Data::Settings::EspBoxVisibilyCheck);
 					ImGui::SliderFloat("ESP Box Thickness", &Data::Settings::EspBoxThickness, 0, 100, "%.0f");
 
 					if (Data::Settings::EnableEspTeam)
 					{
 						ImGui::ColorEdit4("ESP Box Color Team", Data::Settings::EspBoxColorTeam);
 						ImGui::ColorEdit4("ESP Box Color Fill Team", Data::Settings::EspBoxColorFillTeam);
+
+						if (Data::Settings::EspBoxVisibilyCheck)
+						{
+							ImGui::ColorEdit4("ESP Box Color Team Visible", Data::Settings::EspBoxColorTeamVisible);
+							ImGui::ColorEdit4("ESP Box Color Fill Team Visible", Data::Settings::EspBoxColorFillTeamVisible);
+						}
 					}
 
 					if (Data::Settings::EnableEspEnemy)
 					{
 						ImGui::ColorEdit4("ESP Box Color Enemy", Data::Settings::EspBoxColorEnemy);
 						ImGui::ColorEdit4("ESP Box Color Fill Enemy", Data::Settings::EspBoxColorFillEnemy);
+
+						if (Data::Settings::EspBoxVisibilyCheck)
+						{
+							ImGui::ColorEdit4("ESP Box Color Enemy Visible", Data::Settings::EspBoxColorEnemyVisible);
+							ImGui::ColorEdit4("ESP Box Color Fill Enemy Visible", Data::Settings::EspBoxColorFillEnemyVisible);
+						}
 					}
 
 					ImGui::EndChild();
@@ -311,6 +324,7 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 				{
 					ImGui::BeginChild("esp-snaplines-settings", g_MenuSettingsSize, true);
 					const char* SnaplinesPos[] = { "Bottom", "Top" };
+					ImGui::Checkbox("Visibility Check", &Data::Settings::EspSnaplinesVisibilityCheck);
 					ImGui::SliderFloat("ESP Snaplines Thickness", &Data::Settings::EspSnaplinesThickness, 0, 100, "%.0f");
 					if (Data::Settings::EnableEspTeam)
 						ImGui::ColorEdit4("ESP Snaplines Color Team", Data::Settings::EspSnaplinesColorTeam);

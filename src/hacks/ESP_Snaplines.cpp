@@ -29,9 +29,19 @@ void Base::Hacks::ESP_Snaplines(playerinfo_t* p_info)
 		ImColor LineColor = ImColor(0.0f, 0.0f, 0.0f, 0.0f);
 
 		if (p_info->ent->team == Data::game.player1->team && (m_teammode || m_coop))
-			LineColor = ImColor(Data::Settings::EspSnaplinesColorTeam[0], Data::Settings::EspSnaplinesColorTeam[1], Data::Settings::EspSnaplinesColorTeam[2], Data::Settings::EspSnaplinesColorTeam[3]);
+		{
+			if(Data::Settings::EspSnaplinesVisibilityCheck && p_info->is_visible)
+				LineColor = ImColor(Data::Settings::EspSnaplinesColorTeamVisible[0], Data::Settings::EspSnaplinesColorTeamVisible[1], Data::Settings::EspSnaplinesColorTeamVisible[2], Data::Settings::EspSnaplinesColorTeamVisible[3]);
+			else
+				LineColor = ImColor(Data::Settings::EspSnaplinesColorTeam[0], Data::Settings::EspSnaplinesColorTeam[1], Data::Settings::EspSnaplinesColorTeam[2], Data::Settings::EspSnaplinesColorTeam[3]);
+		}
 		else
-			LineColor = ImColor(Data::Settings::EspSnaplinesColorEnemy[0], Data::Settings::EspSnaplinesColorEnemy[1], Data::Settings::EspSnaplinesColorEnemy[2], Data::Settings::EspSnaplinesColorEnemy[3]);
+		{
+			if(Data::Settings::EspSnaplinesVisibilityCheck && p_info->is_visible)
+				LineColor = ImColor(Data::Settings::EspSnaplinesColorEnemyVisible[0], Data::Settings::EspSnaplinesColorEnemyVisible[1], Data::Settings::EspSnaplinesColorEnemyVisible[2], Data::Settings::EspSnaplinesColorEnemyVisible[3]);
+			else
+				LineColor = ImColor(Data::Settings::EspSnaplinesColorEnemy[0], Data::Settings::EspSnaplinesColorEnemy[1], Data::Settings::EspSnaplinesColorEnemy[2], Data::Settings::EspSnaplinesColorEnemy[3]);
+		}
 
 		Draw->AddLine(LineOrigin, LineEnd, LineColor, LineThickness);
 	}

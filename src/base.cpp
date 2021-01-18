@@ -72,17 +72,25 @@ bool    Base::Data::Settings::EnableEspTeam = true;
 bool    Base::Data::Settings::EnableEspEnemy = true;
 
 bool    Base::Data::Settings::EnableEspSnaplines = false;
+bool    Base::Data::Settings::EspSnaplinesVisibilityCheck = false;
 float   Base::Data::Settings::EspSnaplinesThickness = 2.0f;
 float   Base::Data::Settings::EspSnaplinesColorTeam[4]  = { 0.0f, 0.5f, 1.0f, 1.0f };
 float   Base::Data::Settings::EspSnaplinesColorEnemy[4] = { 1.0f, 0.5f, 0.0f, 1.0f };
+float   Base::Data::Settings::EspSnaplinesColorTeamVisible[4]  = { 0.0f, 0.2f, 1.0f, 1.0f };
+float   Base::Data::Settings::EspSnaplinesColorEnemyVisible[4] = { 1.0f, 0.2f, 0.0f, 1.0f };
 int     Base::Data::Settings::EspSnaplinesPos = 0;
 
 bool    Base::Data::Settings::EnableEspBox = false;
+bool    Base::Data::Settings::EspBoxVisibilyCheck = true;
 float   Base::Data::Settings::EspBoxThickness = 2.0f;
 float   Base::Data::Settings::EspBoxColorTeam[4]  = { 0.0f, 1.0f, 0.5f, 1.0f };
 float   Base::Data::Settings::EspBoxColorFillTeam[4] = { 0.0f, 1.0f, 0.5f, 0.5f };
 float   Base::Data::Settings::EspBoxColorEnemy[4] = { 1.0f, 1.0f, 0.0f, 1.0f };
 float   Base::Data::Settings::EspBoxColorFillEnemy[4] = { 1.0f, 1.0f, 0.0f, 0.5f };
+float   Base::Data::Settings::EspBoxColorTeamVisible[4] = { 0.0f, 1.0f, 0.5f, 1.0f };
+float   Base::Data::Settings::EspBoxColorFillTeamVisible[4] = { 0.0f, 1.0f, 0.5f, 0.5f };
+float   Base::Data::Settings::EspBoxColorEnemyVisible[4] = { 1.0f, 0.0f, 0.0f, 1.0f };
+float   Base::Data::Settings::EspBoxColorFillEnemyVisible[4] = { 1.0f, 0.0f, 0.0f, 0.5f };
 
 bool    Base::Data::Settings::EnableTeleport = false;
 bool    Base::Data::Settings::TeleportQueued = false;

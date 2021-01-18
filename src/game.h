@@ -20,8 +20,11 @@ typedef void(* midfunction_t)(void);
 typedef midfunction_t attackphysics_t;
 typedef void(* drawscope_t)(bool preload);
 typedef void(__stdcall* glDrawRangeElements_t)(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const void* indices);
+typedef void(* TraceLine_t)(vec from, vec to, dynent* pTracer, bool CheckPlayers, traceresult_s* tr, bool SkipTags);
+typedef bool(* IsVisible_t)(vec v1, vec v2, dynent* tracer, bool SkipTags);
 
 bool WorldToScreen(vec pos3D, vec* pos2D);
+bool IsVisible(playerent* p_ent);
 
 class AC_Client
 {
@@ -41,6 +44,8 @@ public:
 	playerincrosshair_t playerincrosshair = nullptr;
 	drawscope_t drawscope = nullptr;
 	glDrawRangeElements_t* p_glDrawRangeElements = nullptr;
+	TraceLine_t TraceLine = nullptr;
+	IsVisible_t IsVisible = nullptr;
 public:
 	inline AC_Client()
 	{
@@ -72,6 +77,8 @@ public:
 		this->playerincrosshair = (playerincrosshair_t)        GAME_OFFSET(0x607C0);
 		this->drawscope = (drawscope_t)                        GAME_OFFSET(0x8080);
 		this->p_glDrawRangeElements = (glDrawRangeElements_t*) GAME_OFFSET(0x109B44);
+		this->TraceLine = (TraceLine_t)                        GAME_OFFSET(0x8A310);
+		this->IsVisible = (IsVisible_t)                        GAME_OFFSET(0x8ABD0);
 		
 		return true;
 	}
@@ -81,6 +88,7 @@ class playerinfo_t
 {
 public:
 	bool is_valid = false;
+	bool is_visible = false;
 	playerent* ent = nullptr;
 	vec pos2D = {};
 	vec pos3D = {};
@@ -106,7 +114,7 @@ public:
 				this->headpos3D = this->ent->o;
 			this->pos3D = this->ent->o;
 			this->pos3D.z -= this->ent->eyeheight;
-			//this->pos3D = this->ent->newpos;
+			this->is_visible = IsVisible(this->ent);
 			check &= WorldToScreen(this->pos3D, &this->pos2D);
 			check &= WorldToScreen(this->headpos3D, &this->headpos2D);
 		}

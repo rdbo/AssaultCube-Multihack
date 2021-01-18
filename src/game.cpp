@@ -21,3 +21,31 @@ bool WorldToScreen(vec pos3D, vec* pos2D)
 
 	return true;
 }
+
+bool IsVisible(playerent* p_ent)
+{
+	traceresult_s tr = {};
+	tr.collided = false;
+	playerent* LocalPlayer = Base::Data::game.player1;
+	mem::voidptr_t fnTraceLine = (mem::voidptr_t)Base::Data::game.TraceLine;
+	vec from = Base::Data::game.player1->o;
+	vec to = p_ent->o;
+
+	__asm
+	{
+		push 0
+		push 0
+		push LocalPlayer
+		push to.z
+		push to.y
+		push to.x
+		push from.z
+		push from.y
+		push from.x
+		lea eax, [tr]
+		call fnTraceLine;
+		add esp, 36
+	}
+
+	return !tr.collided;
+}

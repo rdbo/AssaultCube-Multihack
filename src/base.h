@@ -86,17 +86,25 @@ namespace Base
 			extern bool    EnableEspEnemy;
 
 			extern bool    EnableEspSnaplines;
+			extern bool    EspSnaplinesVisibilityCheck;
 			extern float   EspSnaplinesThickness;
 			extern float   EspSnaplinesColorTeam[4];
 			extern float   EspSnaplinesColorEnemy[4];
+			extern float   EspSnaplinesColorTeamVisible[4];
+			extern float   EspSnaplinesColorEnemyVisible[4];
 			extern int     EspSnaplinesPos;
 
 			extern bool    EnableEspBox;
+			extern bool    EspBoxVisibilyCheck;
 			extern float   EspBoxThickness;
 			extern float   EspBoxColorTeam[4];
 			extern float   EspBoxColorFillTeam[4];
 			extern float   EspBoxColorEnemy[4];
 			extern float   EspBoxColorFillEnemy[4];
+			extern float   EspBoxColorTeamVisible[4];
+			extern float   EspBoxColorFillTeamVisible[4];
+			extern float   EspBoxColorEnemyVisible[4];
+			extern float   EspBoxColorFillEnemyVisible[4];
 
 			extern bool    EnableTeleport;
 			extern bool    TeleportQueued;
