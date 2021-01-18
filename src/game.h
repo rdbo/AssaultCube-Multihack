@@ -22,6 +22,8 @@ typedef void(* drawscope_t)(bool preload);
 typedef void(__stdcall* glDrawRangeElements_t)(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const void* indices);
 typedef void(* TraceLine_t)(vec from, vec to, dynent* pTracer, bool CheckPlayers, traceresult_s* tr, bool SkipTags);
 typedef bool(* IsVisible_t)(vec v1, vec v2, dynent* tracer, bool SkipTags);
+typedef int(* dodamage_t)(int damage, int gun);
+typedef midfunction_t dodamage2_t;
 
 bool WorldToScreen(vec pos3D, vec* pos2D);
 bool IsVisible(playerent* p_ent);
@@ -50,6 +52,8 @@ public:
 	glDrawRangeElements_t* p_glDrawRangeElements = nullptr;
 	TraceLine_t TraceLine = nullptr;
 	IsVisible_t IsVisible = nullptr;
+	dodamage_t dodamage = nullptr;
+	dodamage2_t dodamage2 = nullptr;
 public:
 	inline AC_Client()
 	{
@@ -83,6 +87,8 @@ public:
 		this->p_glDrawRangeElements = (glDrawRangeElements_t*) GAME_OFFSET(0x109B44);
 		this->TraceLine = (TraceLine_t)                        GAME_OFFSET(0x8A310);
 		this->IsVisible = (IsVisible_t)                        GAME_OFFSET(0x8ABD0);
+		this->dodamage = (dodamage_t)                          GAME_OFFSET(0x29C20);
+		this->dodamage2 = (dodamage2_t)                        GAME_OFFSET(0x29D1F);
 		
 		return true;
 	}

@@ -219,6 +219,8 @@
     <ClCompile Include="src\hacks\ESP_Info.cpp" />
     <ClCompile Include="src\hacks\ESP_Snaplines.cpp" />
     <ClCompile Include="src\hacks\FlyHack.cpp" />
+    <ClCompile Include="src\hacks\Godmode.cpp" />
+    <ClCompile Include="src\hacks\InstantKill.cpp" />
     <ClCompile Include="src\hacks\NoRecoil.cpp" />
     <ClCompile Include="src\hacks\NoScope.cpp" />
     <ClCompile Include="src\hacks\Speedhack.cpp" />
@@ -228,6 +230,7 @@
     <ClCompile Include="src\hacks\Wallhack.cpp" />
     <ClCompile Include="src\hooks\attackphysics.cpp" />
     <ClCompile Include="src\hooks\c2sinfo.cpp" />
+    <ClCompile Include="src\hooks\dodamage.cpp" />
     <ClCompile Include="src\hooks\drawcrosshair.cpp" />
     <ClCompile Include="src\hooks\drawscope.cpp" />
     <ClCompile Include="src\hooks\glDrawRangeElements.cpp" />

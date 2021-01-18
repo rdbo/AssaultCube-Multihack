@@ -36,6 +36,8 @@ namespace Base
 		extern mem::voidptr_t        p_attackphysics;
 		extern mem::voidptr_t        p_attackphysics_ret;
 		extern mem::voidptr_t        p_drawscope;
+		extern mem::voidptr_t        p_dodamage;
+		extern mem::voidptr_t        p_dodamage2;
 		extern SwapBuffers_t         oSwapBuffers;
 		extern ShowCursor_t          oShowCursor;
 		extern WndProc_t             oWndProc;
@@ -46,6 +48,8 @@ namespace Base
 		extern attackphysics_t       o_attackphysics;
 		extern drawscope_t           o_drawscope;
 		extern glDrawRangeElements_t o_glDrawRangeElements;
+		extern dodamage_t            o_dodamage;
+		extern dodamage2_t           o_dodamage2;
 		extern mem::size_t           szSwapBuffers;
 		extern mem::size_t           szShowCursor;
 		extern mem::size_t           sz_c2sinfo;
@@ -54,6 +58,8 @@ namespace Base
 		extern mem::size_t           sz_drawcrosshair;
 		extern mem::size_t           sz_attackphysics;
 		extern mem::size_t           sz_drawscope;
+		extern mem::size_t           sz_dodamage;
+		extern mem::size_t           sz_dodamage2;
 		extern bool                  WMKeys[0xFE];
 		extern bool                  InitSwapBuffers;
 		extern bool                  IsUnloaded;
@@ -154,6 +160,10 @@ namespace Base
 			extern bool    AimbotSmooth;
 			extern float   AimbotSmoothValue;
 			extern int     AimbotTargetPreference;
+
+			extern bool    EnableServerSide;
+			extern bool    EnableGodmode;
+			extern bool    EnableInstantKill;
 		}
 
 		namespace Keys
@@ -186,6 +196,8 @@ namespace Base
 		void Bunnyhop();
 		void Wallhack(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const void* indices);
 		void Aimbot();
+		void Godmode();
+		void InstantKill();
 	}
 
 	namespace Hooks
@@ -204,5 +216,8 @@ namespace Base
 		//void drawscope(bool preload)
 		void drawscope(void);
 		void __stdcall glDrawRangeElements(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const void* indices);
+		//void dodamage(int damage, playerent *pl, playerent *actor, int gun, bool gib, bool local)
+		void dodamage(void);
+		void dodamage2(void);
 	}
 }

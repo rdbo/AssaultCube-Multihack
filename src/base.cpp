@@ -18,6 +18,8 @@ mem::voidptr_t        Base::Data::p_drawcrosshair = nullptr;
 mem::voidptr_t        Base::Data::p_attackphysics = nullptr;
 mem::voidptr_t        Base::Data::p_attackphysics_ret = nullptr;
 mem::voidptr_t        Base::Data::p_drawscope = nullptr;
+mem::voidptr_t        Base::Data::p_dodamage = nullptr;
+mem::voidptr_t        Base::Data::p_dodamage2 = nullptr;
 SwapBuffers_t         Base::Data::oSwapBuffers = nullptr;
 WndProc_t             Base::Data::oWndProc = nullptr;
 ShowCursor_t          Base::Data::oShowCursor = nullptr;
@@ -28,6 +30,8 @@ drawcrosshair_t       Base::Data::o_drawcrosshair = nullptr;
 attackphysics_t       Base::Data::o_attackphysics = nullptr;
 drawscope_t           Base::Data::o_drawscope = nullptr;
 glDrawRangeElements_t Base::Data::o_glDrawRangeElements = nullptr;
+dodamage_t            Base::Data::o_dodamage = nullptr;
+dodamage2_t           Base::Data::o_dodamage2 = nullptr;
 mem::size_t           Base::Data::szSwapBuffers = 5;
 mem::size_t           Base::Data::szShowCursor  = 5;
 mem::size_t           Base::Data::sz_c2sinfo    = 5;
@@ -36,6 +40,8 @@ mem::size_t           Base::Data::sz_movelocalplayer = 8;
 mem::size_t           Base::Data::sz_drawcrosshair = 5;
 mem::size_t           Base::Data::sz_attackphysics = 10;
 mem::size_t           Base::Data::sz_drawscope = 6;
+mem::size_t           Base::Data::sz_dodamage = 6;
+mem::size_t           Base::Data::sz_dodamage2 = 5;
 bool                  Base::Data::WMKeys[0xFE];
 bool                  Base::Data::InitSwapBuffers = false;
 bool                  Base::Data::IsUnloaded = false;
@@ -142,6 +148,10 @@ bool    Base::Data::Settings::AimbotSmooth = true;
 float   Base::Data::Settings::AimbotSmoothValue = 2;
 int     Base::Data::Settings::AimbotTargetPreference = 0;
 
+bool    Base::Data::Settings::EnableServerSide = false;
+bool    Base::Data::Settings::EnableGodmode = false;
+bool    Base::Data::Settings::EnableInstantKill = false;
+
 DWORD WINAPI ExitThread(LPVOID lpReserved);
 
 void Base::Init(HMODULE hMod)
@@ -161,6 +171,8 @@ void Base::Init(HMODULE hMod)
 	Data::p_attackphysics = (mem::voidptr_t)Data::game.attackphysics;
 	Data::p_attackphysics_ret = (mem::voidptr_t)(&((char*)Data::p_attackphysics)[Data::sz_attackphysics]);
 	Data::p_drawscope = (mem::voidptr_t)Data::game.drawscope;
+	Data::p_dodamage = (mem::voidptr_t)Data::game.dodamage;
+	Data::p_dodamage2 = (mem::voidptr_t)Data::game.dodamage2;
 	Hooks::Init();
 }
 

@@ -13,11 +13,15 @@ void Base::Hooks::Init()
 	Data::o_drawscope     = (drawscope_t)mem::in::detour_trampoline(Data::p_drawscope, (mem::voidptr_t)Hooks::drawscope, Data::sz_drawscope, mem::MEM_DT_M1);
 	Data::o_glDrawRangeElements = *Data::game.p_glDrawRangeElements;
 	*Data::game.p_glDrawRangeElements = (glDrawRangeElements_t)Hooks::glDrawRangeElements;
+	Data::o_dodamage = (dodamage_t)mem::in::detour_trampoline(Data::p_dodamage, (mem::voidptr_t)Hooks::dodamage, Data::sz_dodamage, mem::MEM_DT_M1);
+	Data::o_dodamage2 = (dodamage2_t)mem::in::detour_trampoline(Data::p_dodamage2, (mem::voidptr_t)Hooks::dodamage2, Data::sz_dodamage2, mem::MEM_DT_M1);
 }
 
 void Base::Hooks::Shutdown()
 {
 	SetWindowLongPtr(Data::hWindow, GWL_WNDPROC, (LONG_PTR)Data::oWndProc);
+	mem::in::detour_restore(Data::p_dodamage2, (mem::byte_t*)Data::o_dodamage2, Data::sz_dodamage2);
+	mem::in::detour_restore(Data::p_dodamage, (mem::byte_t*)Data::o_dodamage, Data::sz_dodamage);
 	*Data::game.p_glDrawRangeElements = Data::o_glDrawRangeElements;
 	mem::in::detour_restore(Data::p_drawscope, (mem::byte_t*)Data::o_drawscope, Data::sz_drawscope);
 	mem::in::detour_restore(Data::p_attackphysics, (mem::byte_t*)Data::o_attackphysics, Data::sz_attackphysics);
