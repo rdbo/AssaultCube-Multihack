@@ -238,7 +238,7 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 				ImGui::Checkbox("Toggle Key", &Data::Settings::TriggerbotToggle);
 				if (Data::Settings::TriggerbotToggle)
 				{
-					ImGui::Text("Toggle State: %i", Data::Settings::TriggerbotToggleState);
+					ImGui::Checkbox("Toggle State", &Data::Settings::TriggerbotToggleState);
 
 					if (Data::Keys::ToChange == &Data::Keys::Triggerbot)
 						ImGui::Text("Key: [...]");
@@ -337,7 +337,7 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 			{
 				ImGui::BeginChild("bunnyhop-settings", g_MenuKeySettingsSize, true);
 				ImGui::Checkbox("Toggle Key", &Data::Settings::BunnyhopToggle);
-				ImGui::Text("Toggle State: %i", Data::Settings::BunnyhopToggleState);
+				ImGui::Checkbox("Toggle State", &Data::Settings::BunnyhopToggleState);
 
 				if (Data::Keys::ToChange == &Data::Keys::Bhop)
 					ImGui::Text("Key: [...]");
