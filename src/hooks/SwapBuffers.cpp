@@ -233,36 +233,40 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 			ImGui::Checkbox("Aimbot", &Data::Settings::EnableAimbot);
 			if (Data::Settings::EnableAimbot)
 			{
-				ImGui::BeginChild("aimbot-settings", g_MenuSettingsSize, true);
-				const char* AimbotTargetPreferences[] = { "Closest to Player", "Closest to Aim" };
-				ImGui::Combo("Aimbot Target Preference", &Data::Settings::AimbotTargetPreference, AimbotTargetPreferences, sizeof(AimbotTargetPreferences) / sizeof(AimbotTargetPreferences[0]));
-				ImGui::Checkbox("Smooth", &Data::Settings::AimbotSmooth);
-				if (Data::Settings::AimbotSmooth)
-					ImGui::SliderFloat("Smooth Value", &Data::Settings::AimbotSmoothValue, 0.0f, 10.0f, "%.0f");
-				ImGui::Checkbox("Toggle Key", &Data::Settings::AimbotToggle);
-				if (Data::Settings::TriggerbotToggle)
+				if (ImGui::TreeNode("Aimbot Settings..."))
 				{
-					ImGui::Checkbox("Toggle State", &Data::Settings::AimbotToggleState);
+					ImGui::BeginChild("aimbot-settings", g_MenuSettingsSize, true);
+					const char* AimbotTargetPreferences[] = { "Closest to Player", "Closest to Aim" };
+					ImGui::Combo("Aimbot Target Preference", &Data::Settings::AimbotTargetPreference, AimbotTargetPreferences, sizeof(AimbotTargetPreferences) / sizeof(AimbotTargetPreferences[0]));
+					ImGui::Checkbox("Smooth", &Data::Settings::AimbotSmooth);
+					if (Data::Settings::AimbotSmooth)
+						ImGui::SliderFloat("Smooth Value", &Data::Settings::AimbotSmoothValue, 0.0f, 10.0f, "%.0f");
+					ImGui::Checkbox("Toggle Key", &Data::Settings::AimbotToggle);
+					if (Data::Settings::TriggerbotToggle)
+					{
+						ImGui::Checkbox("Toggle State", &Data::Settings::AimbotToggleState);
 
-					if (Data::Keys::ToChange == &Data::Keys::Aimbot)
-						ImGui::Text("Key: [...]");
-					else
-						ImGui::Text("Key: %i", Data::Keys::Aimbot);
+						if (Data::Keys::ToChange == &Data::Keys::Aimbot)
+							ImGui::Text("Key: [...]");
+						else
+							ImGui::Text("Key: %i", Data::Keys::Aimbot);
 
-					if (ImGui::Button("Change Key..."))
-						Data::Keys::ToChange = &Data::Keys::Aimbot;
+						if (ImGui::Button("Change Key..."))
+							Data::Keys::ToChange = &Data::Keys::Aimbot;
+					}
+					ImGui::EndChild();
+					ImGui::TreePop();
 				}
-				ImGui::EndChild();
 			}
 
 			ImGui::Checkbox("No Recoil", &Data::Settings::EnableNoRecoil);
 			ImGui::Checkbox("Triggerbot", &Data::Settings::EnableTriggerbot);
 			if (Data::Settings::EnableTriggerbot)
 			{
-				ImGui::BeginChild("triggerbot-settings", g_MenuKeySettingsSize, true);
-				ImGui::Checkbox("Toggle Key", &Data::Settings::TriggerbotToggle);
-				if (Data::Settings::TriggerbotToggle)
+				if (ImGui::TreeNode("Triggerbot Settings..."))
 				{
+					ImGui::BeginChild("triggerbot-settings", g_MenuKeySettingsSize, true);
+					ImGui::Checkbox("Toggle Key", &Data::Settings::TriggerbotToggle);
 					ImGui::Checkbox("Toggle State", &Data::Settings::TriggerbotToggleState);
 
 					if (Data::Keys::ToChange == &Data::Keys::Triggerbot)
@@ -272,8 +276,9 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 
 					if (ImGui::Button("Change Key..."))
 						Data::Keys::ToChange = &Data::Keys::Triggerbot;
+					ImGui::EndChild();
+					ImGui::TreePop();
 				}
-				ImGui::EndChild();
 			}
 			break;
 		case 1: //Visuals
@@ -281,21 +286,25 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 			ImGui::Checkbox("Custom Crosshair", &Data::Settings::EnableCrosshair);
 			if (Data::Settings::EnableCrosshair)
 			{
-				ImGui::BeginChild("crosshair-settings", g_MenuSettingsSize, true);
-				const char* CrosshairTypes[] = { "Default", "Triangle", "Square", "Circle" };
-				ImGui::Combo("Crosshair Type", &Data::Settings::CrosshairType, CrosshairTypes, sizeof(CrosshairTypes)/sizeof(CrosshairTypes[0]));
-				ImGui::SliderFloat("Crosshair Length", &Data::Settings::CrosshairLength, 0, 100, "%.0f");
-				ImGui::SliderFloat("Crosshair Thickness", &Data::Settings::CrosshairThickness, 0, 100, "%.0f");
-				ImGui::SliderFloat("Crosshair Gap", &Data::Settings::CrosshairGap, 0, 100, "%.0f");
-				ImGui::Checkbox("Crosshair Top", &Data::Settings::CrosshairTop);
-				ImGui::Checkbox("Crosshair Left", &Data::Settings::CrosshairLeft);
-				ImGui::Checkbox("Crosshair Bottom", &Data::Settings::CrosshairBottom);
-				ImGui::Checkbox("Crosshair Right", &Data::Settings::CrosshairRight);
-				ImGui::Checkbox("Crosshair Dot", &Data::Settings::CrosshairDot);
-				if (Data::Settings::CrosshairDot)
-					ImGui::Checkbox("Crosshair Dot Filled", &Data::Settings::CrosshairDotFilled);
-				ImGui::ColorEdit4("Crosshair Color", Data::Settings::CrosshairColor);
-				ImGui::EndChild();
+				if (ImGui::TreeNode("Custom Crosshair Settings..."))
+				{
+					ImGui::BeginChild("crosshair-settings", g_MenuSettingsSize, true);
+					const char* CrosshairTypes[] = { "Default", "Triangle", "Square", "Circle" };
+					ImGui::Combo("Crosshair Type", &Data::Settings::CrosshairType, CrosshairTypes, sizeof(CrosshairTypes) / sizeof(CrosshairTypes[0]));
+					ImGui::SliderFloat("Crosshair Length", &Data::Settings::CrosshairLength, 0, 100, "%.0f");
+					ImGui::SliderFloat("Crosshair Thickness", &Data::Settings::CrosshairThickness, 0, 100, "%.0f");
+					ImGui::SliderFloat("Crosshair Gap", &Data::Settings::CrosshairGap, 0, 100, "%.0f");
+					ImGui::Checkbox("Crosshair Top", &Data::Settings::CrosshairTop);
+					ImGui::Checkbox("Crosshair Left", &Data::Settings::CrosshairLeft);
+					ImGui::Checkbox("Crosshair Bottom", &Data::Settings::CrosshairBottom);
+					ImGui::Checkbox("Crosshair Right", &Data::Settings::CrosshairRight);
+					ImGui::Checkbox("Crosshair Dot", &Data::Settings::CrosshairDot);
+					if (Data::Settings::CrosshairDot)
+						ImGui::Checkbox("Crosshair Dot Filled", &Data::Settings::CrosshairDotFilled);
+					ImGui::ColorEdit4("Crosshair Color", Data::Settings::CrosshairColor);
+					ImGui::EndChild();
+					ImGui::TreePop();
+				}
 			}
 			break;
 		case 2: //ESP
@@ -310,35 +319,39 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 			{
 				if (Data::Settings::EnableEspTeam || Data::Settings::EnableEspEnemy)
 				{
-					ImGui::BeginChild("esp-box-settings", g_MenuSettingsSize, true);
-					ImGui::Checkbox("Visibility Check", &Data::Settings::EspBoxVisibilyCheck);
-					ImGui::SliderFloat("ESP Box Thickness", &Data::Settings::EspBoxThickness, 0, 100, "%.0f");
-
-					if (Data::Settings::EnableEspTeam)
+					if (ImGui::TreeNode("ESP Box Settings..."))
 					{
-						ImGui::ColorEdit4("ESP Box Color Team", Data::Settings::EspBoxColorTeam);
-						ImGui::ColorEdit4("ESP Box Color Fill Team", Data::Settings::EspBoxColorFillTeam);
+						ImGui::BeginChild("esp-box-settings", g_MenuSettingsSize, true);
+						ImGui::Checkbox("Visibility Check", &Data::Settings::EspBoxVisibilyCheck);
+						ImGui::SliderFloat("ESP Box Thickness", &Data::Settings::EspBoxThickness, 0, 100, "%.0f");
 
-						if (Data::Settings::EspBoxVisibilyCheck)
+						if (Data::Settings::EnableEspTeam)
 						{
-							ImGui::ColorEdit4("ESP Box Color Team Visible", Data::Settings::EspBoxColorTeamVisible);
-							ImGui::ColorEdit4("ESP Box Color Fill Team Visible", Data::Settings::EspBoxColorFillTeamVisible);
+							ImGui::ColorEdit4("ESP Box Color Team", Data::Settings::EspBoxColorTeam);
+							ImGui::ColorEdit4("ESP Box Color Fill Team", Data::Settings::EspBoxColorFillTeam);
+
+							if (Data::Settings::EspBoxVisibilyCheck)
+							{
+								ImGui::ColorEdit4("ESP Box Color Team Visible", Data::Settings::EspBoxColorTeamVisible);
+								ImGui::ColorEdit4("ESP Box Color Fill Team Visible", Data::Settings::EspBoxColorFillTeamVisible);
+							}
 						}
-					}
 
-					if (Data::Settings::EnableEspEnemy)
-					{
-						ImGui::ColorEdit4("ESP Box Color Enemy", Data::Settings::EspBoxColorEnemy);
-						ImGui::ColorEdit4("ESP Box Color Fill Enemy", Data::Settings::EspBoxColorFillEnemy);
-
-						if (Data::Settings::EspBoxVisibilyCheck)
+						if (Data::Settings::EnableEspEnemy)
 						{
-							ImGui::ColorEdit4("ESP Box Color Enemy Visible", Data::Settings::EspBoxColorEnemyVisible);
-							ImGui::ColorEdit4("ESP Box Color Fill Enemy Visible", Data::Settings::EspBoxColorFillEnemyVisible);
-						}
-					}
+							ImGui::ColorEdit4("ESP Box Color Enemy", Data::Settings::EspBoxColorEnemy);
+							ImGui::ColorEdit4("ESP Box Color Fill Enemy", Data::Settings::EspBoxColorFillEnemy);
 
-					ImGui::EndChild();
+							if (Data::Settings::EspBoxVisibilyCheck)
+							{
+								ImGui::ColorEdit4("ESP Box Color Enemy Visible", Data::Settings::EspBoxColorEnemyVisible);
+								ImGui::ColorEdit4("ESP Box Color Fill Enemy Visible", Data::Settings::EspBoxColorFillEnemyVisible);
+							}
+						}
+
+						ImGui::EndChild();
+						ImGui::TreePop();
+					}
 				}
 			}
 
@@ -347,24 +360,28 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 			{
 				if (Data::Settings::EnableEspTeam || Data::Settings::EnableEspEnemy)
 				{
-					ImGui::BeginChild("esp-snaplines-settings", g_MenuSettingsSize, true);
-					const char* SnaplinesPos[] = { "Bottom", "Top" };
-					ImGui::Checkbox("Visibility Check", &Data::Settings::EspSnaplinesVisibilityCheck);
-					ImGui::SliderFloat("ESP Snaplines Thickness", &Data::Settings::EspSnaplinesThickness, 0, 100, "%.0f");
-					if (Data::Settings::EnableEspTeam)
+					if (ImGui::TreeNode("ESP Snaplines Settings"))
 					{
-						ImGui::ColorEdit4("ESP Snaplines Color Team", Data::Settings::EspSnaplinesColorTeam);
-						if(Data::Settings::EspSnaplinesVisibilityCheck)
-							ImGui::ColorEdit4("ESP Snaplines Color Team Visible", Data::Settings::EspSnaplinesColorTeamVisible);
+						ImGui::BeginChild("esp-snaplines-settings", g_MenuSettingsSize, true);
+						const char* SnaplinesPos[] = { "Bottom", "Top" };
+						ImGui::Checkbox("Visibility Check", &Data::Settings::EspSnaplinesVisibilityCheck);
+						ImGui::SliderFloat("ESP Snaplines Thickness", &Data::Settings::EspSnaplinesThickness, 0, 100, "%.0f");
+						if (Data::Settings::EnableEspTeam)
+						{
+							ImGui::ColorEdit4("ESP Snaplines Color Team", Data::Settings::EspSnaplinesColorTeam);
+							if (Data::Settings::EspSnaplinesVisibilityCheck)
+								ImGui::ColorEdit4("ESP Snaplines Color Team Visible", Data::Settings::EspSnaplinesColorTeamVisible);
+						}
+						if (Data::Settings::EnableEspEnemy)
+						{
+							ImGui::ColorEdit4("ESP Snaplines Color Enemy", Data::Settings::EspSnaplinesColorEnemy);
+							if (Data::Settings::EspSnaplinesVisibilityCheck)
+								ImGui::ColorEdit4("ESP Snaplines Color Enemy Visible", Data::Settings::EspSnaplinesColorEnemyVisible);
+						}
+						ImGui::Combo("ESP Snaplines Position", &Data::Settings::EspSnaplinesPos, SnaplinesPos, sizeof(SnaplinesPos) / sizeof(SnaplinesPos[0]));
+						ImGui::EndChild();
+						ImGui::TreePop();
 					}
-					if (Data::Settings::EnableEspEnemy)
-					{
-						ImGui::ColorEdit4("ESP Snaplines Color Enemy", Data::Settings::EspSnaplinesColorEnemy);
-						if (Data::Settings::EspSnaplinesVisibilityCheck)
-							ImGui::ColorEdit4("ESP Snaplines Color Enemy Visible", Data::Settings::EspSnaplinesColorEnemyVisible);
-					}
-					ImGui::Combo("ESP Snaplines Position", &Data::Settings::EspSnaplinesPos, SnaplinesPos, sizeof(SnaplinesPos)/sizeof(SnaplinesPos[0]));
-					ImGui::EndChild();
 				}
 			}
 
@@ -375,69 +392,82 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 			ImGui::Checkbox("Speedhack", &Data::Settings::EnableSpeedhack);
 			if (Data::Settings::EnableSpeedhack)
 			{
-				ImGui::BeginChild("speedhack-settings", g_MenuSettingsMinSize, true);
-				ImGui::SliderFloat("Speedhack Value", &Data::Settings::SpeedhackValue, 0.1f, 1.0f, "%.1f");
-				ImGui::EndChild();
+				if (ImGui::TreeNode("Speedhack Settings..."))
+				{
+					ImGui::BeginChild("speedhack-settings", g_MenuSettingsMinSize, true);
+					ImGui::SliderFloat("Speedhack Value", &Data::Settings::SpeedhackValue, 0.1f, 1.0f, "%.1f");
+					ImGui::EndChild();
+					ImGui::TreePop();
+				}
 			}
 			ImGui::Checkbox("Bunnyhop", &Data::Settings::EnableBunnyhop);
 			if (Data::Settings::EnableBunnyhop)
 			{
-				ImGui::BeginChild("bunnyhop-settings", g_MenuKeySettingsSize, true);
-				ImGui::Checkbox("Toggle Key", &Data::Settings::BunnyhopToggle);
-				ImGui::Checkbox("Toggle State", &Data::Settings::BunnyhopToggleState);
+				if (ImGui::TreeNode("Bunnyhop Settings..."))
+				{
+					ImGui::BeginChild("bunnyhop-settings", g_MenuKeySettingsSize, true);
+					ImGui::Checkbox("Toggle Key", &Data::Settings::BunnyhopToggle);
+					ImGui::Checkbox("Toggle State", &Data::Settings::BunnyhopToggleState);
 
-				if (Data::Keys::ToChange == &Data::Keys::Bhop)
-					ImGui::Text("Key: [...]");
-				else
-					ImGui::Text("Key: %i", Data::Keys::Bhop);
+					if (Data::Keys::ToChange == &Data::Keys::Bhop)
+						ImGui::Text("Key: [...]");
+					else
+						ImGui::Text("Key: %i", Data::Keys::Bhop);
 
-				if (ImGui::Button("Change Key..."))
-					Data::Keys::ToChange = &Data::Keys::Bhop;
-				ImGui::EndChild();
+					if (ImGui::Button("Change Key..."))
+						Data::Keys::ToChange = &Data::Keys::Bhop;
+					ImGui::EndChild();
+					ImGui::TreePop();
+				}
 			}
 
 			ImGui::Checkbox("Teleport Players", &Data::Settings::EnableTeleportPlayers);
 			if (Data::Settings::EnableTeleportPlayers)
 			{
-				ImGui::BeginChild("teleport-players-settings", g_MenuSettingsSize, true);
-				ImGui::SliderFloat("Teleport Distance", &Data::Settings::TeleportPlayersDistance, 0.0f, 50.0f, "%.1f");
-				ImGui::Checkbox("Teleport Team", &Data::Settings::TeleportPlayersTeam);
-				ImGui::Checkbox("Teleport Enemy", &Data::Settings::TeleportPlayersEnemy);
-				ImGui::EndChild();
+				if (ImGui::TreeNode("Teleport Players Settings..."))
+				{
+					ImGui::BeginChild("teleport-players-settings", g_MenuSettingsSize, true);
+					ImGui::SliderFloat("Teleport Distance", &Data::Settings::TeleportPlayersDistance, 0.0f, 50.0f, "%.1f");
+					ImGui::Checkbox("Teleport Team", &Data::Settings::TeleportPlayersTeam);
+					ImGui::Checkbox("Teleport Enemy", &Data::Settings::TeleportPlayersEnemy);
+					ImGui::EndChild();
+					ImGui::TreePop();
+				}
 			}
 
 			ImGui::Checkbox("Teleport", &Data::Settings::EnableTeleport);
 			if (Data::Settings::EnableTeleport)
 			{
-				ImGui::BeginChild("teleport-settings", g_MenuSettingsSize, true);
-				ImGui::SliderFloat("X", &Data::Settings::TeleportPosition[0], -5000.0f, 5000.0f, "%.f");
-				ImGui::SliderFloat("Y", &Data::Settings::TeleportPosition[0], -5000.0f, 5000.0f, "%.f");
-				ImGui::SliderFloat("Z", &Data::Settings::TeleportPosition[0], -5000.0f, 5000.0f, "%.f");
-				ImGui::Checkbox("Force X", &Data::Settings::TeleportForce[0]);
-				ImGui::Checkbox("Force Y", &Data::Settings::TeleportForce[1]);
-				ImGui::Checkbox("Force Z", &Data::Settings::TeleportForce[2]);
-				
-				if (Data::Keys::ToChange == &Data::Keys::TeleportSavePos)
-					ImGui::Text("Save Position Key: [...]");
-				else
-					ImGui::Text("Save Position Key: %i", Data::Keys::TeleportSavePos);
+				if (ImGui::TreeNode("Teleport Settings..."))
+				{
+					ImGui::BeginChild("teleport-settings", g_MenuSettingsSize, true);
+					ImGui::SliderFloat("X", &Data::Settings::TeleportPosition[0], -5000.0f, 5000.0f, "%.f");
+					ImGui::SliderFloat("Y", &Data::Settings::TeleportPosition[0], -5000.0f, 5000.0f, "%.f");
+					ImGui::SliderFloat("Z", &Data::Settings::TeleportPosition[0], -5000.0f, 5000.0f, "%.f");
+					ImGui::Checkbox("Force X", &Data::Settings::TeleportForce[0]);
+					ImGui::Checkbox("Force Y", &Data::Settings::TeleportForce[1]);
+					ImGui::Checkbox("Force Z", &Data::Settings::TeleportForce[2]);
 
-				if(Data::Keys::ToChange == &Data::Keys::Teleport)
-					ImGui::Text("Teleport Key: [...]");
-				else
-					ImGui::Text("Teleport Key: %i", Data::Keys::Teleport);
+					if (Data::Keys::ToChange == &Data::Keys::TeleportSavePos)
+						ImGui::Text("Save Position Key: [...]");
+					else
+						ImGui::Text("Save Position Key: %i", Data::Keys::TeleportSavePos);
 
-				if (ImGui::Button("Change Save Position Key..."))
-					Data::Keys::ToChange = &Data::Keys::TeleportSavePos;
+					if (Data::Keys::ToChange == &Data::Keys::Teleport)
+						ImGui::Text("Teleport Key: [...]");
+					else
+						ImGui::Text("Teleport Key: %i", Data::Keys::Teleport);
 
-				if (ImGui::Button("Change Teleport Key..."))
-					Data::Keys::ToChange = &Data::Keys::Teleport;
+					if (ImGui::Button("Change Save Position Key..."))
+						Data::Keys::ToChange = &Data::Keys::TeleportSavePos;
 
-				/*
-				if (ImGui::Button("Save Position")) Data::Settings::TeleportSaveQueued = true;
-				if (ImGui::Button("Teleport")) Data::Settings::TeleportQueued = true;
-				*/
-				ImGui::EndChild();
+					if (ImGui::Button("Change Teleport Key..."))
+						Data::Keys::ToChange = &Data::Keys::Teleport;
+					if (ImGui::Button("Save Position")) Data::Settings::TeleportSaveQueued = true;
+					if (ImGui::Button("Teleport")) Data::Settings::TeleportQueued = true;
+					ImGui::EndChild();
+					ImGui::TreePop();
+				}
 			}
 
 			if (ImGui::Button("Detach"))
