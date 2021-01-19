@@ -5,7 +5,9 @@
 #define MODULE_OFFSET(mod, offset) (&((char*)mod.base)[offset])
 #define READ_CONFIG(json_obj, ns, varname) json_obj["ACMH_CFG_rdbo"][ns][varname]
 #define WRITE_CONFIG(json_obj, ns, varname, value) json_obj["ACMH_CFG_rdbo"][ns][varname] = value
+#ifdef _DEBUG
 #define ACMH_DEBUG
+#endif
 #ifdef ACMH_DEBUG
 #define ACMH_DEBUG_LOG(...) printf(__VA_ARGS__)
 #else

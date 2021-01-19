@@ -6,6 +6,7 @@
 #define WRITE_CONFIG_SETTINGS(val) WRITE_CONFIG(j, "Settings", STRINGIFY(val), Base::Data::Settings::val)
 #define WRITE_CONFIG_KEYS(val) WRITE_CONFIG(j, "Keys", STRINGIFY(val), Base::Data::Keys::val)
 #define READ_CONFIG_SETTINGS(val) Base::Data::Settings::val = READ_CONFIG(j, "Settings", STRINGIFY(val))
+#define READ_CONFIG_SETTINGS_BUF(val) for(int i = 0; i < sizeof(Base::Data::Settings::val)/sizeof(Base::Data::Settings::val[0]); i++) Base::Data::Settings::val[i] = READ_CONFIG(j, "Settings", STRINGIFY(val))[i];
 #define READ_CONFIG_KEYS(val) Base::Data::Keys::val = READ_CONFIG(j, "Keys", STRINGIFY(val))
 #define CHECK_CFG_FILE(var) (var.length() > 0 && var.find('.') == var.npos && var.find('\\') == var.npos && var.find('/') == var.npos)
 
@@ -46,7 +47,7 @@ bool Base::LoadConfig(std::string ConfigName)
 		READ_CONFIG_SETTINGS(CrosshairRight);
 		READ_CONFIG_SETTINGS(CrosshairDot);
 		READ_CONFIG_SETTINGS(CrosshairDotFilled);
-		//READ_CONFIG_SETTINGS(CrosshairColor);
+		READ_CONFIG_SETTINGS_BUF(CrosshairColor);
 
 		READ_CONFIG_SETTINGS(EnableEspTeam);
 		READ_CONFIG_SETTINGS(EnableEspEnemy);
@@ -54,29 +55,29 @@ bool Base::LoadConfig(std::string ConfigName)
 		READ_CONFIG_SETTINGS(EnableEspSnaplines);
 		READ_CONFIG_SETTINGS(EspSnaplinesVisibilityCheck);
 		READ_CONFIG_SETTINGS(EspSnaplinesThickness);
-		//READ_CONFIG_SETTINGS(EspSnaplinesColorTeam);
-		//READ_CONFIG_SETTINGS(EspSnaplinesColorEnemy);
-		//READ_CONFIG_SETTINGS(EspSnaplinesColorTeamVisible);
-		//READ_CONFIG_SETTINGS(EspSnaplinesColorEnemyVisible);
+		READ_CONFIG_SETTINGS_BUF(EspSnaplinesColorTeam);
+		READ_CONFIG_SETTINGS_BUF(EspSnaplinesColorEnemy);
+		READ_CONFIG_SETTINGS_BUF(EspSnaplinesColorTeamVisible);
+		READ_CONFIG_SETTINGS_BUF(EspSnaplinesColorEnemyVisible);
 		READ_CONFIG_SETTINGS(EspSnaplinesPos);
 
 		READ_CONFIG_SETTINGS(EnableEspBox);
 		READ_CONFIG_SETTINGS(EspBoxVisibilyCheck);
 		READ_CONFIG_SETTINGS(EspBoxThickness);
-		//READ_CONFIG_SETTINGS(EspBoxColorTeam);
-		//READ_CONFIG_SETTINGS(EspBoxColorFillTeam);
-		//READ_CONFIG_SETTINGS(EspBoxColorEnemy);
-		//READ_CONFIG_SETTINGS(EspBoxColorFillEnemy);
-		//READ_CONFIG_SETTINGS(EspBoxColorTeamVisible);
-		//READ_CONFIG_SETTINGS(EspBoxColorFillTeamVisible);
-		//READ_CONFIG_SETTINGS(EspBoxColorEnemyVisible);
-		//READ_CONFIG_SETTINGS(EspBoxColorFillEnemyVisible);
+		READ_CONFIG_SETTINGS_BUF(EspBoxColorTeam);
+		READ_CONFIG_SETTINGS_BUF(EspBoxColorFillTeam);
+		READ_CONFIG_SETTINGS_BUF(EspBoxColorEnemy);
+		READ_CONFIG_SETTINGS_BUF(EspBoxColorFillEnemy);
+		READ_CONFIG_SETTINGS_BUF(EspBoxColorTeamVisible);
+		READ_CONFIG_SETTINGS_BUF(EspBoxColorFillTeamVisible);
+		READ_CONFIG_SETTINGS_BUF(EspBoxColorEnemyVisible);
+		READ_CONFIG_SETTINGS_BUF(EspBoxColorFillEnemyVisible);
 
 		READ_CONFIG_SETTINGS(EnableTeleport);
 		READ_CONFIG_SETTINGS(TeleportQueued);
 		READ_CONFIG_SETTINGS(TeleportSaveQueued);
-		//READ_CONFIG_SETTINGS(TeleportPosition);
-		//READ_CONFIG_SETTINGS(TeleportForce);
+		READ_CONFIG_SETTINGS_BUF(TeleportPosition);
+		READ_CONFIG_SETTINGS_BUF(TeleportForce);
 
 		READ_CONFIG_SETTINGS(EnableNoRecoil);
 
@@ -97,15 +98,15 @@ bool Base::LoadConfig(std::string ConfigName)
 		READ_CONFIG_SETTINGS(TeleportPlayersEnemy);
 
 		READ_CONFIG_SETTINGS(EnableEspHealth);
-		//READ_CONFIG_SETTINGS(EspHealthColor);
-		//READ_CONFIG_SETTINGS(EspHealthDmgColor);
+		READ_CONFIG_SETTINGS_BUF(EspHealthColor);
+		READ_CONFIG_SETTINGS_BUF(EspHealthDmgColor);
 
 		READ_CONFIG_SETTINGS(EnableEspArmor);
-		//READ_CONFIG_SETTINGS(EspArmorColor);
-		//READ_CONFIG_SETTINGS(EspArmorDmgColor);
+		READ_CONFIG_SETTINGS_BUF(EspArmorColor);
+		READ_CONFIG_SETTINGS_BUF(EspArmorDmgColor);
 
 		READ_CONFIG_SETTINGS(EnableEspName);
-		//READ_CONFIG_SETTINGS(EspNameColor);
+		READ_CONFIG_SETTINGS_BUF(EspNameColor);
 
 		READ_CONFIG_SETTINGS(EnableBunnyhop);
 		READ_CONFIG_SETTINGS(BunnyhopToggle);
@@ -147,6 +148,8 @@ bool Base::LoadConfig(std::string ConfigName)
 		ACMH_DEBUG_LOG("[!] Exception caught on Load Config File!\n");
 		return false;
 	}
+
+	return true;
 }
 
 bool Base::SaveConfig(std::string ConfigName)
@@ -288,4 +291,6 @@ bool Base::SaveConfig(std::string ConfigName)
 		ACMH_DEBUG_LOG("[!] Exception caught on Save Config File!\n");
 		return false;
 	}
+
+	return true;
 }
