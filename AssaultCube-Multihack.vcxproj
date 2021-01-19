@@ -214,6 +214,7 @@
     <ClCompile Include="src\game.cpp" />
     <ClCompile Include="src\hacks\Aimbot.cpp" />
     <ClCompile Include="src\hacks\AlwaysHeadshot.cpp" />
+    <ClCompile Include="src\hacks\AutoGuns.cpp" />
     <ClCompile Include="src\hacks\Bunnyhop.cpp" />
     <ClCompile Include="src\hacks\Crosshair.cpp" />
     <ClCompile Include="src\hacks\ESP_Box.cpp" />
@@ -222,6 +223,8 @@
     <ClCompile Include="src\hacks\FlyHack.cpp" />
     <ClCompile Include="src\hacks\Godmode.cpp" />
     <ClCompile Include="src\hacks\InfiniteAmmo.cpp" />
+    <ClCompile Include="src\hacks\InfiniteArmor.cpp" />
+    <ClCompile Include="src\hacks\InfiniteHealth.cpp" />
     <ClCompile Include="src\hacks\InstantKill.cpp" />
     <ClCompile Include="src\hacks\NoGunWait.cpp" />
     <ClCompile Include="src\hacks\NoRecoil.cpp" />

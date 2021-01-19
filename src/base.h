@@ -170,6 +170,12 @@ namespace Base
 			extern bool    EnableNoGunWait;
 
 			extern bool    EnableAlwaysHeadshot;
+
+			extern bool    EnableInfiniteArmor;
+
+			extern bool    EnableInfiniteHealth;
+
+			extern bool    EnableAutoGuns;
 		}
 
 		namespace Keys
@@ -207,6 +213,9 @@ namespace Base
 		void InfiniteAmmo();
 		void NoGunWait();
 		void AlwaysHeadshot();
+		void InfiniteArmor();
+		void InfiniteHealth();
+		void AutoGuns();
 	}
 
 	namespace Hooks

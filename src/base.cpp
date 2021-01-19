@@ -158,6 +158,12 @@ bool    Base::Data::Settings::EnableNoGunWait = false;
 
 bool    Base::Data::Settings::EnableAlwaysHeadshot = false;
 
+bool    Base::Data::Settings::EnableInfiniteArmor = false;
+
+bool    Base::Data::Settings::EnableInfiniteHealth = false;
+
+bool    Base::Data::Settings::EnableAutoGuns = false;
+
 DWORD WINAPI ExitThread(LPVOID lpReserved);
 
 void Base::Init(HMODULE hMod)

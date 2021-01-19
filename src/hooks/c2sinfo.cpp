@@ -11,6 +11,9 @@ void Base::Hooks::c2sinfo(playerent* d)
 	Hacks::Aimbot();
 	Hacks::InfiniteAmmo();
 	Hacks::NoGunWait();
+	Hacks::InfiniteArmor();
+	Hacks::InfiniteHealth();
+	Hacks::AutoGuns();
 
 	for (int i = 0; Data::game.players && Data::game.players->inrange(i); i++)
 	{

@@ -261,6 +261,8 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 
 			ImGui::Checkbox("No Recoil", &Data::Settings::EnableNoRecoil);
 			ImGui::Checkbox("Always Headshot", &Data::Settings::EnableAlwaysHeadshot);
+			ImGui::Checkbox("Auto Guns", &Data::Settings::EnableAutoGuns);
+
 			ImGui::Checkbox("Triggerbot", &Data::Settings::EnableTriggerbot);
 			if (Data::Settings::EnableTriggerbot)
 			{
@@ -487,6 +489,8 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 					ImGui::Text("The hacks on this section do not work online.");
 					ImGui::Checkbox("Godmode", &Data::Settings::EnableGodmode);
 					ImGui::Checkbox("Instant Kill", &Data::Settings::EnableInstantKill);
+					ImGui::Checkbox("Infinite Health", &Data::Settings::EnableInfiniteHealth);
+					ImGui::Checkbox("Infinite Armor", &Data::Settings::EnableInfiniteArmor);
 					ImGui::Checkbox("Infinite Ammo", &Data::Settings::EnableInfiniteAmmo);
 					ImGui::Checkbox("No Gun Wait", &Data::Settings::EnableNoGunWait);
 					ImGui::TreePop();
