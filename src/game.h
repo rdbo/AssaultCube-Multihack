@@ -54,6 +54,8 @@ public:
 	IsVisible_t IsVisible = nullptr;
 	dodamage_t dodamage = nullptr;
 	dodamage2_t dodamage2 = nullptr;
+	midfunction_t checkheadshot = nullptr;
+	midfunction_t doheadshot = nullptr;
 public:
 	inline AC_Client()
 	{
@@ -89,7 +91,9 @@ public:
 		this->IsVisible = (IsVisible_t)                        GAME_OFFSET(0x8ABD0);
 		this->dodamage = (dodamage_t)                          GAME_OFFSET(0x29C20);
 		this->dodamage2 = (dodamage2_t)                        GAME_OFFSET(0x29D1F);
-		
+		this->checkheadshot = (midfunction_t)                  GAME_OFFSET(0x61751-0x4);
+		this->doheadshot = (midfunction_t)                     GAME_OFFSET(0x61769);
+
 		return true;
 	}
 };

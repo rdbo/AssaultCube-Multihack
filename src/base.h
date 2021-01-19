@@ -38,6 +38,7 @@ namespace Base
 		extern mem::voidptr_t        p_drawscope;
 		extern mem::voidptr_t        p_dodamage;
 		extern mem::voidptr_t        p_dodamage2;
+		extern mem::voidptr_t        p_checkheadshot;
 		extern SwapBuffers_t         oSwapBuffers;
 		extern ShowCursor_t          oShowCursor;
 		extern WndProc_t             oWndProc;
@@ -50,6 +51,7 @@ namespace Base
 		extern glDrawRangeElements_t o_glDrawRangeElements;
 		extern dodamage_t            o_dodamage;
 		extern dodamage2_t           o_dodamage2;
+		extern midfunction_t         o_checkheadshot;
 		extern mem::size_t           szSwapBuffers;
 		extern mem::size_t           szShowCursor;
 		extern mem::size_t           sz_c2sinfo;
@@ -60,6 +62,7 @@ namespace Base
 		extern mem::size_t           sz_drawscope;
 		extern mem::size_t           sz_dodamage;
 		extern mem::size_t           sz_dodamage2;
+		extern mem::size_t           sz_checkheadshot;
 		extern bool                  WMKeys[0xFE];
 		extern bool                  InitSwapBuffers;
 		extern bool                  IsUnloaded;
@@ -166,6 +169,8 @@ namespace Base
 			extern bool    EnableInstantKill;
 			extern bool    EnableInfiniteAmmo;
 			extern bool    EnableNoGunWait;
+
+			extern bool    EnableAlwaysHeadshot;
 		}
 
 		namespace Keys
@@ -202,6 +207,7 @@ namespace Base
 		void InstantKill();
 		void InfiniteAmmo();
 		void NoGunWait();
+		void AlwaysHeadshot();
 	}
 
 	namespace Hooks
@@ -223,5 +229,6 @@ namespace Base
 		//void dodamage(int damage, playerent *pl, playerent *actor, int gun, bool gib, bool local)
 		void dodamage(void);
 		void dodamage2(void);
+		void checkheadshot(void);
 	}
 }

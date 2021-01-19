@@ -260,6 +260,7 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 			}
 
 			ImGui::Checkbox("No Recoil", &Data::Settings::EnableNoRecoil);
+			ImGui::Checkbox("Always Headshot", &Data::Settings::EnableAlwaysHeadshot);
 			ImGui::Checkbox("Triggerbot", &Data::Settings::EnableTriggerbot);
 			if (Data::Settings::EnableTriggerbot)
 			{

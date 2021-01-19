@@ -213,6 +213,7 @@
     <ClCompile Include="src\base.cpp" />
     <ClCompile Include="src\game.cpp" />
     <ClCompile Include="src\hacks\Aimbot.cpp" />
+    <ClCompile Include="src\hacks\AlwaysHeadshot.cpp" />
     <ClCompile Include="src\hacks\Bunnyhop.cpp" />
     <ClCompile Include="src\hacks\Crosshair.cpp" />
     <ClCompile Include="src\hacks\ESP_Box.cpp" />
@@ -232,6 +233,7 @@
     <ClCompile Include="src\hacks\Wallhack.cpp" />
     <ClCompile Include="src\hooks\attackphysics.cpp" />
     <ClCompile Include="src\hooks\c2sinfo.cpp" />
+    <ClCompile Include="src\hooks\checkheadshot.cpp" />
     <ClCompile Include="src\hooks\dodamage.cpp" />
     <ClCompile Include="src\hooks\drawcrosshair.cpp" />
     <ClCompile Include="src\hooks\drawscope.cpp" />
