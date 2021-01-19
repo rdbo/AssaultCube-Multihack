@@ -149,7 +149,6 @@ namespace Base
 
 			extern bool    EnableEspName;
 			extern float   EspNameColor[4];
-			extern float   EspNameOutlineColor[4];
 
 			extern bool    EnableBunnyhop;
 			extern bool    BunnyhopToggle;

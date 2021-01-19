@@ -313,6 +313,14 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 			ImGui::Checkbox("Enable ESP Team", &Data::Settings::EnableEspTeam);
 			ImGui::Checkbox("Enable ESP Enemy", &Data::Settings::EnableEspEnemy);
 			ImGui::Checkbox("ESP Name", &Data::Settings::EnableEspName);
+			if (Data::Settings::EnableEspName)
+			{
+				if (ImGui::TreeNode("ESP Name Settings"))
+				{
+					ImGui::ColorEdit4("ESP Name Color", Data::Settings::EspNameColor);
+					ImGui::TreePop();
+				}
+			}
 			ImGui::Checkbox("ESP Health", &Data::Settings::EnableEspHealth);
 			ImGui::Checkbox("ESP Armor", &Data::Settings::EnableEspArmor);
 			ImGui::Checkbox("ESP Box", &Data::Settings::EnableEspBox);
