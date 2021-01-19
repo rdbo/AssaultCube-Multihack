@@ -2,6 +2,8 @@
 #include <base.h>
 
 static clock_t WatermarkClock = 0.0f;
+static enum ConfigState_t { CFG_GOOD, CFG_BAD_LOAD, CFG_BAD_SAVE };
+static ConfigState_t ConfigState;
 
 BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 {
@@ -398,6 +400,29 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 
 			break;
 		case 3: //Misc
+			if (ImGui::TreeNode("Config Settings..."))
+			{
+				ImGui::BeginChild("config-settings", g_MenuSettingsSize, true);
+				ImGui::InputText("Config Name", Data::ConfigName, sizeof(Data::ConfigName));
+				if (ImGui::Button("Save Config"))
+					ConfigState = Base::SaveConfig(Data::ConfigName) ? CFG_GOOD : CFG_BAD_SAVE;
+				if (ImGui::Button("Load Config"))
+					ConfigState = Base::LoadConfig(Data::ConfigName) ? CFG_GOOD : CFG_BAD_LOAD;
+				switch (ConfigState)
+				{
+				case CFG_BAD_SAVE:
+					ImGui::Text("Unable to Save Config!");
+					break;
+				case CFG_BAD_LOAD:
+					ImGui::Text("Unable to Load Config!");
+					break;
+				case CFG_GOOD:
+				default:
+					break;
+				}
+				ImGui::EndChild();
+				ImGui::TreePop();
+			}
 			ImGui::Checkbox("Show Watermark", &Data::ShowWatermark);
 			ImGui::Checkbox("Fly Hack", &Data::Settings::EnableFlyHack);
 			ImGui::Checkbox("Speedhack", &Data::Settings::EnableSpeedhack);

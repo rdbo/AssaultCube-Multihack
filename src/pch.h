@@ -8,6 +8,7 @@
 
 #include <iostream>
 #include <cmath>
+#include <cassert>
 #include <ctime>
 #include <Windows.h>
 #include <WinSock2.h>
@@ -18,5 +19,6 @@
 #include <imgui/imgui_impl_opengl2.h>
 #include <font/Ubuntu_Regular.h>
 #include <font/UbuntuMono_Regular.h>
+#include <nlohmann/json.hpp>
 
 #endif

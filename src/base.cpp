@@ -56,7 +56,9 @@ ImFont*               Base::Data::FontTitle = nullptr;
 ImFont*               Base::Data::FontMenu = nullptr;
 ImFont*               Base::Data::FontHack = nullptr;
 bool                  Base::Data::ShowWatermark = true;
-ImColor               Base::Data::WatermarkColor = ImColor(1.0f, 0.4f, 0.4f, 1.0f);
+ImColor               Base::Data::WatermarkColor = ImColor(1.0f, 0.0f, 0.0f, 1.0f);
+std::string           Base::Data::ConfigPath = "";
+char                  Base::Data::ConfigName[256] = {};
 
 UINT    Base::Data::Keys::Bhop = VK_SPACE;
 UINT    Base::Data::Keys::Triggerbot = VK_CONTROL;
@@ -168,11 +170,19 @@ DWORD WINAPI ExitThread(LPVOID lpReserved);
 
 void Base::Init(HMODULE hMod)
 {
+#	ifdef ACMH_DEBUG
+	AllocConsole();
+	freopen("CONOUT$", "w", stdout);
+#	endif
 	Data::hModule = hMod;
 	Data::m_opengl    = mem::in::get_module("OPENGL32.dll");
 	Data::m_ac_client = mem::in::get_module("ac_client.exe");
 	Data::m_sdl       = mem::in::get_module("SDL.dll");
 	Data::game = AC_Client(&Data::m_ac_client);
+	char m_acmh_path[MAX_PATH];
+	GetModuleFileNameA(Data::hModule, m_acmh_path, sizeof(m_acmh_path) / sizeof(m_acmh_path[0]));
+	Data::ConfigPath  = m_acmh_path;
+	Data::ConfigPath = Data::ConfigPath.substr(0, Data::ConfigPath.rfind('\\'));
 
 	Data::pSwapBuffers = mem::in::get_symbol(Data::m_opengl, "wglSwapBuffers");
 	Data::pShowCursor  = mem::in::get_symbol(Data::m_sdl, "SDL_ShowCursor");
@@ -193,6 +203,10 @@ void Base::Shutdown()
 {
 	if (!Data::IsUnloaded)
 	{
+#		ifdef ACMH_DEBUG
+		fclose(stdout);
+		FreeConsole();
+#		endif
 		if (Data::InitSwapBuffers)
 		{
 			ImGui_ImplOpenGL2_Shutdown();

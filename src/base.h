@@ -3,6 +3,14 @@
 #include "game.h"
 
 #define MODULE_OFFSET(mod, offset) (&((char*)mod.base)[offset])
+#define READ_CONFIG(json_obj, ns, varname) json_obj["ACMH_CFG_rdbo"][ns][varname]
+#define WRITE_CONFIG(json_obj, ns, varname, value) json_obj["ACMH_CFG_rdbo"][ns][varname] = value
+#define ACMH_DEBUG
+#ifdef ACMH_DEBUG
+#define ACMH_DEBUG_LOG(...) printf(__VA_ARGS__)
+#else
+#define ACMH_DEBUG_LOG(...)
+#endif
 
 typedef BOOL(__stdcall* SwapBuffers_t)(_In_ HDC hdc);
 typedef LRESULT(CALLBACK* WndProc_t) (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -16,6 +24,8 @@ namespace Base
 	void Init(HMODULE hMod);
 	void Shutdown();
 	void Unload();
+	bool LoadConfig(std::string ConfigFile);
+	bool SaveConfig(std::string ConfigFile);
 
 	namespace Data
 	{
@@ -75,6 +85,8 @@ namespace Base
 		extern ImFont*               FontHack;
 		extern bool                  ShowWatermark;
 		extern ImColor               WatermarkColor;
+		extern std::string           ConfigPath;
+		extern char                  ConfigName[256];
 
 		namespace Settings
 		{

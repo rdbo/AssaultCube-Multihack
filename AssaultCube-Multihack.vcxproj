@@ -211,6 +211,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\base.cpp" />
+    <ClCompile Include="src\config.cpp" />
     <ClCompile Include="src\game.cpp" />
     <ClCompile Include="src\hacks\Aimbot.cpp" />
     <ClCompile Include="src\hacks\AlwaysHeadshot.cpp" />
@@ -380,6 +381,7 @@
     <ClInclude Include="include\imgui\imstb_textedit.h" />
     <ClInclude Include="include\imgui\imstb_truetype.h" />
     <ClInclude Include="include\libmem++\libmem.hpp" />
+    <ClInclude Include="include\nlohmann\json.hpp" />
     <ClInclude Include="src\base.h" />
     <ClInclude Include="src\game.h" />
     <ClInclude Include="src\pch.h" />
