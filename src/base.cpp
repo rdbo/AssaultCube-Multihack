@@ -82,7 +82,7 @@ bool    Base::Data::Settings::EnableEspTeam = true;
 bool    Base::Data::Settings::EnableEspEnemy = true;
 
 bool    Base::Data::Settings::EnableEspSnaplines = false;
-bool    Base::Data::Settings::EspSnaplinesVisibilityCheck = false;
+bool    Base::Data::Settings::EspSnaplinesVisibilityCheck = true;
 float   Base::Data::Settings::EspSnaplinesThickness = 2.0f;
 float   Base::Data::Settings::EspSnaplinesColorTeam[4]  = { 0.0f, 0.5f, 1.0f, 1.0f };
 float   Base::Data::Settings::EspSnaplinesColorEnemy[4] = { 1.0f, 0.5f, 0.0f, 1.0f };
