@@ -321,7 +321,10 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 			{
 				if (ImGui::TreeNode("ESP Name Settings"))
 				{
-					ImGui::ColorEdit4("ESP Name Color", Data::Settings::EspNameColor);
+					if(Data::Settings::EnableEspTeam)
+						ImGui::ColorEdit4("ESP Name Color Team", Data::Settings::EspNameColorTeam);
+					if (Data::Settings::EnableEspEnemy)
+						ImGui::ColorEdit4("ESP Name Color Enemy", Data::Settings::EspNameColorEnemy);
 					ImGui::TreePop();
 				}
 			}

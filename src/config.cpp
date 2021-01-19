@@ -106,7 +106,8 @@ bool Base::LoadConfig(std::string ConfigName)
 		READ_CONFIG_SETTINGS_BUF(EspArmorDmgColor);
 
 		READ_CONFIG_SETTINGS(EnableEspName);
-		READ_CONFIG_SETTINGS_BUF(EspNameColor);
+		READ_CONFIG_SETTINGS_BUF(EspNameColorTeam);
+		READ_CONFIG_SETTINGS_BUF(EspNameColorEnemy);
 
 		READ_CONFIG_SETTINGS(EnableBunnyhop);
 		READ_CONFIG_SETTINGS(BunnyhopToggle);
@@ -238,7 +239,8 @@ bool Base::SaveConfig(std::string ConfigName)
 		WRITE_CONFIG_SETTINGS(EspArmorDmgColor);
 
 		WRITE_CONFIG_SETTINGS(EnableEspName);
-		WRITE_CONFIG_SETTINGS(EspNameColor);
+		WRITE_CONFIG_SETTINGS(EspNameColorTeam);
+		WRITE_CONFIG_SETTINGS(EspNameColorEnemy);
 
 		WRITE_CONFIG_SETTINGS(EnableBunnyhop);
 		WRITE_CONFIG_SETTINGS(BunnyhopToggle);

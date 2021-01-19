@@ -69,7 +69,11 @@ void Base::Hacks::ESP_Info(playerinfo_t* p_info)
 		size_t  TextLength = strlen(p_info->ent->name);
 		float   TextWidth = (float)TextLength * FontWidth;
 		float   TextHeight = FontHeight;
-		ImColor TextColor = ImColor(Data::Settings::EspNameColor[0], Data::Settings::EspNameColor[1], Data::Settings::EspNameColor[2], Data::Settings::EspNameColor[3]);
+		ImColor TextColor = ImColor(1.0f, 1.0f, 1.0f, 1.0f);
+		if(p_info->ent->team == Data::game.player1->team && (m_teammode || m_coop))
+			TextColor = ImColor(Data::Settings::EspNameColorTeam[0], Data::Settings::EspNameColorTeam[1], Data::Settings::EspNameColorTeam[2], Data::Settings::EspNameColorTeam[3]);
+		else
+			TextColor = ImColor(Data::Settings::EspNameColorEnemy[0], Data::Settings::EspNameColorEnemy[1], Data::Settings::EspNameColorEnemy[2], Data::Settings::EspNameColorEnemy[3]);
 		ImVec2  TextPos = ImVec2(p_info->pos2D.x - (TextWidth / 2), p_info->pos2D.y - Height - SpaceUp - TextHeight);
 
 		Draw->AddText(TextPos, TextColor, (const char*)p_info->ent->name);

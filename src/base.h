@@ -162,7 +162,8 @@ namespace Base
 			extern float   EspArmorDmgColor[4];
 
 			extern bool    EnableEspName;
-			extern float   EspNameColor[4];
+			extern float   EspNameColorTeam[4];
+			extern float   EspNameColorEnemy[4];
 
 			extern bool    EnableBunnyhop;
 			extern bool    BunnyhopToggle;
