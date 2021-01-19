@@ -242,7 +242,7 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 					ImGui::Combo("Aimbot Target Preference", &Data::Settings::AimbotTargetPreference, AimbotTargetPreferences, sizeof(AimbotTargetPreferences) / sizeof(AimbotTargetPreferences[0]));
 					ImGui::Checkbox("Smooth", &Data::Settings::AimbotSmooth);
 					if (Data::Settings::AimbotSmooth)
-						ImGui::SliderFloat("Smooth Value", &Data::Settings::AimbotSmoothValue, 0.0f, 10.0f, "%.0f");
+						ImGui::SliderFloat("Smooth Value", &Data::Settings::AimbotSmoothValue, 1.0f, 10.0f, "%.0f");
 					ImGui::Checkbox("Toggle Key", &Data::Settings::AimbotToggle);
 					if (Data::Settings::TriggerbotToggle)
 					{
