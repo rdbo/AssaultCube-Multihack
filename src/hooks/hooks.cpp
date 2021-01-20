@@ -16,11 +16,13 @@ void Base::Hooks::Init()
 	Data::o_dodamage = (dodamage_t)mem::in::detour_trampoline(Data::p_dodamage, (mem::voidptr_t)Hooks::dodamage, Data::sz_dodamage, mem::MEM_DT_M1);
 	Data::o_dodamage2 = (dodamage2_t)mem::in::detour_trampoline(Data::p_dodamage2, (mem::voidptr_t)Hooks::dodamage2, Data::sz_dodamage2, mem::MEM_DT_M1);
 	Data::o_checkheadshot = (midfunction_t)mem::in::detour_trampoline(Data::p_checkheadshot, (mem::voidptr_t)Hooks::checkheadshot, Data::sz_checkheadshot, mem::MEM_DT_M1);
+	Data::o_mousemove = (mousemove_t)mem::in::detour_trampoline(Data::p_mousemove, (mem::voidptr_t)Hooks::mousemove, Data::sz_mousemove, mem::MEM_DT_M1);
 }
 
 void Base::Hooks::Shutdown()
 {
 	SetWindowLongPtr(Data::hWindow, GWL_WNDPROC, (LONG_PTR)Data::oWndProc);
+	mem::in::detour_restore(Data::p_mousemove, (mem::byte_t*)Data::o_mousemove, Data::sz_mousemove);
 	mem::in::detour_restore(Data::p_checkheadshot, (mem::byte_t*)Data::o_checkheadshot, Data::sz_checkheadshot);
 	mem::in::detour_restore(Data::p_dodamage2, (mem::byte_t*)Data::o_dodamage2, Data::sz_dodamage2);
 	mem::in::detour_restore(Data::p_dodamage, (mem::byte_t*)Data::o_dodamage, Data::sz_dodamage);

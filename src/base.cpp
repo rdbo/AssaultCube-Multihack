@@ -21,6 +21,7 @@ mem::voidptr_t        Base::Data::p_drawscope = nullptr;
 mem::voidptr_t        Base::Data::p_dodamage = nullptr;
 mem::voidptr_t        Base::Data::p_dodamage2 = nullptr;
 mem::voidptr_t        Base::Data::p_checkheadshot = nullptr;
+mem::voidptr_t        Base::Data::p_mousemove = nullptr;
 SwapBuffers_t         Base::Data::oSwapBuffers = nullptr;
 WndProc_t             Base::Data::oWndProc = nullptr;
 ShowCursor_t          Base::Data::oShowCursor = nullptr;
@@ -34,6 +35,7 @@ glDrawRangeElements_t Base::Data::o_glDrawRangeElements = nullptr;
 dodamage_t            Base::Data::o_dodamage = nullptr;
 dodamage2_t           Base::Data::o_dodamage2 = nullptr;
 midfunction_t         Base::Data::o_checkheadshot = nullptr;
+mousemove_t           Base::Data::o_mousemove = nullptr;
 mem::size_t           Base::Data::szSwapBuffers = 5;
 mem::size_t           Base::Data::szShowCursor  = 5;
 mem::size_t           Base::Data::sz_c2sinfo    = 5;
@@ -45,6 +47,7 @@ mem::size_t           Base::Data::sz_drawscope = 6;
 mem::size_t           Base::Data::sz_dodamage = 6;
 mem::size_t           Base::Data::sz_dodamage2 = 5;
 mem::size_t           Base::Data::sz_checkheadshot = 6;
+mem::size_t           Base::Data::sz_mousemove = 10;
 bool                  Base::Data::WMKeys[0xFE];
 bool                  Base::Data::InitSwapBuffers = false;
 bool                  Base::Data::IsUnloaded = false;
@@ -204,6 +207,7 @@ void Base::Init(HMODULE hMod)
 	Data::p_dodamage = (mem::voidptr_t)Data::game.dodamage;
 	Data::p_dodamage2 = (mem::voidptr_t)Data::game.dodamage2;
 	Data::p_checkheadshot = (mem::voidptr_t)Data::game.checkheadshot;
+	Data::p_mousemove = (mem::voidptr_t)Data::game.mousemove;
 	Hooks::Init();
 }
 

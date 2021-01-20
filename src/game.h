@@ -27,6 +27,7 @@ typedef midfunction_t dodamage2_t;
 typedef void(__stdcall* calclight_t)(void);
 typedef void(__stdcall* fullbrightlight_t)(void);
 typedef void(__cdecl* newname_t)(const char* name);
+typedef void(__cdecl* mousemove_t)(int idx, int idy);
 
 bool WorldToScreen(vec pos3D, vec* pos2D);
 bool IsVisible(playerent* p_ent);
@@ -63,6 +64,7 @@ public:
 	calclight_t calclight = nullptr;
 	fullbrightlight_t fullbrightlight = nullptr;
 	newname_t newname = nullptr;
+	mousemove_t mousemove = nullptr;
 public:
 	inline AC_Client()
 	{
@@ -104,6 +106,7 @@ public:
 		this->calclight = (calclight_t)                        GAME_OFFSET(0x54F70);
 		this->fullbrightlight = (fullbrightlight_t)            GAME_OFFSET(0x54EF0);
 		this->newname = (newname_t)                            GAME_OFFSET(0x23B40);
+		this->mousemove = (mousemove_t)                        GAME_OFFSET(0x5C690);
 
 		return true;
 	}
