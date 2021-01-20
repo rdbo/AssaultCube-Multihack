@@ -473,7 +473,7 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 				if (ImGui::TreeNode("Name Changer Settings..."))
 				{
 					const char* NameChangerTypes[] = { "Bot Names", "Connected Player Names" };
-					ImGui::BeginChild("name-changer-settings", g_MenuSettingsMinSize, true);
+					ImGui::BeginChild("name-changer-settings", g_MenuSettingsSize, true);
 					ImGui::Combo("Name Changer Type", &Data::Settings::NameChangerType, NameChangerTypes, sizeof(NameChangerTypes) / sizeof(NameChangerTypes[0]));
 					ImGui::Checkbox("AntiSpam", &Data::Settings::NameChangerAntiSpam);
 					if (Data::Settings::NameChangerAntiSpam)

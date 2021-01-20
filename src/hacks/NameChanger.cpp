@@ -141,7 +141,7 @@ void Base::Hacks::NameChanger()
 		int bot_num = 0;
 		int bot_list_len = sizeof(BotNames) / sizeof(BotNames[0]);
 
-		if (Data::game.player1 && Data::game.player1->name && (now - last >= (clock_t)(Data::Settings::NameChangerAntiSpamValue * 1000.0f)))
+		if (((Data::Settings::NameChangerAntiSpam && (now - last >= (clock_t)(Data::Settings::NameChangerAntiSpamValue * 1000.0f)))) || !Data::Settings::NameChangerAntiSpam)
 		{
 			last = now;
 			switch (Data::Settings::NameChangerType)
