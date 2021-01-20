@@ -191,6 +191,8 @@ namespace Base
 			extern bool    EnableInfiniteHealth;
 
 			extern bool    EnableAutoGuns;
+
+			extern bool    EnableFullBright;
 		}
 
 		namespace Keys
@@ -231,6 +233,7 @@ namespace Base
 		void InfiniteArmor();
 		void InfiniteHealth();
 		void AutoGuns();
+		void FullBright();
 	}
 
 	namespace Hooks

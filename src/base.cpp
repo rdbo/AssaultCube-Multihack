@@ -167,6 +167,8 @@ bool    Base::Data::Settings::EnableInfiniteHealth = false;
 
 bool    Base::Data::Settings::EnableAutoGuns = false;
 
+bool    Base::Data::Settings::EnableFullBright = false;
+
 DWORD WINAPI ExitThread(LPVOID lpReserved);
 
 void Base::Init(HMODULE hMod)

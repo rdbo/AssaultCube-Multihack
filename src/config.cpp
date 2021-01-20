@@ -136,6 +136,8 @@ bool Base::LoadConfig(std::string ConfigName)
 
 		READ_CONFIG_SETTINGS(EnableAutoGuns);
 
+		READ_CONFIG_SETTINGS(EnableFullBright);
+
 		//Load Keys
 		READ_CONFIG_KEYS(Bhop);
 		READ_CONFIG_KEYS(Triggerbot);
@@ -268,6 +270,8 @@ bool Base::SaveConfig(std::string ConfigName)
 		WRITE_CONFIG_SETTINGS(EnableInfiniteHealth);
 
 		WRITE_CONFIG_SETTINGS(EnableAutoGuns);
+
+		WRITE_CONFIG_SETTINGS(EnableFullBright);
 
 		//Save Keys
 		WRITE_CONFIG_KEYS(Bhop);

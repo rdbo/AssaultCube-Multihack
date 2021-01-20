@@ -24,6 +24,8 @@ typedef void(* TraceLine_t)(vec from, vec to, dynent* pTracer, bool CheckPlayers
 typedef bool(* IsVisible_t)(vec v1, vec v2, dynent* tracer, bool SkipTags);
 typedef int(* dodamage_t)(int damage, int gun);
 typedef midfunction_t dodamage2_t;
+typedef void(__stdcall* calclight_t)(void);
+typedef void(__stdcall* fullbrightlight_t)(void);
 
 bool WorldToScreen(vec pos3D, vec* pos2D);
 bool IsVisible(playerent* p_ent);
@@ -40,6 +42,7 @@ public:
 	vector<playerent*>* players = nullptr;
 	glmatrixf* mvpmatrix = nullptr;
 	int* gamemode = nullptr;
+	bool* fullbright = nullptr;
 	getclient_t getclient = nullptr;
 	servertoclient_t servertoclient = nullptr;
 	updateworld_t updateworld = nullptr;
@@ -56,6 +59,8 @@ public:
 	dodamage2_t dodamage2 = nullptr;
 	midfunction_t checkheadshot = nullptr;
 	midfunction_t doheadshot = nullptr;
+	calclight_t calclight = nullptr;
+	fullbrightlight_t fullbrightlight = nullptr;
 public:
 	inline AC_Client()
 	{
@@ -77,6 +82,7 @@ public:
 		this->players   = (vector<playerent*>*)                GAME_OFFSET(0x10F4F8);
 		this->mvpmatrix = (glmatrixf*)                         GAME_OFFSET(0x101AE8);
 		this->gamemode = (int*)                                GAME_OFFSET(0x10F49C);
+		this->fullbright = (bool*)                             GAME_OFFSET(0x1100A0);
 		this->getclient = (getclient_t)                        GAME_OFFSET(0x27320);
 		this->servertoclient = (servertoclient_t)              GAME_OFFSET(0x2E830);
 		this->updateworld = (updateworld_t)                    GAME_OFFSET(0x25EB0);
@@ -93,6 +99,8 @@ public:
 		this->dodamage2 = (dodamage2_t)                        GAME_OFFSET(0x29D1F);
 		this->checkheadshot = (midfunction_t)                  GAME_OFFSET(0x61751-0x4);
 		this->doheadshot = (midfunction_t)                     GAME_OFFSET(0x61769);
+		this->calclight = (calclight_t)                        GAME_OFFSET(0x54F70);
+		this->fullbrightlight = (fullbrightlight_t)            GAME_OFFSET(0x54EF0);
 
 		return true;
 	}

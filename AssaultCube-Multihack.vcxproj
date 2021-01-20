@@ -222,6 +222,7 @@
     <ClCompile Include="src\hacks\ESP_Info.cpp" />
     <ClCompile Include="src\hacks\ESP_Snaplines.cpp" />
     <ClCompile Include="src\hacks\FlyHack.cpp" />
+    <ClCompile Include="src\hacks\FullBright.cpp" />
     <ClCompile Include="src\hacks\Godmode.cpp" />
     <ClCompile Include="src\hacks\InfiniteAmmo.cpp" />
     <ClCompile Include="src\hacks\InfiniteArmor.cpp" />
