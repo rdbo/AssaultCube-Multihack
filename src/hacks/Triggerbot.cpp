@@ -9,7 +9,7 @@ void Base::Hacks::Triggerbot()
 	{
 		playerent* pCrosshairPlayer = Data::game.playerincrosshair();
 
-		if ((pCrosshairPlayer && pCrosshairPlayer->state == CS_ALIVE && (pCrosshairPlayer->team != Data::game.player1->team || !m_teammode && !m_coop)) && (!Data::Settings::TriggerbotToggle && Data::WMKeys[Data::Keys::Triggerbot] || Data::Settings::TriggerbotToggle && Data::Settings::TriggerbotToggleState))
+		if ((pCrosshairPlayer && pCrosshairPlayer->state == CS_ALIVE && !Data::game.player1->attacking && (pCrosshairPlayer->team != Data::game.player1->team || !m_teammode && !m_coop)) && (!Data::Settings::TriggerbotToggle && Data::WMKeys[Data::Keys::Triggerbot] || Data::Settings::TriggerbotToggle && Data::Settings::TriggerbotToggleState))
 		{
 			Data::game.player1->attacking = true;
 			bEnabled = true;
