@@ -1,7 +1,7 @@
 #include <pch.h>
 #include <base.h>
 
-static bool bOriginal[sizeof(Base::Data::game.player1->weapons)/sizeof(Base::Data::game.player1->weapons[0])];
+static bool bModified[sizeof(Base::Data::game.player1->weapons)/sizeof(Base::Data::game.player1->weapons[0])];
 
 void Base::Hacks::AutoGuns()
 {
@@ -9,11 +9,14 @@ void Base::Hacks::AutoGuns()
 	{
 		if (!Data::game.player1->weaponsel->info.isauto)
 		{
-			bOriginal[Data::game.player1->weaponsel->type] = false;
-			*(bool*)& Data::game.player1->weaponsel->info.isauto = true;
+			bModified[Data::game.player1->weaponsel->type] = true;
+			*(bool*)&Data::game.player1->weaponsel->info.isauto = true;
 		}
 	}
 
-	else if (!bOriginal[Data::game.player1->weaponsel->type] && Data::game.player1->weaponsel->info.isauto)
-		*(bool*)&Data::game.player1->weaponsel->info.isauto = false;
+	else if (bModified[Data::game.player1->weaponsel->type])
+	{
+		*(bool*)&Data::game.player1->weaponsel->info.isauto = !Data::game.player1->weaponsel->info.isauto;
+		bModified[Data::game.player1->weaponsel->type] = false;
+	}
 }
