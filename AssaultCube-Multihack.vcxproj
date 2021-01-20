@@ -228,6 +228,7 @@
     <ClCompile Include="src\hacks\InfiniteArmor.cpp" />
     <ClCompile Include="src\hacks\InfiniteHealth.cpp" />
     <ClCompile Include="src\hacks\InstantKill.cpp" />
+    <ClCompile Include="src\hacks\NameChanger.cpp" />
     <ClCompile Include="src\hacks\NoGunWait.cpp" />
     <ClCompile Include="src\hacks\NoRecoil.cpp" />
     <ClCompile Include="src\hacks\NoScope.cpp" />

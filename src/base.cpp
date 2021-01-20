@@ -169,6 +169,11 @@ bool    Base::Data::Settings::EnableAutoGuns = false;
 
 bool    Base::Data::Settings::EnableFullBright = false;
 
+bool    Base::Data::Settings::EnableNameChanger = false;
+int     Base::Data::Settings::NameChangerType = 0;
+bool    Base::Data::Settings::NameChangerAntiSpam = true;
+float   Base::Data::Settings::NameChangerAntiSpamValue = 2.0f;
+
 DWORD WINAPI ExitThread(LPVOID lpReserved);
 
 void Base::Init(HMODULE hMod)

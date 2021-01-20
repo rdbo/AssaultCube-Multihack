@@ -138,6 +138,11 @@ bool Base::LoadConfig(std::string ConfigName)
 
 		READ_CONFIG_SETTINGS(EnableFullBright);
 
+		READ_CONFIG_SETTINGS(EnableNameChanger);
+		READ_CONFIG_SETTINGS(NameChangerType);
+		READ_CONFIG_SETTINGS(NameChangerAntiSpam);
+		READ_CONFIG_SETTINGS(NameChangerAntiSpamValue);
+
 		//Load Keys
 		READ_CONFIG_KEYS(Bhop);
 		READ_CONFIG_KEYS(Triggerbot);
@@ -272,6 +277,11 @@ bool Base::SaveConfig(std::string ConfigName)
 		WRITE_CONFIG_SETTINGS(EnableAutoGuns);
 
 		WRITE_CONFIG_SETTINGS(EnableFullBright);
+
+		WRITE_CONFIG_SETTINGS(EnableNameChanger);
+		WRITE_CONFIG_SETTINGS(NameChangerType);
+		WRITE_CONFIG_SETTINGS(NameChangerAntiSpam);
+		WRITE_CONFIG_SETTINGS(NameChangerAntiSpamValue);
 
 		//Save Keys
 		WRITE_CONFIG_KEYS(Bhop);

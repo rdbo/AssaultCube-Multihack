@@ -193,6 +193,11 @@ namespace Base
 			extern bool    EnableAutoGuns;
 
 			extern bool    EnableFullBright;
+			
+			extern bool    EnableNameChanger;
+			extern int     NameChangerType;
+			extern bool    NameChangerAntiSpam;
+			extern float   NameChangerAntiSpamValue;
 		}
 
 		namespace Keys
@@ -234,6 +239,7 @@ namespace Base
 		void InfiniteHealth();
 		void AutoGuns();
 		void FullBright();
+		void NameChanger();
 	}
 
 	namespace Hooks

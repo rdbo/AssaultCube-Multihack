@@ -26,6 +26,7 @@ typedef int(* dodamage_t)(int damage, int gun);
 typedef midfunction_t dodamage2_t;
 typedef void(__stdcall* calclight_t)(void);
 typedef void(__stdcall* fullbrightlight_t)(void);
+typedef void(__cdecl* newname_t)(const char* name);
 
 bool WorldToScreen(vec pos3D, vec* pos2D);
 bool IsVisible(playerent* p_ent);
@@ -61,6 +62,7 @@ public:
 	midfunction_t doheadshot = nullptr;
 	calclight_t calclight = nullptr;
 	fullbrightlight_t fullbrightlight = nullptr;
+	newname_t newname = nullptr;
 public:
 	inline AC_Client()
 	{
@@ -101,6 +103,7 @@ public:
 		this->doheadshot = (midfunction_t)                     GAME_OFFSET(0x61769);
 		this->calclight = (calclight_t)                        GAME_OFFSET(0x54F70);
 		this->fullbrightlight = (fullbrightlight_t)            GAME_OFFSET(0x54EF0);
+		this->newname = (newname_t)                            GAME_OFFSET(0x23B40);
 
 		return true;
 	}

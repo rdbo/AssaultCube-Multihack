@@ -467,6 +467,22 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 				}
 			}
 
+			ImGui::Checkbox("Name Changer", &Data::Settings::EnableNameChanger);
+			if (Data::Settings::EnableNameChanger)
+			{
+				if (ImGui::TreeNode("Name Changer Settings..."))
+				{
+					const char* NameChangerTypes[] = { "Bot Names", "Connected Player Names" };
+					ImGui::BeginChild("name-changer-settings", g_MenuSettingsMinSize, true);
+					ImGui::Combo("Name Changer Type", &Data::Settings::NameChangerType, NameChangerTypes, sizeof(NameChangerTypes) / sizeof(NameChangerTypes[0]));
+					ImGui::Checkbox("AntiSpam", &Data::Settings::NameChangerAntiSpam);
+					if (Data::Settings::NameChangerAntiSpam)
+						ImGui::SliderFloat("Delay", &Data::Settings::NameChangerAntiSpamValue, 0.0f, 10.0f, "%.1f");
+					ImGui::EndChild();
+					ImGui::TreePop();
+				}
+			}
+
 			ImGui::Checkbox("Teleport Players", &Data::Settings::EnableTeleportPlayers);
 			if (Data::Settings::EnableTeleportPlayers)
 			{
