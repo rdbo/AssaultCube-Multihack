@@ -3,7 +3,7 @@
 
 void Base::Hacks::ESP_Info(playerinfo_t* p_info)
 {
-	if (!p_info || !p_info->is_valid || !((Data::Settings::EnableEspTeam && p_info->ent->team == Data::game.player1->team) || (Data::Settings::EnableEspEnemy && p_info->ent->team != Data::game.player1->team))) return;
+	if (!p_info || !p_info->is_valid || p_info->is_out || !((Data::Settings::EnableEspTeam && p_info->ent->team == Data::game.player1->team) || (Data::Settings::EnableEspEnemy && p_info->ent->team != Data::game.player1->team))) return;
 
 	ImDrawList* Draw = ImGui::GetBackgroundDrawList();
 	float Height = p_info->pos2D.y - p_info->headpos2D.y;

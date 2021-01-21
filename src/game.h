@@ -117,6 +117,7 @@ class playerinfo_t
 public:
 	bool is_valid = false;
 	bool is_visible = false;
+	bool is_out = false;
 	playerent* ent = nullptr;
 	vec pos2D = {};
 	vec pos3D = {};
@@ -128,7 +129,7 @@ public:
 
 	}
 
-	playerinfo_t(playerent* p_ent)
+	playerinfo_t(playerent* p_ent, int width, int height)
 	{
 		bool check = true;
 		this->ent = p_ent;
@@ -145,6 +146,8 @@ public:
 			this->is_visible = IsVisible(this->ent);
 			check &= WorldToScreen(this->pos3D, &this->pos2D);
 			check &= WorldToScreen(this->headpos3D, &this->headpos2D);
+
+			this->is_out = ((this->pos2D.x < 0.0f || this->pos2D.y < 0.0f) || (this->headpos2D.x > width || this->headpos2D.y > height));
 		}
 
 		this->is_valid = check;
