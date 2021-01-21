@@ -28,6 +28,12 @@ void Base::Hacks::ESP_Info(playerinfo_t* p_info)
 		ImVec2 p3 = HealthBarEnd;
 		ImVec2 p4 = ImVec2(p3.x, p1.y);
 
+		float OutlineThickness = (p2.y - p1.y) / 4.0f;
+		ImVec2 op1 = { p1.x - OutlineThickness / 2.0f, p1.y - OutlineThickness / 2.0f };
+		ImVec2 op2 = { p2.x - OutlineThickness / 2.0f, p2.y + OutlineThickness / 2.0f };
+		ImVec2 op3 = { p3.x + OutlineThickness / 2.0f, p3.y + OutlineThickness / 2.0f };
+		ImVec2 op4 = { p4.x + OutlineThickness / 2.0f, p4.y - OutlineThickness / 2.0f };
+
 		Draw->AddQuadFilled(p1, p2, p3, p4, DamageColor);
 
 		p1 = p4;
@@ -35,8 +41,10 @@ void Base::Hacks::ESP_Info(playerinfo_t* p_info)
 		p2.x = p1.x;
 
 		Draw->AddQuadFilled(p1, p2, p3, p4, HealthColor);
+		Draw->AddQuad(op1, op2, op3, op4, ImColor(0.0f, 0.0f, 0.0f, 1.0f), OutlineThickness);
 
 		SpaceDown += BarHeight;
+		SpaceDown += OutlineThickness;
 	}
 
 	if (Data::Settings::EnableEspArmor)
@@ -52,6 +60,12 @@ void Base::Hacks::ESP_Info(playerinfo_t* p_info)
 		ImVec2 p3 = ArmorBarEnd;
 		ImVec2 p4 = ImVec2(p3.x, p1.y);
 
+		float OutlineThickness = (p2.y - p1.y) / 4.0f;
+		ImVec2 op1 = { p1.x - OutlineThickness / 2.0f, p1.y - OutlineThickness / 2.0f };
+		ImVec2 op2 = { p2.x - OutlineThickness / 2.0f, p2.y + OutlineThickness / 2.0f };
+		ImVec2 op3 = { p3.x + OutlineThickness / 2.0f, p3.y + OutlineThickness / 2.0f };
+		ImVec2 op4 = { p4.x + OutlineThickness / 2.0f, p4.y - OutlineThickness / 2.0f };
+
 		Draw->AddQuadFilled(p1, p2, p3, p4, DamageColor);
 
 		p1 = p4;
@@ -59,8 +73,10 @@ void Base::Hacks::ESP_Info(playerinfo_t* p_info)
 		p2.x = p1.x;
 
 		Draw->AddQuadFilled(p1, p2, p3, p4, ArmorColor);
+		Draw->AddQuad(op1, op2, op3, op4, ImColor(0.0f, 0.0f, 0.0f, 1.0f), OutlineThickness);
 
 		SpaceDown += BarHeight;
+		SpaceDown += OutlineThickness;
 	}
 
 	if (Data::Settings::EnableEspName)
