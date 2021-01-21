@@ -27,7 +27,9 @@ namespace Base
 	void Shutdown();
 	void Unload();
 	bool LoadConfig(std::string ConfigFile);
+	bool LoadConfig(nlohmann::json& Config);
 	bool SaveConfig(std::string ConfigFile);
+	bool SaveConfig(nlohmann::json& ConfigOut);
 
 	namespace Data
 	{
@@ -92,6 +94,8 @@ namespace Base
 		extern ImColor               WatermarkColor;
 		extern std::string           ConfigPath;
 		extern char                  ConfigName[256];
+		extern bool                  UnloadReady;
+		extern nlohmann::json        CleanConfig;
 
 		namespace Settings
 		{

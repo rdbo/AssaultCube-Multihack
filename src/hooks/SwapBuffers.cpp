@@ -7,6 +7,9 @@ static ConfigState_t ConfigState;
 
 BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 {
+	if (!Data::UnloadReady)
+		Data::UnloadReady = true;
+
 	Data::oContext = wglGetCurrentContext();
 
 	if(!Data::InitSwapBuffers)

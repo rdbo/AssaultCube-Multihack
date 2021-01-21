@@ -62,6 +62,8 @@ bool                  Base::Data::ShowWatermark = true;
 ImColor               Base::Data::WatermarkColor = ImColor(1.0f, 0.0f, 0.0f, 1.0f);
 std::string           Base::Data::ConfigPath = "";
 char                  Base::Data::ConfigName[256] = {};
+bool                  Base::Data::UnloadReady = false;
+nlohmann::json        Base::Data::CleanConfig;
 
 UINT    Base::Data::Keys::Bhop = VK_SPACE;
 UINT    Base::Data::Keys::Triggerbot = VK_CONTROL;
@@ -185,6 +187,17 @@ void Base::Init(HMODULE hMod)
 	AllocConsole();
 	freopen("CONOUT$", "w", stdout);
 #	endif
+
+	try
+	{
+		Base::SaveConfig(Data::CleanConfig);
+	}
+
+	catch (...)
+	{
+		return;
+	}
+
 	Data::hModule = hMod;
 	Data::m_opengl    = mem::in::get_module("OPENGL32.dll");
 	Data::m_ac_client = mem::in::get_module("ac_client.exe");

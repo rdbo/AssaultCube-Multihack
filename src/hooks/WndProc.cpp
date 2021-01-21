@@ -1,9 +1,14 @@
 #include <pch.h>
 #include <base.h>
 
+static bool bUnloadState = false;
+
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 LRESULT CALLBACK Base::Hooks::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
+	if(bUnloadState && Data::UnloadReady)
+		Base::Unload();
+
 	if (uMsg == WM_KEYDOWN || uMsg == WM_KEYUP)
 		Data::WMKeys[wParam] = (uMsg == WM_KEYDOWN) ? true : false;
 
@@ -16,7 +21,19 @@ LRESULT CALLBACK Base::Hooks::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARA
 			Data::ShowMenu = !Data::ShowMenu;
 			break;
 		case Data::Keys::Unload:
-			Base::Unload();
+			bUnloadState = true;
+			Data::UnloadReady = false;
+			try
+			{
+				Base::LoadConfig(Data::CleanConfig);
+			}
+
+			catch (...)
+			{
+
+			}
+
+			//Base::Unload();
 			break;
 		case Data::Keys::Cancel:
 			if (Data::Keys::ToChange != nullptr)
