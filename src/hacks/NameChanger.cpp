@@ -4,6 +4,7 @@
 static std::string sOriginal = "";
 static bool bChanged = false;
 static clock_t last = 0;
+static int LastIndex = 0;
 
 static const char* BotNames[] = {
 	"Killer",
@@ -138,7 +139,6 @@ void Base::Hacks::NameChanger()
 	{
 		clock_t now = clock();
 		playerent* ent = nullptr;
-		int bot_num = 0;
 		int bot_list_len = sizeof(BotNames) / sizeof(BotNames[0]);
 
 		if (((Data::Settings::NameChangerAntiSpam && (now - last >= (clock_t)(Data::Settings::NameChangerAntiSpamValue * 1000.0f)))) || !Data::Settings::NameChangerAntiSpam)
@@ -147,33 +147,30 @@ void Base::Hacks::NameChanger()
 			switch (Data::Settings::NameChangerType)
 			{
 			case 0: //Bot Names
-				for (int i = 0; i < bot_list_len; i++)
-				{
-					if (!strcmp(BotNames[i], Data::game.player1->name))
-					{
-						bot_num = i + 1;
-						if (bot_num >= bot_list_len)
-							bot_num = 0;
-						break;
-					}
-				}
-
-				Data::game.newname(BotNames[bot_num]);
+				++LastIndex;
+				if (LastIndex >= bot_list_len)
+					LastIndex = 0;
+				Data::game.newname(BotNames[LastIndex]);
 				bChanged = true;
 				break;
 			case 1: //Connected Player Names
-				for (int i = 0; Data::game.players->inrange(i); i++)
+				if (!Data::game.players->inrange(0)) break;
+				++LastIndex;
+				if (!Data::game.players->inrange(LastIndex))
+					LastIndex = 0;
+				ent = Data::game.players->operator[](LastIndex);
+
+				if (!ent)
 				{
-					playerent* p_ent = Data::game.players->operator[](i);
-					if (p_ent && strcmp(p_ent->name, Data::game.player1->name))
-					{
-						ent = p_ent;
-						break;
-					}
+					++LastIndex;
+					if (!Data::game.players->inrange(LastIndex))
+						LastIndex = 0;
+					ent = Data::game.players->operator[](LastIndex);
 				}
 
 				if (!ent) break;
 				Data::game.newname(ent->name);
+				ent = nullptr;
 				bChanged = true;
 				break;
 			default:
