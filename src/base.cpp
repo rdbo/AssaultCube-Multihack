@@ -138,13 +138,13 @@ bool    Base::Data::Settings::EnableNoScope = false;
 bool    Base::Data::Settings::EnableTeleportPlayers = false;
 float   Base::Data::Settings::TeleportPlayersDistance = 5.0f;
 bool    Base::Data::Settings::TeleportPlayersTeam = false;
-bool    Base::Data::Settings::TeleportPlayersEnemy = true;
+bool    Base::Data::Settings::TeleportPlayersEnemy = false;
 
 bool    Base::Data::Settings::EnableEspHealth = false;
 float   Base::Data::Settings::EspHealthColor[4] = { 0.0f, 0.8f, 0.0f, 1.0f };
 float   Base::Data::Settings::EspHealthDmgColor[4] = { 0.8f, 0.0f, 0.0f, 1.0f };
 
-bool    Base::Data::Settings::EnableEspArmor;
+bool    Base::Data::Settings::EnableEspArmor = false;
 float   Base::Data::Settings::EspArmorColor[4] = { 0.0f, 0.0f, 0.8f, 1.0f };
 float   Base::Data::Settings::EspArmorDmgColor[4] = { 0.05, 0.0f, 0.0f, 1.0f };
 
@@ -162,7 +162,7 @@ bool    Base::Data::Settings::EnableAimbot = false;
 bool    Base::Data::Settings::AimbotToggle = false;
 bool    Base::Data::Settings::AimbotToggleState = false;
 bool    Base::Data::Settings::AimbotSmooth = true;
-float   Base::Data::Settings::AimbotSmoothValue = 2;
+float   Base::Data::Settings::AimbotSmoothValue = 2.0f;
 int     Base::Data::Settings::AimbotTargetPreference = 0;
 
 bool    Base::Data::Settings::EnableServerSide = false;
