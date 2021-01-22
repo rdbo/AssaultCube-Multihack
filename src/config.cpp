@@ -140,6 +140,7 @@ void Base::LoadConfig(nlohmann::json& Config)
 	READ_CONFIG_SETTINGS(EnableTriggerbot);
 	READ_CONFIG_SETTINGS(TriggerbotToggle);
 	READ_CONFIG_SETTINGS(TriggerbotToggleState);
+	READ_CONFIG_SETTINGS(TriggerbotDelay);
 
 	READ_CONFIG_SETTINGS(EnableFlyHack);
 
@@ -262,6 +263,7 @@ void Base::SaveConfig(nlohmann::json& ConfigOut)
 	WRITE_CONFIG_SETTINGS(EnableTriggerbot);
 	WRITE_CONFIG_SETTINGS(TriggerbotToggle);
 	WRITE_CONFIG_SETTINGS(TriggerbotToggleState);
+	WRITE_CONFIG_SETTINGS(TriggerbotDelay);
 
 	WRITE_CONFIG_SETTINGS(EnableFlyHack);
 

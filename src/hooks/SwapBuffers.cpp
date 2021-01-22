@@ -247,7 +247,7 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 					if (Data::Settings::AimbotSmooth)
 						ImGui::SliderFloat("Smooth Value", &Data::Settings::AimbotSmoothValue, 1.0f, 10.0f, "%.0f");
 					ImGui::Checkbox("Toggle Key", &Data::Settings::AimbotToggle);
-					if (Data::Settings::TriggerbotToggle)
+					if (Data::Settings::AimbotToggle)
 					{
 						ImGui::Checkbox("Toggle State", &Data::Settings::AimbotToggleState);
 
@@ -274,6 +274,7 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 				if (ImGui::TreeNode("Triggerbot Settings..."))
 				{
 					ImGui::BeginChild("triggerbot-settings", g_MenuKeySettingsSize, true);
+					ImGui::SliderFloat("Delay", &Data::Settings::TriggerbotDelay, 0.0f, 1.0f, "%.3f");
 					ImGui::Checkbox("Toggle Key", &Data::Settings::TriggerbotToggle);
 					ImGui::Checkbox("Toggle State", &Data::Settings::TriggerbotToggleState);
 

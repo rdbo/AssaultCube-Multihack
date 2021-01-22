@@ -151,6 +151,7 @@ namespace Base
 			extern bool    EnableTriggerbot;
 			extern bool    TriggerbotToggle;
 			extern bool    TriggerbotToggleState;
+			extern float   TriggerbotDelay;
 
 			extern bool    EnableFlyHack;
 
