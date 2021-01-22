@@ -440,13 +440,43 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 			}
 			ImGui::Checkbox("Show Watermark", &Data::ShowWatermark);
 			ImGui::Checkbox("Fly Hack", &Data::Settings::EnableFlyHack);
+			if (Data::Settings::EnableFlyHack)
+			{
+				if (ImGui::TreeNode("FlyHack Settings..."))
+				{
+					ImGui::BeginChild("flyhack-settings", g_MenuKeySettingsSize, true);
+					ImGui::Checkbox("Toggle Key", &Data::Settings::FlyHackToggle);
+					ImGui::Checkbox("Toggle State", &Data::Settings::FlyHackToggleState);
+
+					if (Data::Keys::ToChange == &Data::Keys::FlyHack)
+						ImGui::Text("Key: [...]");
+					else
+						ImGui::Text("Key: %i", Data::Keys::FlyHack);
+
+					if (ImGui::Button("Change Key..."))
+						Data::Keys::ToChange = &Data::Keys::FlyHack;
+					ImGui::EndChild();
+					ImGui::TreePop();
+				}
+			}
+
 			ImGui::Checkbox("Speedhack", &Data::Settings::EnableSpeedhack);
 			if (Data::Settings::EnableSpeedhack)
 			{
 				if (ImGui::TreeNode("Speedhack Settings..."))
 				{
-					ImGui::BeginChild("speedhack-settings", g_MenuSettingsMinSize, true);
+					ImGui::BeginChild("speedhack-settings", g_MenuSettingsSize, true);
 					ImGui::SliderFloat("Speedhack Value", &Data::Settings::SpeedhackValue, 0.1f, 1.0f, "%.1f");
+					ImGui::Checkbox("Toggle Key", &Data::Settings::SpeedhackToggle);
+					ImGui::Checkbox("Toggle State", &Data::Settings::SpeedhackToggleState);
+
+					if (Data::Keys::ToChange == &Data::Keys::Speedhack)
+						ImGui::Text("Key: [...]");
+					else
+						ImGui::Text("Key: %i", Data::Keys::Speedhack);
+
+					if (ImGui::Button("Change Key..."))
+						Data::Keys::ToChange = &Data::Keys::Speedhack;
 					ImGui::EndChild();
 					ImGui::TreePop();
 				}

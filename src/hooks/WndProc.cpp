@@ -61,6 +61,12 @@ LRESULT CALLBACK Base::Hooks::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARA
 			if(wParam == Data::Keys::Aimbot && Data::Settings::AimbotToggle)
 				Data::Settings::AimbotToggleState = !Data::Settings::AimbotToggleState;
 
+			if (wParam == Data::Keys::Speedhack && Data::Settings::SpeedhackToggle)
+				Data::Settings::SpeedhackToggleState = !Data::Settings::SpeedhackToggleState;
+
+			if (wParam == Data::Keys::FlyHack && Data::Settings::FlyHackToggle)
+				Data::Settings::FlyHackToggleState = !Data::Settings::FlyHackToggleState;
+
 			break;
 		}
 	}

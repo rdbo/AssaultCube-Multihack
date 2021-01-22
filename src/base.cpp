@@ -67,9 +67,11 @@ nlohmann::json        Base::Data::CleanConfig;
 
 UINT    Base::Data::Keys::Bhop = VK_SPACE;
 UINT    Base::Data::Keys::Triggerbot = VK_CONTROL;
-UINT    Base::Data::Keys::TeleportSavePos = VK_F1;
-UINT    Base::Data::Keys::Teleport = VK_F2;
+UINT    Base::Data::Keys::TeleportSavePos = VK_F3;
+UINT    Base::Data::Keys::Teleport = VK_F4;
 UINT    Base::Data::Keys::Aimbot = VK_CAPITAL;
+UINT    Base::Data::Keys::FlyHack = VK_F1;
+UINT    Base::Data::Keys::Speedhack = VK_F2;
 UINT*   Base::Data::Keys::ToChange = nullptr;
 
 bool    Base::Data::Settings::EnableCrosshair = false;
@@ -119,6 +121,8 @@ bool    Base::Data::Settings::EnableNoRecoil = false;
 
 bool    Base::Data::Settings::EnableSpeedhack = false;
 float   Base::Data::Settings::SpeedhackValue = 0.5f;
+bool    Base::Data::Settings::SpeedhackToggle = true;
+bool    Base::Data::Settings::SpeedhackToggleState = false;
 
 bool    Base::Data::Settings::EnableTriggerbot = false;
 bool    Base::Data::Settings::TriggerbotToggle = true;
@@ -126,6 +130,8 @@ bool    Base::Data::Settings::TriggerbotToggleState = false;
 float   Base::Data::Settings::TriggerbotDelay = 0.1f;
 
 bool    Base::Data::Settings::EnableFlyHack = false;
+bool    Base::Data::Settings::FlyHackToggle = true;
+bool    Base::Data::Settings::FlyHackToggleState = false;
 
 bool    Base::Data::Settings::EnableNoScope = false;
 

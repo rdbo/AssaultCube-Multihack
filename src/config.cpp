@@ -136,6 +136,8 @@ void Base::LoadConfig(nlohmann::json& Config)
 
 	READ_CONFIG_SETTINGS(EnableSpeedhack);
 	READ_CONFIG_SETTINGS(SpeedhackValue);
+	READ_CONFIG_SETTINGS(SpeedhackToggle);
+	READ_CONFIG_SETTINGS(SpeedhackToggleState);
 
 	READ_CONFIG_SETTINGS(EnableTriggerbot);
 	READ_CONFIG_SETTINGS(TriggerbotToggle);
@@ -143,6 +145,8 @@ void Base::LoadConfig(nlohmann::json& Config)
 	READ_CONFIG_SETTINGS(TriggerbotDelay);
 
 	READ_CONFIG_SETTINGS(EnableFlyHack);
+	READ_CONFIG_SETTINGS(FlyHackToggle);
+	READ_CONFIG_SETTINGS(FlyHackToggleState);
 
 	READ_CONFIG_SETTINGS(EnableNoScope);
 
@@ -205,6 +209,8 @@ void Base::LoadConfig(nlohmann::json& Config)
 	READ_CONFIG_KEYS(TeleportSavePos);
 	READ_CONFIG_KEYS(Teleport);
 	READ_CONFIG_KEYS(Aimbot);
+	READ_CONFIG_KEYS(FlyHack);
+	READ_CONFIG_KEYS(Speedhack);
 }
 
 void Base::SaveConfig(nlohmann::json& ConfigOut)
@@ -259,6 +265,8 @@ void Base::SaveConfig(nlohmann::json& ConfigOut)
 
 	WRITE_CONFIG_SETTINGS(EnableSpeedhack);
 	WRITE_CONFIG_SETTINGS(SpeedhackValue);
+	WRITE_CONFIG_SETTINGS(SpeedhackToggle);
+	WRITE_CONFIG_SETTINGS(SpeedhackToggleState);
 
 	WRITE_CONFIG_SETTINGS(EnableTriggerbot);
 	WRITE_CONFIG_SETTINGS(TriggerbotToggle);
@@ -266,6 +274,8 @@ void Base::SaveConfig(nlohmann::json& ConfigOut)
 	WRITE_CONFIG_SETTINGS(TriggerbotDelay);
 
 	WRITE_CONFIG_SETTINGS(EnableFlyHack);
+	WRITE_CONFIG_SETTINGS(FlyHackToggle);
+	WRITE_CONFIG_SETTINGS(FlyHackToggleState);
 
 	WRITE_CONFIG_SETTINGS(EnableNoScope);
 
@@ -328,4 +338,6 @@ void Base::SaveConfig(nlohmann::json& ConfigOut)
 	WRITE_CONFIG_KEYS(TeleportSavePos);
 	WRITE_CONFIG_KEYS(Teleport);
 	WRITE_CONFIG_KEYS(Aimbot);
+	WRITE_CONFIG_KEYS(FlyHack);
+	WRITE_CONFIG_KEYS(Speedhack);
 }

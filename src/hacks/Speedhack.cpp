@@ -3,7 +3,7 @@
 
 void Base::Hacks::Speedhack()
 {
-	if (Data::Settings::EnableSpeedhack)
+	if (Data::Settings::EnableSpeedhack && ((Data::Settings::SpeedhackToggle && Data::Settings::SpeedhackToggleState) || (!Data::Settings::SpeedhackToggle && Data::WMKeys[Data::Keys::Speedhack])))
 	{
 		float speed_val   = Data::game.player1->maxspeed * Data::Settings::SpeedhackValue;
 

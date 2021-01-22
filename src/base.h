@@ -147,6 +147,8 @@ namespace Base
 
 			extern bool    EnableSpeedhack;
 			extern float   SpeedhackValue;
+			extern bool    SpeedhackToggle;
+			extern bool    SpeedhackToggleState;
 
 			extern bool    EnableTriggerbot;
 			extern bool    TriggerbotToggle;
@@ -154,6 +156,8 @@ namespace Base
 			extern float   TriggerbotDelay;
 
 			extern bool    EnableFlyHack;
+			extern bool    FlyHackToggle;
+			extern bool    FlyHackToggleState;
 
 			extern bool    EnableNoScope;
 
@@ -221,6 +225,8 @@ namespace Base
 			extern UINT    TeleportSavePos;
 			extern UINT    Teleport;
 			extern UINT    Aimbot;
+			extern UINT    FlyHack;
+			extern UINT    Speedhack;
 			extern UINT*   ToChange;
 		}
 	}
