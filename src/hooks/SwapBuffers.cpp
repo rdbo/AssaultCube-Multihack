@@ -292,6 +292,7 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 		case 1: //Visuals
 			ImGui::Checkbox("No Scope", &Data::Settings::EnableNoScope);
 			ImGui::Checkbox("FullBright", &Data::Settings::EnableFullBright);
+			ImGui::Checkbox("Radar Hack", &Data::Settings::EnableRadarHack);
 			ImGui::Checkbox("Custom Crosshair", &Data::Settings::EnableCrosshair);
 			if (Data::Settings::EnableCrosshair)
 			{

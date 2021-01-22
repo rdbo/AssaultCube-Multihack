@@ -2,6 +2,7 @@
 #include <pch.h>
 #include "game.h"
 
+#define POINTER_OFFSET(ptr, offset) (&((char*)ptr)[offset])
 #define MODULE_OFFSET(mod, offset) (&((char*)mod.base)[offset])
 #define READ_CONFIG(json_obj, ns, varname) json_obj["ACMH_CFG_rdbo"][ns][varname]
 #define WRITE_CONFIG(json_obj, ns, varname, value) json_obj["ACMH_CFG_rdbo"][ns][varname] = value
@@ -205,6 +206,8 @@ namespace Base
 			extern int     NameChangerType;
 			extern bool    NameChangerAntiSpam;
 			extern float   NameChangerAntiSpamValue;
+
+			extern bool    EnableRadarHack;
 		}
 
 		namespace Keys
@@ -247,6 +250,7 @@ namespace Base
 		void AutoGuns();
 		void FullBright();
 		void NameChanger();
+		void RadarHack();
 	}
 
 	namespace Hooks

@@ -232,6 +232,7 @@
     <ClCompile Include="src\hacks\NoGunWait.cpp" />
     <ClCompile Include="src\hacks\NoRecoil.cpp" />
     <ClCompile Include="src\hacks\NoScope.cpp" />
+    <ClCompile Include="src\hacks\RadarHack.cpp" />
     <ClCompile Include="src\hacks\Speedhack.cpp" />
     <ClCompile Include="src\hacks\Teleport.cpp" />
     <ClCompile Include="src\hacks\TeleportPlayers.cpp" />

@@ -65,6 +65,10 @@ public:
 	fullbrightlight_t fullbrightlight = nullptr;
 	newname_t newname = nullptr;
 	mousemove_t mousemove = nullptr;
+	mem::voidptr_t radar_check0 = nullptr;
+	mem::voidptr_t radar_check1 = nullptr;
+	mem::voidptr_t radar_check2 = nullptr;
+	mem::voidptr_t radar_check3 = nullptr;
 public:
 	inline AC_Client()
 	{
@@ -107,6 +111,10 @@ public:
 		this->fullbrightlight = (fullbrightlight_t)            GAME_OFFSET(0x54EF0);
 		this->newname = (newname_t)                            GAME_OFFSET(0x23B40);
 		this->mousemove = (mousemove_t)                        GAME_OFFSET(0x5C690);
+		this->radar_check0 = (mem::voidptr_t)                  GAME_OFFSET(0x968C);
+		this->radar_check1 = (mem::voidptr_t)                  GAME_OFFSET(0x969B);
+		this->radar_check2 = (mem::voidptr_t)                  GAME_OFFSET(0x9F9E);
+		this->radar_check3 = (mem::voidptr_t)                  GAME_OFFSET(0x9FAD);
 
 		return true;
 	}

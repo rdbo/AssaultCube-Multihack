@@ -16,6 +16,7 @@ void Base::Hooks::c2sinfo(playerent* d)
 	Hacks::AutoGuns();
 	Hacks::FullBright();
 	Hacks::NameChanger();
+	Hacks::RadarHack();
 
 	for (int i = 0; Data::game.players && Data::game.players->inrange(i); i++)
 	{

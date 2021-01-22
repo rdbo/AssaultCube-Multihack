@@ -179,6 +179,8 @@ int     Base::Data::Settings::NameChangerType = 0;
 bool    Base::Data::Settings::NameChangerAntiSpam = true;
 float   Base::Data::Settings::NameChangerAntiSpamValue = 2.0f;
 
+bool    Base::Data::Settings::EnableRadarHack = false;
+
 DWORD WINAPI ExitThread(LPVOID lpReserved);
 
 void Base::Init(HMODULE hMod)

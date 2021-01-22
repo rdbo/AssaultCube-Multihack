@@ -196,6 +196,8 @@ void Base::LoadConfig(nlohmann::json& Config)
 	READ_CONFIG_SETTINGS(NameChangerAntiSpam);
 	READ_CONFIG_SETTINGS(NameChangerAntiSpamValue);
 
+	READ_CONFIG_SETTINGS(EnableRadarHack);
+
 	//Load Keys
 	READ_CONFIG_KEYS(Bhop);
 	READ_CONFIG_KEYS(Triggerbot);
@@ -315,6 +317,8 @@ void Base::SaveConfig(nlohmann::json& ConfigOut)
 	WRITE_CONFIG_SETTINGS(NameChangerType);
 	WRITE_CONFIG_SETTINGS(NameChangerAntiSpam);
 	WRITE_CONFIG_SETTINGS(NameChangerAntiSpamValue);
+
+	WRITE_CONFIG_SETTINGS(EnableRadarHack);
 
 	//Save Keys
 	WRITE_CONFIG_KEYS(Bhop);
