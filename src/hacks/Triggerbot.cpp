@@ -12,6 +12,9 @@ void Base::Hacks::Triggerbot()
 
 		playerent* pCrosshairPlayer = Data::game.playerincrosshair();
 
+		if (!LastShot && pCrosshairPlayer) LastShot = now;
+		if (!pCrosshairPlayer) LastShot = 0;
+
 		if ((pCrosshairPlayer && pCrosshairPlayer->state == CS_ALIVE && !Data::game.player1->attacking && (now - LastShot >= (clock_t)(Data::Settings::TriggerbotDelay * 1000.0f)) && (pCrosshairPlayer->team != Data::game.player1->team || !m_teammode && !m_coop)) && (!Data::Settings::TriggerbotToggle && Data::WMKeys[Data::Keys::Triggerbot] || Data::Settings::TriggerbotToggle && Data::Settings::TriggerbotToggleState))
 		{
 			Data::game.player1->attacking = true;
@@ -21,6 +24,7 @@ void Base::Hacks::Triggerbot()
 		else if (bEnabled)
 		{
 			Data::game.player1->attacking = false;
+			LastShot = 0;
 			bEnabled = false;
 		}
 	}
