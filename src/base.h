@@ -27,9 +27,9 @@ namespace Base
 	void Shutdown();
 	void Unload();
 	bool LoadConfig(std::string ConfigFile);
-	bool LoadConfig(nlohmann::json& Config);
+	void LoadConfig(nlohmann::json& Config);
 	bool SaveConfig(std::string ConfigFile);
-	bool SaveConfig(nlohmann::json& ConfigOut);
+	void SaveConfig(nlohmann::json& ConfigOut);
 
 	namespace Data
 	{

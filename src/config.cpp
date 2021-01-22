@@ -84,7 +84,7 @@ bool Base::SaveConfig(std::string ConfigName)
 	return true;
 }
 
-bool Base::LoadConfig(nlohmann::json& Config)
+void Base::LoadConfig(nlohmann::json& Config)
 {
 	nlohmann::json j = Config;
 
@@ -204,7 +204,7 @@ bool Base::LoadConfig(nlohmann::json& Config)
 	READ_CONFIG_KEYS(Aimbot);
 }
 
-bool Base::SaveConfig(nlohmann::json& ConfigOut)
+void Base::SaveConfig(nlohmann::json& ConfigOut)
 {
 	nlohmann::json& j = ConfigOut;
 

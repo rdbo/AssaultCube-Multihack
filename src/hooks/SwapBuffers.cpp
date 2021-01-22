@@ -120,7 +120,7 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 		playerent* ent = Data::game.players->operator[](i);
 		if (!ent || ent == Data::game.player1) continue;
 
-		playerinfo_t info = playerinfo_t(ent, Data::WindowWidth, Data::WindowHeight);
+		playerinfo_t info = playerinfo_t(ent, (float)Data::WindowWidth, (float)Data::WindowHeight);
 		if (info.is_valid)
 		{
 			Hacks::ESP_Snaplines(&info);

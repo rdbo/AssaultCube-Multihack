@@ -112,24 +112,35 @@ public:
 	}
 };
 
+enum out_info : unsigned int
+{
+	OUT_TOP    = (1 << 1),
+	OUT_LEFT   = (1 << 2),
+	OUT_BOTTOM = (1 << 3),
+	OUT_RIGHT  = (1 << 4)
+};
+
 class playerinfo_t
 {
 public:
 	bool is_valid = false;
 	bool is_visible = false;
-	bool is_out = false;
 	playerent* ent = nullptr;
 	vec pos2D = {};
 	vec pos3D = {};
 	vec headpos3D = {};
 	vec headpos2D = {};
+	unsigned int pos2D_out = 0;
+	unsigned int headpos2D_out = 0;
+	unsigned int pos2D_out_margin = 0;
+	unsigned int headpos2D_out_margin = 0;
 
 	playerinfo_t()
 	{
 
 	}
 
-	playerinfo_t(playerent* p_ent, int width, int height)
+	playerinfo_t(playerent* p_ent, float width, float height)
 	{
 		bool check = true;
 		this->ent = p_ent;
@@ -146,8 +157,34 @@ public:
 			this->is_visible = IsVisible(this->ent);
 			check &= WorldToScreen(this->pos3D, &this->pos2D);
 			check &= WorldToScreen(this->headpos3D, &this->headpos2D);
+			float OutSafe = (width >= height ? width : height) / 10.0f;
+			this->pos2D_out = (
+				(this->pos2D.x < 0.0f   ? OUT_LEFT   : 0) | 
+				(this->pos2D.x > width  ? OUT_RIGHT  : 0) | 
+				(this->pos2D.y < 0.0f   ? OUT_TOP    : 0) | 
+				(this->pos2D.y > height ? OUT_BOTTOM : 0)
+			);
 
-			this->is_out = ((this->pos2D.x < 0.0f || this->pos2D.y < 0.0f) || (this->headpos2D.x > width || this->headpos2D.y > height));
+			this->headpos2D_out = (
+				(this->headpos2D.x < 0.0f   ? OUT_LEFT   : 0) | 
+				(this->headpos2D.x > width  ? OUT_RIGHT  : 0) | 
+				(this->headpos2D.y < 0.0f   ? OUT_TOP    : 0) | 
+				(this->headpos2D.y > height ? OUT_BOTTOM : 0)
+			);
+
+			this->pos2D_out_margin = (
+				(this->pos2D.x < 0.0f   - OutSafe ? OUT_LEFT   : 0) | 
+				(this->pos2D.x > width  + OutSafe ? OUT_RIGHT  : 0) | 
+				(this->pos2D.y < 0.0f   - OutSafe ? OUT_TOP    : 0) | 
+				(this->pos2D.y > height + OutSafe ? OUT_BOTTOM : 0)
+			);
+
+			this->headpos2D_out_margin = (
+				(this->headpos2D.x < 0.0f   - OutSafe ? OUT_LEFT   : 0) | 
+				(this->headpos2D.x > width  + OutSafe ? OUT_RIGHT  : 0) | 
+				(this->headpos2D.y < 0.0f   - OutSafe ? OUT_TOP    : 0) | 
+				(this->headpos2D.y > height + OutSafe ? OUT_BOTTOM : 0)
+			);
 		}
 
 		this->is_valid = check;

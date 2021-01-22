@@ -3,7 +3,7 @@
 
 void Base::Hacks::ESP_Info(playerinfo_t* p_info)
 {
-	if (!p_info || !p_info->is_valid || p_info->is_out || !((Data::Settings::EnableEspTeam && p_info->ent->team == Data::game.player1->team) || (Data::Settings::EnableEspEnemy && p_info->ent->team != Data::game.player1->team))) return;
+	if (!p_info || !p_info->is_valid || !((Data::Settings::EnableEspTeam && p_info->ent->team == Data::game.player1->team) || (Data::Settings::EnableEspEnemy && p_info->ent->team != Data::game.player1->team))) return;
 
 	ImDrawList* Draw = ImGui::GetBackgroundDrawList();
 	float Height = p_info->pos2D.y - p_info->headpos2D.y;
@@ -15,7 +15,7 @@ void Base::Hacks::ESP_Info(playerinfo_t* p_info)
 	float FontHeight = 18.0f;
 	float FontWidth = FontHeight * 0.325f;
 
-	if (Data::Settings::EnableEspHealth)
+	if (Data::Settings::EnableEspHealth && !(p_info->pos2D_out & (OUT_TOP | OUT_BOTTOM | OUT_LEFT | OUT_RIGHT)))
 	{
 		SpaceDown += Padding;
 		ImVec2 HealthBarPos = ImVec2(p_info->pos2D.x - BarWidth / 2, p_info->pos2D.y + SpaceDown);
@@ -47,7 +47,7 @@ void Base::Hacks::ESP_Info(playerinfo_t* p_info)
 		SpaceDown += OutlineThickness;
 	}
 
-	if (Data::Settings::EnableEspArmor)
+	if (Data::Settings::EnableEspArmor && !(p_info->pos2D_out & (OUT_TOP | OUT_BOTTOM | OUT_LEFT | OUT_RIGHT)))
 	{
 		SpaceDown += Padding;
 		ImVec2 ArmorBarPos = ImVec2(p_info->pos2D.x - BarWidth / 2, p_info->pos2D.y + SpaceDown);
@@ -79,7 +79,7 @@ void Base::Hacks::ESP_Info(playerinfo_t* p_info)
 		SpaceDown += OutlineThickness;
 	}
 
-	if (Data::Settings::EnableEspName)
+	if (Data::Settings::EnableEspName && !(p_info->headpos2D_out & (OUT_TOP | OUT_BOTTOM | OUT_LEFT | OUT_RIGHT)))
 	{
 		SpaceUp += Padding;
 		size_t  TextLength = strlen(p_info->ent->name);
