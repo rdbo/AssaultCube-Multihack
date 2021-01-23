@@ -221,6 +221,10 @@ namespace Base
 			extern bool    TeleportItemsAmmo;
 			extern bool    TeleportItemsClips;
 			extern bool    TeleportItemsAkimbo;
+			extern bool    TeleportItemsFlags;
+
+			extern bool    EnablePingChanger;
+			extern int     PingChangerValue;
 		}
 
 		namespace Keys
@@ -267,6 +271,7 @@ namespace Base
 		void NameChanger();
 		void RadarHack();
 		void TeleportItems(entity& p_item);
+		void PingChanger();
 	}
 
 	namespace Hooks

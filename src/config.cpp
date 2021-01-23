@@ -210,6 +210,10 @@ void Base::LoadConfig(nlohmann::json& Config)
 	READ_CONFIG_SETTINGS(TeleportItemsAmmo);
 	READ_CONFIG_SETTINGS(TeleportItemsClips);
 	READ_CONFIG_SETTINGS(TeleportItemsAkimbo);
+	READ_CONFIG_SETTINGS(TeleportItemsFlags);
+
+	READ_CONFIG_SETTINGS(EnablePingChanger);
+	READ_CONFIG_SETTINGS(PingChangerValue);
 
 	//Load Keys
 	READ_CONFIG_KEYS(Bhop);
@@ -347,6 +351,10 @@ void Base::SaveConfig(nlohmann::json& ConfigOut)
 	WRITE_CONFIG_SETTINGS(TeleportItemsAmmo);
 	WRITE_CONFIG_SETTINGS(TeleportItemsClips);
 	WRITE_CONFIG_SETTINGS(TeleportItemsAkimbo);
+	WRITE_CONFIG_SETTINGS(TeleportItemsFlags);
+
+	WRITE_CONFIG_SETTINGS(EnablePingChanger);
+	WRITE_CONFIG_SETTINGS(PingChangerValue);
 
 	//Save Keys
 	WRITE_CONFIG_KEYS(Bhop);

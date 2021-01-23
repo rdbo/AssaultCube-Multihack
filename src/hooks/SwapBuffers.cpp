@@ -518,6 +518,18 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 				}
 			}
 
+			ImGui::Checkbox("Ping Changer", &Data::Settings::EnablePingChanger);
+			if(Data::Settings::EnablePingChanger)
+			{
+				if (ImGui::TreeNode("Ping Changer Settings..."))
+				{
+					ImGui::BeginChild("ping-changer-settings", g_MenuSettingsMinSize, true);
+					ImGui::SliderInt("Ping", &Data::Settings::PingChangerValue, 0, 1000);
+					ImGui::EndChild();
+					ImGui::TreePop();
+				}
+			}
+
 			ImGui::Checkbox("Teleport Players", &Data::Settings::EnableTeleportPlayers);
 			if (Data::Settings::EnableTeleportPlayers)
 			{
@@ -535,15 +547,16 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 			ImGui::Checkbox("Items Magnet", &Data::Settings::EnableTeleportItems);
 			if (Data::Settings::EnableTeleportItems)
 			{
-				if (ImGui::TreeNode("Teleport Items Settings..."))
+				if (ImGui::TreeNode("Items Magnet Settings..."))
 				{
-					ImGui::BeginChild("teleport-items-settings");
+					ImGui::BeginChild("items-magnet-settings", g_MenuSettingsSize, true);
 					ImGui::Checkbox("Health", &Data::Settings::TeleportItemsHealth);
 					ImGui::Checkbox("Armor", &Data::Settings::TeleportItemsArmor);
 					ImGui::Checkbox("Grenade", &Data::Settings::TeleportItemsGrenade);
 					ImGui::Checkbox("Ammo", &Data::Settings::TeleportItemsAmmo);
 					ImGui::Checkbox("Clips", &Data::Settings::TeleportItemsClips);
 					ImGui::Checkbox("Akimbo", &Data::Settings::TeleportItemsAkimbo);
+					ImGui::Checkbox("CTF Flags", &Data::Settings::TeleportItemsFlags);
 					ImGui::EndChild();
 					ImGui::TreePop();
 				}
