@@ -28,6 +28,7 @@ typedef void(__stdcall* calclight_t)(void);
 typedef void(__stdcall* fullbrightlight_t)(void);
 typedef void(__cdecl* newname_t)(const char* name);
 typedef void(__cdecl* mousemove_t)(int idx, int idy);
+typedef void(__cdecl* toserver_t)(char* text);
 
 bool WorldToScreen(vec pos3D, vec* pos2D);
 bool IsVisible(playerent* p_ent);
@@ -70,6 +71,7 @@ public:
 	mem::voidptr_t radar_check1 = nullptr;
 	mem::voidptr_t radar_check2 = nullptr;
 	mem::voidptr_t radar_check3 = nullptr;
+	toserver_t toserver = nullptr;
 public:
 	inline AC_Client()
 	{
@@ -117,6 +119,7 @@ public:
 		this->radar_check1 = (mem::voidptr_t)                  GAME_OFFSET(0x969B);
 		this->radar_check2 = (mem::voidptr_t)                  GAME_OFFSET(0x9F9E);
 		this->radar_check3 = (mem::voidptr_t)                  GAME_OFFSET(0x9FAD);
+		this->toserver = (toserver_t)                          GAME_OFFSET(0x20210);
 
 		return true;
 	}

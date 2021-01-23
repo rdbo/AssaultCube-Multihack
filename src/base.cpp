@@ -199,6 +199,12 @@ bool    Base::Data::Settings::TeleportItemsAkimbo = false;
 bool    Base::Data::Settings::EnablePingChanger = false;
 int     Base::Data::Settings::PingChangerValue = 100;
 
+bool    Base::Data::Settings::EnableChatSpam = false;
+int     Base::Data::Settings::ChatSpamType = 0;
+char    Base::Data::Settings::ChatSpamText[260] = {};
+bool    Base::Data::Settings::ChatSpamDelay = true;
+float   Base::Data::Settings::ChatSpamDelayValue = 2.0f;
+
 DWORD WINAPI ExitThread(LPVOID lpReserved);
 
 void Base::Init(HMODULE hMod)
@@ -210,6 +216,7 @@ void Base::Init(HMODULE hMod)
 
 	try
 	{
+		snprintf(Data::Settings::ChatSpamText, sizeof(Data::Settings::ChatSpamText), "[ACMH] Git Gud: https://github.com/rdbo/AssaultCube-Multihack");
 		Base::SaveConfig(Data::CleanConfig);
 	}
 

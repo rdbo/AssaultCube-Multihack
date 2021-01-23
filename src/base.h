@@ -224,6 +224,12 @@ namespace Base
 
 			extern bool    EnablePingChanger;
 			extern int     PingChangerValue;
+
+			extern bool    EnableChatSpam;
+			extern int     ChatSpamType;
+			extern char    ChatSpamText[260];
+			extern bool    ChatSpamDelay;
+			extern float   ChatSpamDelayValue;
 		}
 
 		namespace Keys
@@ -271,6 +277,7 @@ namespace Base
 		void RadarHack();
 		void TeleportItems(entity& p_item);
 		void PingChanger();
+		void ChatSpam();
 	}
 
 	namespace Hooks

@@ -18,6 +18,7 @@ void Base::Hooks::c2sinfo(playerent* d)
 	Hacks::NameChanger();
 	Hacks::RadarHack();
 	Hacks::PingChanger();
+	Hacks::ChatSpam();
 
 	for (int i = 0; Data::game.players && Data::game.players->inrange(i); i++)
 	{

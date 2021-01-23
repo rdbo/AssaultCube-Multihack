@@ -530,6 +530,23 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 				}
 			}
 
+			ImGui::Checkbox("Chat Spam", &Data::Settings::EnableChatSpam);
+			if (Data::Settings::EnableChatSpam)
+			{
+				if (ImGui::TreeNode("Chat Spam Settings..."))
+				{
+					const char* ChatSpamTypes[] = { "None", "Team", "All" };
+					ImGui::BeginChild("chat-spam-settings", g_MenuSettingsSize, true);
+					ImGui::Combo("Chat Spam Type", &Data::Settings::ChatSpamType, ChatSpamTypes, sizeof(ChatSpamTypes) / sizeof(ChatSpamTypes[0]));
+					ImGui::InputText("Message", Data::Settings::ChatSpamText, sizeof(Data::Settings::ChatSpamText));
+					ImGui::Checkbox("Delay", &Data::Settings::ChatSpamDelay);
+					if (Data::Settings::ChatSpamDelay)
+						ImGui::SliderFloat("Delay Value", &Data::Settings::ChatSpamDelayValue, 0.0f, 10.0f, "%.1f");
+					ImGui::EndChild();
+					ImGui::TreePop();
+				}
+			}
+
 			ImGui::Checkbox("Teleport Players", &Data::Settings::EnableTeleportPlayers);
 			if (Data::Settings::EnableTeleportPlayers)
 			{

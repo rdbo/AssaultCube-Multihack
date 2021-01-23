@@ -7,6 +7,7 @@
 #define WRITE_CONFIG_KEYS(val) WRITE_CONFIG(j, "Keys", STRINGIFY(val), Base::Data::Keys::val)
 #define READ_CONFIG_SETTINGS(val) Base::Data::Settings::val = READ_CONFIG(j, "Settings", STRINGIFY(val))
 #define READ_CONFIG_SETTINGS_BUF(val) for(int i = 0; i < sizeof(Base::Data::Settings::val)/sizeof(Base::Data::Settings::val[0]); i++) Base::Data::Settings::val[i] = READ_CONFIG(j, "Settings", STRINGIFY(val))[i];
+#define READ_CONFIG_SETTINGS_STR(val) { std::string str = READ_CONFIG(j, "Settings", STRINGIFY(val)); snprintf(Base::Data::Settings::val, sizeof(Base::Data::Settings::val), str.c_str()); }
 #define READ_CONFIG_KEYS(val) Base::Data::Keys::val = READ_CONFIG(j, "Keys", STRINGIFY(val))
 #define CHECK_CFG_FILE(var) (var.length() > 0 && var.find('.') == var.npos && var.find('\\') == var.npos && var.find('/') == var.npos)
 
@@ -214,6 +215,12 @@ void Base::LoadConfig(nlohmann::json& Config)
 	READ_CONFIG_SETTINGS(EnablePingChanger);
 	READ_CONFIG_SETTINGS(PingChangerValue);
 
+	READ_CONFIG_SETTINGS(EnableChatSpam);
+	READ_CONFIG_SETTINGS(ChatSpamType);
+	READ_CONFIG_SETTINGS_STR(ChatSpamText);
+	READ_CONFIG_SETTINGS(ChatSpamDelay);
+	READ_CONFIG_SETTINGS(ChatSpamDelayValue);
+
 	//Load Keys
 	READ_CONFIG_KEYS(Bhop);
 	READ_CONFIG_KEYS(Triggerbot);
@@ -353,6 +360,12 @@ void Base::SaveConfig(nlohmann::json& ConfigOut)
 
 	WRITE_CONFIG_SETTINGS(EnablePingChanger);
 	WRITE_CONFIG_SETTINGS(PingChangerValue);
+
+	WRITE_CONFIG_SETTINGS(EnableChatSpam);
+	WRITE_CONFIG_SETTINGS(ChatSpamType);
+	WRITE_CONFIG_SETTINGS(ChatSpamText);
+	WRITE_CONFIG_SETTINGS(ChatSpamDelay);
+	WRITE_CONFIG_SETTINGS(ChatSpamDelayValue);
 
 	//Save Keys
 	WRITE_CONFIG_KEYS(Bhop);

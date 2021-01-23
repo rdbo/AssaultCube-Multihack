@@ -217,6 +217,7 @@
     <ClCompile Include="src\hacks\AlwaysHeadshot.cpp" />
     <ClCompile Include="src\hacks\AutoGuns.cpp" />
     <ClCompile Include="src\hacks\Bunnyhop.cpp" />
+    <ClCompile Include="src\hacks\ChatSpam.cpp" />
     <ClCompile Include="src\hacks\Crosshair.cpp" />
     <ClCompile Include="src\hacks\ESP_Box.cpp" />
     <ClCompile Include="src\hacks\ESP_Info.cpp" />
