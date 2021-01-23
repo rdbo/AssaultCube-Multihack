@@ -21,6 +21,7 @@ LRESULT CALLBACK Base::Hooks::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARA
 			Data::ShowMenu = !Data::ShowMenu;
 			break;
 		case Data::Keys::Unload:
+			if (Data::ShowMenu) break; //Avoid White Render Bug
 			bUnloadState = true;
 			Data::UnloadReady = false;
 			try
@@ -33,11 +34,11 @@ LRESULT CALLBACK Base::Hooks::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARA
 
 			}
 
-			//Base::Unload();
 			break;
 		case Data::Keys::Cancel:
 			if (Data::Keys::ToChange != nullptr)
 				Data::Keys::ToChange = nullptr;
+			break;
 		default:
 			if (Data::Keys::ToChange != nullptr)
 			{

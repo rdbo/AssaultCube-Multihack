@@ -7,9 +7,6 @@ static ConfigState_t ConfigState;
 
 BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 {
-	if (!Data::UnloadReady)
-		Data::UnloadReady = true;
-
 	Data::oContext = wglGetCurrentContext();
 
 	if(!Data::InitSwapBuffers)
@@ -662,6 +659,9 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 	ImGui_ImplOpenGL2_RenderDrawData(ImGui::GetDrawData());
 
 	wglMakeCurrent(hdc, Data::oContext);
+
+	if (!Data::UnloadReady)
+		Data::UnloadReady = true;
 
 	return Data::oSwapBuffers(hdc);
 }
