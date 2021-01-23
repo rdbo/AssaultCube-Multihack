@@ -235,6 +235,7 @@
     <ClCompile Include="src\hacks\RadarHack.cpp" />
     <ClCompile Include="src\hacks\Speedhack.cpp" />
     <ClCompile Include="src\hacks\Teleport.cpp" />
+    <ClCompile Include="src\hacks\TeleportItems.cpp" />
     <ClCompile Include="src\hacks\TeleportPlayers.cpp" />
     <ClCompile Include="src\hacks\Triggerbot.cpp" />
     <ClCompile Include="src\hacks\Wallhack.cpp" />

@@ -213,6 +213,14 @@ namespace Base
 			extern float   NameChangerAntiSpamValue;
 
 			extern bool    EnableRadarHack;
+
+			extern bool    EnableTeleportItems;
+			extern bool    TeleportItemsHealth;
+			extern bool    TeleportItemsArmor;
+			extern bool    TeleportItemsGrenade;
+			extern bool    TeleportItemsAmmo;
+			extern bool    TeleportItemsClips;
+			extern bool    TeleportItemsAkimbo;
 		}
 
 		namespace Keys
@@ -258,6 +266,7 @@ namespace Base
 		void FullBright();
 		void NameChanger();
 		void RadarHack();
+		void TeleportItems(entity& p_item);
 	}
 
 	namespace Hooks

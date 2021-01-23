@@ -532,6 +532,23 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 				}
 			}
 
+			ImGui::Checkbox("Items Magnet", &Data::Settings::EnableTeleportItems);
+			if (Data::Settings::EnableTeleportItems)
+			{
+				if (ImGui::TreeNode("Teleport Items Settings..."))
+				{
+					ImGui::BeginChild("teleport-items-settings");
+					ImGui::Checkbox("Health", &Data::Settings::TeleportItemsHealth);
+					ImGui::Checkbox("Armor", &Data::Settings::TeleportItemsArmor);
+					ImGui::Checkbox("Grenade", &Data::Settings::TeleportItemsGrenade);
+					ImGui::Checkbox("Ammo", &Data::Settings::TeleportItemsAmmo);
+					ImGui::Checkbox("Clips", &Data::Settings::TeleportItemsClips);
+					ImGui::Checkbox("Akimbo", &Data::Settings::TeleportItemsAkimbo);
+					ImGui::EndChild();
+					ImGui::TreePop();
+				}
+			}
+
 			ImGui::Checkbox("Teleport", &Data::Settings::EnableTeleport);
 			if (Data::Settings::EnableTeleport)
 			{

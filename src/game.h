@@ -45,6 +45,7 @@ public:
 	glmatrixf* mvpmatrix = nullptr;
 	int* gamemode = nullptr;
 	bool* fullbright = nullptr;
+	vector<entity>* ents = nullptr;
 	getclient_t getclient = nullptr;
 	servertoclient_t servertoclient = nullptr;
 	updateworld_t updateworld = nullptr;
@@ -91,6 +92,7 @@ public:
 		this->mvpmatrix = (glmatrixf*)                         GAME_OFFSET(0x101AE8);
 		this->gamemode = (int*)                                GAME_OFFSET(0x10F49C);
 		this->fullbright = (bool*)                             GAME_OFFSET(0x1100A0);
+		this->ents = (vector<entity>*)                         GAME_OFFSET(0x110118);
 		this->getclient = (getclient_t)                        GAME_OFFSET(0x27320);
 		this->servertoclient = (servertoclient_t)              GAME_OFFSET(0x2E830);
 		this->updateworld = (updateworld_t)                    GAME_OFFSET(0x25EB0);

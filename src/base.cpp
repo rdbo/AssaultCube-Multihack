@@ -188,6 +188,14 @@ float   Base::Data::Settings::NameChangerAntiSpamValue = 2.0f;
 
 bool    Base::Data::Settings::EnableRadarHack = false;
 
+bool    Base::Data::Settings::EnableTeleportItems = false;
+bool    Base::Data::Settings::TeleportItemsHealth = false;
+bool    Base::Data::Settings::TeleportItemsArmor = false;
+bool    Base::Data::Settings::TeleportItemsGrenade = false;
+bool    Base::Data::Settings::TeleportItemsAmmo = false;
+bool    Base::Data::Settings::TeleportItemsClips = false;
+bool    Base::Data::Settings::TeleportItemsAkimbo = false;
+
 DWORD WINAPI ExitThread(LPVOID lpReserved);
 
 void Base::Init(HMODULE hMod)

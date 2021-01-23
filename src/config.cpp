@@ -203,6 +203,14 @@ void Base::LoadConfig(nlohmann::json& Config)
 
 	READ_CONFIG_SETTINGS(EnableRadarHack);
 
+	READ_CONFIG_SETTINGS(EnableTeleportItems);
+	READ_CONFIG_SETTINGS(TeleportItemsHealth);
+	READ_CONFIG_SETTINGS(TeleportItemsArmor);
+	READ_CONFIG_SETTINGS(TeleportItemsGrenade);
+	READ_CONFIG_SETTINGS(TeleportItemsAmmo);
+	READ_CONFIG_SETTINGS(TeleportItemsClips);
+	READ_CONFIG_SETTINGS(TeleportItemsAkimbo);
+
 	//Load Keys
 	READ_CONFIG_KEYS(Bhop);
 	READ_CONFIG_KEYS(Triggerbot);
@@ -331,6 +339,14 @@ void Base::SaveConfig(nlohmann::json& ConfigOut)
 	WRITE_CONFIG_SETTINGS(NameChangerAntiSpamValue);
 
 	WRITE_CONFIG_SETTINGS(EnableRadarHack);
+
+	WRITE_CONFIG_SETTINGS(EnableTeleportItems);
+	WRITE_CONFIG_SETTINGS(TeleportItemsHealth);
+	WRITE_CONFIG_SETTINGS(TeleportItemsArmor);
+	WRITE_CONFIG_SETTINGS(TeleportItemsGrenade);
+	WRITE_CONFIG_SETTINGS(TeleportItemsAmmo);
+	WRITE_CONFIG_SETTINGS(TeleportItemsClips);
+	WRITE_CONFIG_SETTINGS(TeleportItemsAkimbo);
 
 	//Save Keys
 	WRITE_CONFIG_KEYS(Bhop);

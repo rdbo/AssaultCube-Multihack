@@ -26,5 +26,11 @@ void Base::Hooks::c2sinfo(playerent* d)
 		Hacks::TeleportPlayers(ent);
 	}
 
+	for (int i = 0; Data::game.ents->inrange(i); i++)
+	{
+		entity& ent = Data::game.ents->operator[](i);
+		Hacks::TeleportItems(ent);
+	}
+
 	return Data::o_c2sinfo(d);
 }
