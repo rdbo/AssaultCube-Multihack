@@ -126,7 +126,7 @@ static const char* BotNames[] = {
 	"teh_masterer",
 	"ThE_MarD",
 	"teh_smex",
-	"t3h_p@!|\|",
+	"t3h_p@!|\\|",
 	"KillSwitch",
 	"InsertNameHere",
 	"Sprah",
@@ -135,7 +135,7 @@ static const char* BotNames[] = {
 
 void Base::Hacks::NameChanger()
 {
-	if (Data::Settings::EnableNameChanger)
+	if (Data::Settings::EnableNameChanger && Data::Settings::NameChangerType != 0)
 	{
 		clock_t now = clock();
 		playerent* ent = nullptr;
@@ -146,14 +146,16 @@ void Base::Hacks::NameChanger()
 			last = now;
 			switch (Data::Settings::NameChangerType)
 			{
-			case 0: //Bot Names
+			case 0: //None
+				break;
+			case 1: //Bot Names
 				++LastIndex;
 				if (LastIndex >= bot_list_len)
 					LastIndex = 0;
 				Data::game.newname(BotNames[LastIndex]);
 				bChanged = true;
 				break;
-			case 1: //Connected Player Names
+			case 2: //Connected Player Names
 				if (!Data::game.players->inrange(0)) break;
 				++LastIndex;
 				if (!Data::game.players->inrange(LastIndex))

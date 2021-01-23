@@ -195,7 +195,6 @@ bool    Base::Data::Settings::TeleportItemsGrenade = false;
 bool    Base::Data::Settings::TeleportItemsAmmo = false;
 bool    Base::Data::Settings::TeleportItemsClips = false;
 bool    Base::Data::Settings::TeleportItemsAkimbo = false;
-bool    Base::Data::Settings::TeleportItemsFlags = false;
 
 bool    Base::Data::Settings::EnablePingChanger = false;
 int     Base::Data::Settings::PingChangerValue = 100;

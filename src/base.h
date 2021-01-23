@@ -221,7 +221,6 @@ namespace Base
 			extern bool    TeleportItemsAmmo;
 			extern bool    TeleportItemsClips;
 			extern bool    TeleportItemsAkimbo;
-			extern bool    TeleportItemsFlags;
 
 			extern bool    EnablePingChanger;
 			extern int     PingChangerValue;
