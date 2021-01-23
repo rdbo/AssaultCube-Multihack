@@ -18,7 +18,7 @@ void Base::Hacks::ChatSpam()
 		case 0: //None
 			break;
 		case 1: //Team
-			snprintf(Message, sizeof(Message), "%s%s", "%", Data::Settings::ChatSpamText);
+			snprintf(Message, sizeof(Message), "%s%s", "% ", Data::Settings::ChatSpamText);
 			Data::game.toserver(Message);
 			LastMessage = now;
 			break;

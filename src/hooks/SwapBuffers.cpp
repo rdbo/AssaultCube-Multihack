@@ -544,20 +544,6 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 				}
 			}
 
-			ImGui::Checkbox("Teleport Players", &Data::Settings::EnableTeleportPlayers);
-			if (Data::Settings::EnableTeleportPlayers)
-			{
-				if (ImGui::TreeNode("Teleport Players Settings..."))
-				{
-					ImGui::BeginChild("teleport-players-settings", g_MenuSettingsSize, true);
-					ImGui::SliderFloat("Teleport Distance", &Data::Settings::TeleportPlayersDistance, 0.0f, 50.0f, "%.1f");
-					ImGui::Checkbox("Teleport Team", &Data::Settings::TeleportPlayersTeam);
-					ImGui::Checkbox("Teleport Enemy", &Data::Settings::TeleportPlayersEnemy);
-					ImGui::EndChild();
-					ImGui::TreePop();
-				}
-			}
-
 			ImGui::Checkbox("Items Magnet", &Data::Settings::EnableTeleportItems);
 			if (Data::Settings::EnableTeleportItems)
 			{
@@ -575,15 +561,28 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 				}
 			}
 
+			ImGui::Checkbox("Teleport Players", &Data::Settings::EnableTeleportPlayers);
+			if (Data::Settings::EnableTeleportPlayers)
+			{
+				if (ImGui::TreeNode("Teleport Players Settings..."))
+				{
+					ImGui::BeginChild("teleport-players-settings", g_MenuSettingsSize, true);
+					ImGui::SliderFloat("Teleport Distance", &Data::Settings::TeleportPlayersDistance, 0.0f, 50.0f, "%.1f");
+					ImGui::Checkbox("Teleport Team", &Data::Settings::TeleportPlayersTeam);
+					ImGui::Checkbox("Teleport Enemy", &Data::Settings::TeleportPlayersEnemy);
+					ImGui::EndChild();
+					ImGui::TreePop();
+				}
+			}
+
 			ImGui::Checkbox("Teleport", &Data::Settings::EnableTeleport);
 			if (Data::Settings::EnableTeleport)
 			{
 				if (ImGui::TreeNode("Teleport Settings..."))
 				{
 					ImGui::BeginChild("teleport-settings", g_MenuSettingsSize, true);
-					ImGui::SliderFloat("X", &Data::Settings::TeleportPosition[0], -5000.0f, 5000.0f, "%.f");
-					ImGui::SliderFloat("Y", &Data::Settings::TeleportPosition[0], -5000.0f, 5000.0f, "%.f");
-					ImGui::SliderFloat("Z", &Data::Settings::TeleportPosition[0], -5000.0f, 5000.0f, "%.f");
+
+					ImGui::InputFloat3("Teleport Position", Data::Settings::TeleportPosition, "%.1f");
 					ImGui::Checkbox("Force X", &Data::Settings::TeleportForce[0]);
 					ImGui::Checkbox("Force Y", &Data::Settings::TeleportForce[1]);
 					ImGui::Checkbox("Force Z", &Data::Settings::TeleportForce[2]);
