@@ -271,7 +271,9 @@ BOOL __stdcall Base::Hooks::SwapBuffers(_In_ HDC hdc)
 				if (ImGui::TreeNode("Triggerbot Settings..."))
 				{
 					ImGui::BeginChild("triggerbot-settings", g_MenuKeySettingsSize, true);
-					ImGui::SliderFloat("Delay", &Data::Settings::TriggerbotDelay, 0.0f, 1.0f, "%.3f");
+					ImGui::Checkbox("Delay", &Data::Settings::TriggerbotDelay);
+					if(Data::Settings::TriggerbotDelay)
+						ImGui::SliderFloat("Delay Value", &Data::Settings::TriggerbotDelayValue, 0.0f, 1.0f, "%.3f");
 					ImGui::Checkbox("Toggle Key", &Data::Settings::TriggerbotToggle);
 					ImGui::Checkbox("Toggle State", &Data::Settings::TriggerbotToggleState);
 

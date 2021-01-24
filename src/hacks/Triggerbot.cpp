@@ -15,7 +15,7 @@ void Base::Hacks::Triggerbot()
 		if (!LastShot && pCrosshairPlayer) LastShot = now;
 		if (!pCrosshairPlayer) LastShot = 0;
 
-		if ((pCrosshairPlayer && pCrosshairPlayer->state == CS_ALIVE && !Data::game.player1->attacking && (now - LastShot >= (clock_t)(Data::Settings::TriggerbotDelay * 1000.0f)) && (pCrosshairPlayer->team != Data::game.player1->team || !m_teammode && !m_coop)) && (!Data::Settings::TriggerbotToggle && Data::WMKeys[Data::Keys::Triggerbot] || Data::Settings::TriggerbotToggle && Data::Settings::TriggerbotToggleState))
+		if ((pCrosshairPlayer && pCrosshairPlayer->state == CS_ALIVE && !Data::game.player1->attacking && ((Data::Settings::TriggerbotDelay && (now - LastShot >= (clock_t)(Data::Settings::TriggerbotDelayValue * 1000.0f))) || !Data::Settings::TriggerbotDelay) && (pCrosshairPlayer->team != Data::game.player1->team || !m_teammode && !m_coop)) && (!Data::Settings::TriggerbotToggle && Data::WMKeys[Data::Keys::Triggerbot] || Data::Settings::TriggerbotToggle && Data::Settings::TriggerbotToggleState))
 		{
 			Data::game.player1->attacking = true;
 			LastShot = now;

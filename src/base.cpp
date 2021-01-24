@@ -127,7 +127,8 @@ bool    Base::Data::Settings::SpeedhackToggleState = false;
 bool    Base::Data::Settings::EnableTriggerbot = false;
 bool    Base::Data::Settings::TriggerbotToggle = true;
 bool    Base::Data::Settings::TriggerbotToggleState = false;
-float   Base::Data::Settings::TriggerbotDelay = 0.1f;
+bool    Base::Data::Settings::TriggerbotDelay = true;
+float   Base::Data::Settings::TriggerbotDelayValue = 0.1f;
 
 bool    Base::Data::Settings::EnableFlyHack = false;
 bool    Base::Data::Settings::FlyHackToggle = true;
