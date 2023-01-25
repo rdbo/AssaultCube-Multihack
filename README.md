@@ -1,5 +1,5 @@
 # AssaultCube Multihack
-Multihack for Assault Cube.  
+Multihack for Assault Cube (1.2.0.2).  
 Based on <a href="https://github.com/rdbo/AssaultCube-SDK-DLL-Template">rdbo/AssaultCube-SDK-DLL-Template</a>  
   
 # How to use
